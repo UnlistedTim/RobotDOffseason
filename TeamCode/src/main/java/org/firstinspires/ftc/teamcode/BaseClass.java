@@ -69,9 +69,13 @@ public class BaseClass extends MecanumDrive {
     int armslideV1 = 1700, armslideV2 = 2300, armslideV3 = 2750;//max 2800
     int armslidePrein0 = 850 /*1800*/ , armslidePrein1 = 1430 /*3000*/ , armslidePrein2 = 2861 /*6000*/, armslidePrein3 = 0, armslideIn1 = 1526 /*3200*/, armslideIn2 = 2957 /*6200*/ , armslideIn3 = 0;
 
-    int armslidePreout1 = 2623 /* 5500*/, armslideOut1 = 2956 /*6200*/;
+    int armslideOut1 = 2956 /*6200*/;
+
+
 
     int armslideOutSpec = 858 /*1800*/;
+
+    double intakerotpose=0,gearboxpose=0,gearboxcurrent=0;
 
     int armslidePreSpec = 0;
 
@@ -107,7 +111,7 @@ public class BaseClass extends MecanumDrive {
     double p = 0.00004, i = 0, d = 0.0001 ,f = 0.12,k=0.00003;//k = 0.00001;
 
 
-    double handlePos = 0.05, handleH, handleL, handleStep = 0.005, handleCurrent = 0.05;
+    double handlePos = 0.05, handleH, handleL, handleStep = 0.05, handleCurrent = 0.05;
     double handleIn1 = 0.44, handleIn2 = 0.475;
     double handleOut1 = 0.21, handleIdle = 0.33;//0.33 0.21
     double handleInSpec = 0.14,handlesina=0.16;
@@ -115,7 +119,7 @@ public class BaseClass extends MecanumDrive {
 
     double handleOutSpec = 0.235, handleOutSpeca=0,handlepOutSpeca=0.1;
 
-    double clawPos = 0.3, clawStep = 0.01, clawCurrent = 0.3, clawH, clawL;//0.24
+    double clawPos = 0.3, clawStep = 0.05, clawCurrent = 0.3, clawH, clawL;//0.24
     double clawOpen = 0.3, clawClose = 0.03, clawIntake = 0.24;
     public static boolean baseblue = false, baseright = true;
 
@@ -1055,7 +1059,7 @@ public class BaseClass extends MecanumDrive {
         }
     }
 
-    public void armrotatePIDF()
+    public void `armrotatePIDF()
 
     {
         rotatePos = Arm_left.getCurrentPosition();
