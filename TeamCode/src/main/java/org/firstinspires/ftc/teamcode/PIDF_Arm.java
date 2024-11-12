@@ -40,8 +40,8 @@ public class PIDF_Arm extends OpMode{
     //private final double ticks_in_degree = 5281.1/360;
     private final double ticks_in_degree = 8192/360;
 
-    private DcMotorEx armRotate;
-    private DcMotorEx armRotateLeft;
+    private DcMotorEx  Arm_right;
+    private DcMotorEx  Arm_left;
 
 
     private DcMotorEx armSlide;
@@ -58,23 +58,31 @@ public class PIDF_Arm extends OpMode{
     public void init(){
         controller = new PIDController(p,i,d);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+//
+//        armRotate = hardwareMap.get(DcMotorEx.class, "armRotate");
+//        armRotateLeft = hardwareMap.get(DcMotorEx.class, "armRotateLeft");
+        Arm_right = hardwareMap.get(DcMotorEx.class, "Arm_right");
+        Arm_left = hardwareMap.get(DcMotorEx.class, "Arm_left");
 
-        armRotate = hardwareMap.get(DcMotorEx.class, "armRotate");
-        armRotateLeft = hardwareMap.get(DcMotorEx.class, "armRotateLeft");
         armSlide = hardwareMap.get(DcMotorEx.class, "armSlide");
 
-        armRotate.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        Arm_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
-        armRotate.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        armRotate.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        Arm_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        Arm_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        Arm_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
+        Arm_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        Arm_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         armSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         armSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armSlide.setTargetPosition(0);
         armSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         armSlide.setVelocity(0);
-        armRotate.setPower(0);
+        Arm_right.setPower(0);
+        Arm_left.setPower(0);
 
     }
     @Override
@@ -90,7 +98,7 @@ public class PIDF_Arm extends OpMode{
 
 
         controller.setPID(p,i,d);
-        int armPos = armRotate.getCurrentPosition();
+        int armPos =  Arm_right.getCurrentPosition();
         int slidePos = armSlide.getCurrentPosition();
      //   if (Math.abs(armPos-target)<400) d=0.0008; else d=0.002;
         double pid = controller.calculate(armPos,target);
@@ -98,8 +106,8 @@ public class PIDF_Arm extends OpMode{
 
         double power = pid + ff;
 
-        armRotate.setPower(power);
-        armRotateLeft.setPower(-power);
+        Arm_right.setPower(power);
+        Arm_left.setPower(-power);
         telemetry.addData("pos", armPos);
         telemetry.addData("target", target);
         telemetry.addData("Current Angle", (armPos/ticks_in_degree) - 47 );

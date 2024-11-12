@@ -30,6 +30,7 @@ public class Debug extends LinearOpMode {
         Pose2d p1 = new Pose2d(0, 0, 0);
 
         rbg = new BaseClass(this, p1);
+        double tmp=0;
 
         if (isStopRequested()) return;
 
@@ -57,6 +58,7 @@ public class Debug extends LinearOpMode {
 //            if (gamepad2.circle) {rbg.armrotatePos += rbg.armrotateStep;; rbg.timer(0,0);}
             if (gamepad2.dpad_up) {
                 rbg.handlePos += rbg.handleStep;;
+
                 rbg.Intake_handle.setPosition(rbg.handlePos);
                 rbg.timer(0, 0);
             }

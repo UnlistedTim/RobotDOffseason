@@ -167,6 +167,22 @@ public class BaseClass extends MecanumDrive {
         super(hardwareMap, pose1);
 
     }
+    public class ARM()
+    {
+        DcMotorEx arm1,arm2;
+       void( ARM(DcMotorEx motor1, DcMotorEx m)
+        {
+
+
+    }
+
+        void setpower(){
+
+
+        }
+
+
+    }
 
 
     public void strafe(double power) {
@@ -206,6 +222,9 @@ public class BaseClass extends MecanumDrive {
 
 
     }
+
+
+
 
     protected void vel_robot_centric(double iy, double ix, double irx, double ratio) {
 
@@ -277,6 +296,9 @@ public class BaseClass extends MecanumDrive {
 //
 //
 //    }
+
+
+
 
     public void hang() {
         if (!timer(86000, start) && (!flag[force])) return;
@@ -1059,7 +1081,7 @@ public class BaseClass extends MecanumDrive {
         }
     }
 
-    public void `armrotatePIDF()
+    public void armrotatePIDF()
 
     {
         rotatePos = Arm_left.getCurrentPosition();

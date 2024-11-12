@@ -570,7 +570,12 @@ public  class MecanumDrive {
 
         Arm_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         Arm_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-      //  armRotate.setTargetPosition(0);
+        Arm_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        Arm_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+
+
+        //  armRotate.setTargetPosition(0);
       //  armRotate.setMode(DcMotor.RunMode.RUN_TO_POSITION);
        // armRotate.setVelocity(0);
 
