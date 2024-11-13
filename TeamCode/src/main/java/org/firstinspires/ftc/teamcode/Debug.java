@@ -43,7 +43,7 @@ public class Debug extends LinearOpMode {
         //    rbg.rotatetargetPIDF(rbg.rotateStart);
         waitForStart();
 
-        rbg.Intake_rot.setPosition(0);
+        rbg.Intake_rot.setPosition(0.3);
 
 
         while (opModeIsActive()) {
@@ -88,6 +88,8 @@ public class Debug extends LinearOpMode {
                 rbg.timer(0, 0);
             }
 
+
+
             if (gamepad2.circle) {
                 rbg.Intake.setPower(0.8);
                 sleep(500);
@@ -97,6 +99,20 @@ public class Debug extends LinearOpMode {
                 rbg.Intake.setPower(-0.8);
                 sleep(500);
                 rbg.Intake.setPower(0);
+            }
+
+            if (rbg.arm_rot_power <= 1.0 &&  gamepad2.right_bumper) {
+                rbg.arm_rot_power += 0.02;
+                rbg.Arm_right.setPower(-rbg.arm_rot_power);
+                rbg.Arm_left.setPower(-rbg.arm_rot_power);
+                rbg.timer(0, 0);
+            }
+
+            if (rbg.arm_rot_power >= -1.0 && gamepad2.left_bumper ) {
+                rbg.arm_rot_power -= 0.02;
+                rbg.Arm_right.setPower(rbg.arm_rot_power);
+                rbg.Arm_left.setPower(rbg.arm_rot_power);
+                rbg.timer(0, 0);
             }
 //            if (gamepad2.square) {rbg.armrotatePos -=rbg.armrotateStep; rbg.timer(0,0);}
 //            if (gamepad2.square) {rbg.armrotatePos-= ; rbg.timer(0,0);}

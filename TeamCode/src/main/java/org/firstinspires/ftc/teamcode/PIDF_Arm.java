@@ -12,7 +12,6 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 @TeleOp
 @Config
-@Disabled
 public class PIDF_Arm extends OpMode{
     private PIDController controller;
 
@@ -27,13 +26,13 @@ public class PIDF_Arm extends OpMode{
     // f = 0.12
     // k = 0.00001
 
-    public static double p = 0.0008, i = 0, d = 0.00009;
+    public static double p = 0, i = 0, d = 0;
   //  public static double p = 0.01, i = 0, d = 0.0008;
 
-    public static double f = 0.12;  //0.12 also good
+    public static double f = -0.05;  //0.12 also good
 
-    public static double k = 0.00002;
-    public static int target = 600;
+    public static double k = 0;
+    public static int target = -600;
 
     public static int targetslide = 500;
 
@@ -44,7 +43,8 @@ public class PIDF_Arm extends OpMode{
     private DcMotorEx  Arm_left;
 
 
-    private DcMotorEx armSlide;
+    private DcMotorEx Slide_bot;
+    private DcMotorEx Slide_top;
 
 
     public final void pause(long milliseconds) {
@@ -64,7 +64,8 @@ public class PIDF_Arm extends OpMode{
         Arm_right = hardwareMap.get(DcMotorEx.class, "Arm_right");
         Arm_left = hardwareMap.get(DcMotorEx.class, "Arm_left");
 
-        armSlide = hardwareMap.get(DcMotorEx.class, "armSlide");
+        Slide_bot = hardwareMap.get(DcMotorEx.class, "Slide_bot");
+        Slide_top = hardwareMap.get(DcMotorEx.class, "Slide_top");
 
         Arm_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
@@ -75,12 +76,20 @@ public class PIDF_Arm extends OpMode{
 
         Arm_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         Arm_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        armSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        Slide_bot.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
-        armSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        armSlide.setTargetPosition(0);
-        armSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        armSlide.setVelocity(0);
+        Slide_bot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        Slide_bot.setTargetPosition(0);
+        Slide_bot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        Slide_bot.setVelocity(0);
+        Slide_top.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
+        Slide_top.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        Slide_top.setTargetPosition(0);
+        Slide_top.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        Slide_top.setVelocity(0);
+
+
         Arm_right.setPower(0);
         Arm_left.setPower(0);
 
@@ -89,9 +98,9 @@ public class PIDF_Arm extends OpMode{
     public void loop(){
 
         if (gamepad1.triangle ){
-            armSlide.setTargetPosition(targetslide);
-            armSlide.setVelocity(2000);
-            pause(2000);
+//            armSlide.setTargetPosition(targetslide);
+//            armSlide.setVelocity(2000);
+//            pause(2000);
 
         }
 
@@ -99,18 +108,18 @@ public class PIDF_Arm extends OpMode{
 
         controller.setPID(p,i,d);
         int armPos =  Arm_right.getCurrentPosition();
-        int slidePos = armSlide.getCurrentPosition();
+        int slidePos = Slide_top.getCurrentPosition();
+        slidePos = 0;
      //   if (Math.abs(armPos-target)<400) d=0.0008; else d=0.002;
         double pid = controller.calculate(armPos,target);
-        double ff = Math.cos(Math.toRadians(armPos/ticks_in_degree - 47)) * (f + k*slidePos) ;  // target
-
+        double ff = Math.cos(Math.toRadians(armPos/ticks_in_degree +15)) * (f + k*slidePos) ;  // target
         double power = pid + ff;
 
-        Arm_right.setPower(power);
+        Arm_right.setPower(-power);
         Arm_left.setPower(-power);
         telemetry.addData("pos", armPos);
         telemetry.addData("target", target);
-        telemetry.addData("Current Angle", (armPos/ticks_in_degree) - 47 );
+        telemetry.addData("Current Angle", (armPos/ticks_in_degree) +15 );
         telemetry.addData("FF power", ff);
         telemetry.addData("PID power", pid);
         telemetry.addData("Total Power", power);

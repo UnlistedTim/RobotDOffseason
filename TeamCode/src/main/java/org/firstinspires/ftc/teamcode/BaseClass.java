@@ -76,6 +76,7 @@ public class BaseClass extends MecanumDrive {
     int armslideOutSpec = 858 /*1800*/;
 
     double intakerotpose=0,gearboxpose=0,gearboxcurrent=0;
+    double arm_rot_power = 0;
 
     int armslidePreSpec = 0;
 
@@ -167,22 +168,22 @@ public class BaseClass extends MecanumDrive {
         super(hardwareMap, pose1);
 
     }
-    public class ARM()
-    {
-        DcMotorEx arm1,arm2;
-       void( ARM(DcMotorEx motor1, DcMotorEx m)
-        {
-
-
-    }
-
-        void setpower(){
-
-
-        }
-
-
-    }
+//    public class ARM()
+//    {
+//        DcMotorEx arm1,arm2;
+//       void( ARM(DcMotorEx motor1, DcMotorEx m)
+//        {
+//
+//
+//    }
+//
+//        void setpower(){
+//
+//
+//        }
+//
+//
+//    }
 
 
     public void strafe(double power) {
