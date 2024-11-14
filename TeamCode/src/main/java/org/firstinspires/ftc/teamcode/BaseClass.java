@@ -78,6 +78,7 @@ public class BaseClass extends MecanumDrive {
     double intakerotpose=0,gearboxpose=0,gearboxcurrent=0;
     double arm_rot_power = 0;
     int arm_slide_pos = 0;
+    int lslo=0,lshi=2351;
 
     int armslidePreSpec = 0;
 
@@ -111,7 +112,14 @@ public class BaseClass extends MecanumDrive {
 
 
     double p = 0.00004, i = 0, d = 0.0001 ,f = 0.12,k=0.00003;//k = 0.00001;
+// idle, specman slides=400,rotate 380-,
 
+    double[] handle= new double[10];//handein=0.36,handlespec/idle=0.05,
+    int handdlein=0;
+    double[] handlerot=new double[10];//rotin=0.55,  0,0.3.0.75,1;
+    int handlerotin=0;
+    double[] claw=new double[4];
+    int clawopen=0,clawcolse=1;
 
     double handlePos = 0.05, handleH, handleL, handleStep = 0.05, handleCurrent = 0.05;
     double handleIn1 = 0.44, handleIn2 = 0.475;
@@ -127,12 +135,17 @@ public class BaseClass extends MecanumDrive {
 
     double[][] moveconfig= new double[20][20];
     int speedg=0,strafeg=1,turng=2,speedmax=3,strafemax=4,turnmax=5,xdis=6,ydis=7,adis=8,time=9;
+    double[][] pidftable= new double[20][3];
+    int init=0, pp=0,ii=1,dd=2;
+    int [][] intaketable =new int[10][3];
+    int instep=0, inrotate=0,inslide=1;
+
 
 
 
     int [] rotate= new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     int [] slide= new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-    double[] handle = new double[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+ //   double[] handle = new double[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     int idle=0,pin1=1,in1=2,pin2=3,in2=4,sin=5,sout=6,hang1=7,hang2=8,hang3=9,out=10,psout = 11,souta=12,psouta=13,sina=14;
 
 
@@ -306,7 +319,7 @@ public class BaseClass extends MecanumDrive {
         if (!timer(86000, start) && (!flag[force])) return;
 
         stop_drive();
-        linearslide(Slide_top, 0, armslideV3);
+        linearslide( 0, armslideV3);
 
 
         move(-0.25);
@@ -484,14 +497,14 @@ public class BaseClass extends MecanumDrive {
         }
 
         if (flag[intake_shift]) {
-            linearslide(Slide_top, slide[pin1], armslideV3);
+            linearslide( slide[pin1], armslideV3);
           //  linearslide(armRotate, armrotatePrein1, armrotateV1);
             rotatetargetPIDF(rotate[pin1]);
             Intake_handle.setPosition(handleIn1);
         } else {
            // linearslide(armRotate, armrotatePrein2, armrotateV2);
             rotatetargetPIDF(rotate[pin2]);
-            linearslide(Slide_top, slide[pin2], armslideV3);
+            linearslide( slide[pin2], armslideV3);
             Intake_handle.setPosition(handleIn2);
         }
         flag[intake_ready] = true;
@@ -533,7 +546,7 @@ public class BaseClass extends MecanumDrive {
         delay(200);
 
         if (timer(5000, intake)) {
-            linearslide(Slide_top, slide[idle], armslideV3);
+            linearslide( slide[idle], armslideV3);
            // linearslide(armRotate, armrotatePrein0, armrotateV1);
             rotatetargetPIDF(rotate[idle]);
             Intake_handle.setPosition(handleIdle);
@@ -584,7 +597,7 @@ public class BaseClass extends MecanumDrive {
         flag[lift] = false;
         flag[specimen] = true;
 
-        linearslide(Slide_top,slide[idle],armslideV3);
+        linearslide(slide[idle],armslideV3);
         rotatetargetPIDF(rotate[idle]);
       //  linearslide(armRotate,armrotatePreinSpec,armrotateV3);
 //        Claw.setPosition(clawOpen);
@@ -606,7 +619,7 @@ public class BaseClass extends MecanumDrive {
     // l
     public void specimen_pre(){
         flag[specimen] = true;
-        linearslide(Slide_top,slide[sin],armslideV3);
+        linearslide(slide[sin],armslideV3);
      //   linearslide(armRotate,armrotatePreinSpec,armrotateV3);
         rotatetargetPIDF(rotate[sin]);
 //        Claw.setPosition(clawOpen);
@@ -673,24 +686,26 @@ public class BaseClass extends MecanumDrive {
     }
 
 
-    public void linearslide(DcMotorEx ls, int target, int speed) {
-        int limithi = 0, limitlo = 0;
-        if (ls == Slide_top) {
-            limithi = armslideH;
-            limitlo = armslideL;
-        }
-        else return;
-//        if (ls == armRotate) {
-//            limithi = armrotateH;
-//            limitlo = armrotateL;
-//            target = target + armrotateOffset;
-//        }
-        if (target > limithi || target < limitlo) return;
-        ls.setTargetPosition(target);
-        ls.setVelocity(speed);
-       // ls.setTargetPositionTolerance(5);
+    public void linearslide( int target, int speed) {
+
+        if (target > lshi || target < lslo) return;
+        Slide_top.setTargetPosition(target);
+        Slide_bot.setTargetPosition(target);
+        Slide_top.setVelocity(speed);
+        Slide_bot.setVelocity(speed);
 
     }
+
+    public void pidfsetting(int target, int index)
+
+    {
+        p=pidftable[index][pp];
+        i=pidftable[index][ii];
+        d=pidftable[index][dd];
+        rotateTarget=target;
+    }
+
+
 
     public void rotatetargetPIDF(int target) {
 
@@ -871,6 +886,9 @@ public class BaseClass extends MecanumDrive {
 
          //  int speedg=0,strafeg=1,turng=2,speedmax=3,strafemax=4,turnmax=5,xdis=6,ytarget=7,atarget=8,time=9;
           //forward 20
+           pidftable[init][pp]=0.0024;  pidftable[init][ii]=0;  pidftable[init][dd]=0.00008;
+           intaketable[0][inrotate]=250; intaketable[0][inslide]=500;
+
 
            moveconfig[0] [speedg]=0.035;
            moveconfig[0] [strafeg]=0.15;
@@ -1077,7 +1095,7 @@ public class BaseClass extends MecanumDrive {
         if(tstep==2) {// for auto
             Intake_handle.setPosition(handleOutSpeca);
 //            Claw.setPosition(clawClose);
-           linearslide(Slide_top,0,armslideV1);
+           linearslide(0,armslideV1);
             flag[specimenfirst]=true;
 
         }
@@ -1086,14 +1104,14 @@ public class BaseClass extends MecanumDrive {
     public void armrotatePIDF()
 
     {
-        rotatePos = Arm_left.getCurrentPosition();
+        rotatePos = -Arm_right.getCurrentPosition();
         slidePos = Slide_top.getCurrentPosition();
         controller.setPID(p,i,d);
         double pid = controller.calculate(rotatePos,rotateTarget);
         double ff = Math.cos(Math.toRadians(rotatePos/ticks_in_degree +rotateStartangle)) * (f + k*slidePos) ;// target
         double power = pid + ff;
         Arm_left.setPower(power);
-        Arm_right.setPower(-power);
+        Arm_right.setPower(power);// to be changed director.
 
     }
 
@@ -1115,13 +1133,13 @@ public class BaseClass extends MecanumDrive {
            // linearslide(armRotate, rotate, armrotateV2);
             rotatetargetPIDF(rot);
              armrotatePIDF();
-            linearslide(Slide_top, sli, armslideV3);
+            linearslide( sli, armslideV3);
             delay(300);
 
 //            Claw.setPosition(clawClose);
             delay(300); // 300
 
-            linearslide(Slide_top, slide[idle], armslideV3);
+            linearslide( slide[idle], armslideV3);
 
             delay(200); //300
             Intake_handle.setPosition(handleOut1);
@@ -1148,7 +1166,7 @@ public class BaseClass extends MecanumDrive {
         stop_drive();
        // rotatetargetPIDF(armrotatePostinSpec);
       //linearslide(armRotate, armrotatepreoutSpec, armrotateV1);
-        linearslide(Slide_top,slide[sout],armslideV3);
+        linearslide(slide[sout],armslideV3);
         Intake_handle.setPosition(handleOutSpec);
         timer(0,intake);
         flag[intake_ready]=false;
@@ -1172,7 +1190,7 @@ public class BaseClass extends MecanumDrive {
         if(Arm_left.getCurrentPosition()>3000&&step[lift]==0){
             stop_drive();
             //  armSlide.setVelocityPIDFCoefficients(1.26, 0.126, 0, 12.6);
-            linearslide(Slide_top, slide[out], armslideV3);
+            linearslide( slide[out], armslideV3);
             //timer(0,lift);
             step[lift]=10;
 
@@ -1194,8 +1212,8 @@ public class BaseClass extends MecanumDrive {
     public boolean specimen_lift(int i) {
         if(!flag[lift]) {
 
-            linearslide(Arm_left,armrotatepreoutSpec,armrotateV3);
-            linearslide(Slide_top,armslideOutSpec,armslideV3);
+//            linearslide(armrotatepreoutSpec,armrotateV3);
+            linearslide(armslideOutSpec,armslideV3);
             Intake_handle.setPosition(handleOutSpec);
             flag[lift] = false;
             return true;
@@ -1207,11 +1225,11 @@ public class BaseClass extends MecanumDrive {
 
     public void aouttake() {
         stop_drive();
-        linearslide(Arm_left, armrotateOut1, armrotateV2);
+       // linearslide(Arm_left, armrotateOut1, armrotateV2);
         Intake_handle.setPosition(handleOut1);
         pause(1000);
-        linearslide(Slide_top, armslideOut1, armslideV3);
-        linearslide(Arm_left, armrotateOut1, armrotateV2);
+     //   linearslide(Slide_top, armslideOut1, armslideV3);
+      //  linearslide(Arm_left, armrotateOut1, armrotateV2);
         pause(2500);
         move(-0.16);
         if (voltageSensor.getVoltage() > 13){
@@ -1237,9 +1255,9 @@ public class BaseClass extends MecanumDrive {
 
         pause(1000);
         stop_drive();
-        linearslide(Slide_top, 0, armrotateV3);
+        //linearslide(Slide_top, 0, armrotateV3);
         pause(1000);
-        linearslide(Arm_left, 0, armrotateV2);
+      //  linearslide(Arm_left, 0, armrotateV2);
         pause(3000);
         Intake_handle.setPosition(0);
         }
@@ -1261,7 +1279,7 @@ public class BaseClass extends MecanumDrive {
             flag[outtake] = true;
             move(0.3);
             timer(0,outtake);
-            linearslide(Slide_top,slide[idle],armslideV3);
+           // linearslide(Slide_top,slide[idle],armslideV3);
             step[outtake]=0;
             return false;
         }
@@ -1355,7 +1373,7 @@ public class BaseClass extends MecanumDrive {
 
 
         Intake_handle.setPosition(handleIdle);
-        linearslide(Slide_top,slide[idle],armslideV3);
+       // linearslide(Slide_top,slide[idle],armslideV3);
 
         flag[outtake]= false;
         step[outtake]=10;

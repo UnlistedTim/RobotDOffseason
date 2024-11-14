@@ -126,10 +126,9 @@ public class TelOp extends LinearOpMode {
 //            }
 
             if (gamepad2.ps) rbg.flag[rbg.force] = true;
-                rbg.armrotatePIDF();
-                if (gamepad2.dpad_up && gamepad2.dpad_down)
-                    rbg.adjust(gamepad2.dpad_up, gamepad2.dpad_down);
-                rbg.robot_centric(gamepad1.right_stick_y, gamepad1.right_stick_x, gamepad1.left_stick_x, speed_factor);
+            rbg.armrotatePIDF();
+            if (gamepad2.dpad_up && gamepad2.dpad_down)   rbg.adjust(gamepad2.dpad_up, gamepad2.dpad_down);
+            rbg.robot_centric(gamepad1.right_stick_y, gamepad1.right_stick_x, gamepad1.left_stick_x, speed_factor);
 
 
 //            telemetry.addData("TempInput", rbg.tempinput);
