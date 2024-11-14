@@ -109,13 +109,14 @@ public class Debug extends LinearOpMode {
             }
 
             if (rbg.arm_rot_power >= -1.0 && gamepad2.left_bumper ) {
+
                 rbg.arm_rot_power -= 0.02;
                 rbg.Arm_right.setPower(rbg.arm_rot_power);
                 rbg.Arm_left.setPower(rbg.arm_rot_power);
                 rbg.timer(0, 0);
             }
             
-            if (gamepad2.right_trigger > 0.6){
+            if (gamepad1.dpad_up){
                 rbg.arm_slide_pos +=100;
                 rbg.Slide_top.setTargetPosition(rbg.arm_slide_pos);
                 rbg.Slide_top.setVelocity(1000);
@@ -124,7 +125,7 @@ public class Debug extends LinearOpMode {
                 rbg.timer(0, 0);
 
             }
-            if (gamepad2.left_trigger < 0.6 && rbg.arm_slide_pos >0){
+            if (gamepad1.dpad_down){
                 rbg.arm_slide_pos -=100;
                 rbg.Slide_top.setTargetPosition(rbg.arm_slide_pos);
                 rbg.Slide_top.setVelocity(1000);
