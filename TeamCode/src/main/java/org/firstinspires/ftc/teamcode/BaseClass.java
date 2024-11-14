@@ -77,6 +77,7 @@ public class BaseClass extends MecanumDrive {
 
     double intakerotpose=0,gearboxpose=0,gearboxcurrent=0;
     double arm_rot_power = 0;
+    int arm_slide_pos = 0;
 
     int armslidePreSpec = 0;
 

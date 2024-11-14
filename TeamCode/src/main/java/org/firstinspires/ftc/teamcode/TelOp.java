@@ -125,7 +125,7 @@ public class TelOp extends LinearOpMode {
 //                }
 //            }
 
-                if (gamepad2.ps) rbg.flag[rbg.force] = true;
+            if (gamepad2.ps) rbg.flag[rbg.force] = true;
                 rbg.armrotatePIDF();
                 if (gamepad2.dpad_up && gamepad2.dpad_down)
                     rbg.adjust(gamepad2.dpad_up, gamepad2.dpad_down);

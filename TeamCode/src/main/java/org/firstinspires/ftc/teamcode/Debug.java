@@ -114,6 +114,25 @@ public class Debug extends LinearOpMode {
                 rbg.Arm_left.setPower(rbg.arm_rot_power);
                 rbg.timer(0, 0);
             }
+            
+            if (gamepad2.right_trigger > 0.6){
+                rbg.arm_slide_pos +=100;
+                rbg.Slide_top.setTargetPosition(rbg.arm_slide_pos);
+                rbg.Slide_top.setVelocity(1000);
+                rbg.Slide_bot.setTargetPosition(rbg.arm_slide_pos);
+                rbg.Slide_bot.setVelocity(1000);
+                rbg.timer(0, 0);
+
+            }
+            if (gamepad2.left_trigger < 0.6 && rbg.arm_slide_pos >0){
+                rbg.arm_slide_pos -=100;
+                rbg.Slide_top.setTargetPosition(rbg.arm_slide_pos);
+                rbg.Slide_top.setVelocity(1000);
+                rbg.Slide_bot.setTargetPosition(rbg.arm_slide_pos);
+                rbg.Slide_bot.setVelocity(1000);
+                rbg.timer(0, 0);
+
+            }
 //            if (gamepad2.square) {rbg.armrotatePos -=rbg.armrotateStep; rbg.timer(0,0);}
 //            if (gamepad2.square) {rbg.armrotatePos-= ; rbg.timer(0,0);}
 //            if (gamepad2.circle) {rbg.armrotatePos += rbg.armrotateStep;; rbg.timer(0,0);}
