@@ -71,14 +71,14 @@ public class Debug extends LinearOpMode {
         //    rbg.rotatetargetPIDF(rbg.rotateStart);
         waitForStart();
 
-        rbg.Slide_bot.setTargetPosition(0);
-       rbg.Slide_bot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rbg.Slide_bot.setVelocity(0);
-
-
-        rbg.Slide_top.setTargetPosition(0);
-        rbg.Slide_top.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rbg.Slide_top.setVelocity(0);
+//        rbg.Slide_bot.setTargetPosition(0);
+//       rbg.Slide_bot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        rbg.Slide_bot.setVelocity(0);
+//
+//
+//        rbg.Slide_top.setTargetPosition(0);
+//        rbg.Slide_top.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        rbg.Slide_top.setVelocity(0);
         rbg.Arm_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rbg.Arm_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -165,6 +165,19 @@ public class Debug extends LinearOpMode {
 
             if (gamepad1.right_bumper) {
                 rbg.intake();
+            }
+
+            if (gamepad1.right_trigger > 0.4){
+                rbg.Arm_right.setPower(0.3);
+                sleep(500);
+                rbg.Arm_right.setPower(0);
+
+            }
+            if (gamepad1.left_trigger > 0.4){
+                rbg.Arm_left.setPower(0.3);
+                sleep(500);
+                rbg.Arm_left.setPower(0);
+
             }
 
 //            if (rbg.arm_rot_power <= 1.0 &&  gamepad2.right_bumper) {

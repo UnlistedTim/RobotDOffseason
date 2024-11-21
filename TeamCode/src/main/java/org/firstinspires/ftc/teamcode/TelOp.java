@@ -64,6 +64,7 @@ public class TelOp extends LinearOpMode {
                     if (gamepad2.right_bumper&&rbg.flag[rbg.intake_ready]&& rbg.flag[rbg.button_flip]) {
                         rbg.intake();
                         state=State.LIFT;
+                        speed_factor=1.0;
                         break;
                     }
                     if(!rbg.flag[rbg.button_flip]&&rbg.flag[rbg.intake_ready]&&!gamepad2.right_bumper)
@@ -173,28 +174,31 @@ public class TelOp extends LinearOpMode {
 //                }
 //            }
 
-            if (gamepad2.ps) rbg.flag[rbg.force] = true;
             rbg.armrotatePIDF();
-            if (gamepad2.dpad_up && gamepad2.dpad_down)   rbg.adjust(gamepad2.dpad_up, gamepad2.dpad_down);
+           // if (gamepad2.ps) rbg.flag[rbg.force] = true;
+
+          //  if (gamepad2.dpad_up && gamepad2.dpad_down)   rbg.adjust(gamepad2.dpad_up, gamepad2.dpad_down);
             rbg.robot_centric(gamepad1.right_stick_y, gamepad1.right_stick_x, gamepad1.left_stick_x, speed_factor);
 
 
 //            telemetry.addData("TempInput", rbg.tempinput);
 //            telemetry.update();
 
-//            if (rbg.driving) {
-//                if (robo_drive)
-//                    rbg.robot_centric(gamepad1.right_stick_y, gamepad1.right_stick_x, gamepad1.left_stick_x);
-//                else
-//                    rbg.field_centric(-gamepad1.right_stick_y, gamepad1.right_stick_x, gamepad1.left_stick_x);
-//            }
+          telemetry.addData("armlinerslide", rbg.Slide_top.getCurrentPosition());
+            telemetry.addData("armrotate position", -rbg.Arm_right.getCurrentPosition());
 
-//            telemetry.addData("flag",rbg.flag[rbg.specimen]);
-//                telemetry.addData("slides target", rbg.armSlide.getTargetPosition());
-//                telemetry.addData("slides real ", rbg.armSlide.getCurrentPosition());
-//                telemetry.addData("rotate target", rbg.rotateTarget);
-//                telemetry.addData("rotate real", rbg.armRotate.getCurrentPosition());
-//                telemetry.update();
+
+            telemetry.addData("Colors red", rbg.Intake_color.red());
+            telemetry.addData("Colors green", rbg.Intake_color.green());
+            telemetry.addData("Colors blue", rbg.Intake_color.blue());
+
+
+            telemetry.addData("Intake HANDLE", rbg.  Intake_handle.getPosition());
+            telemetry.addData("Intake rot", rbg.Intake_rot.getPosition());
+           telemetry.addData("gerbox", rbg.Gearbox.getPosition());
+            telemetry.addData("intake_lvel", rbg.intake_level);
+
+            telemetry.update();
             }
         }
     }
