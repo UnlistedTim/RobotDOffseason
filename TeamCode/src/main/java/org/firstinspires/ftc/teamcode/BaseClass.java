@@ -123,7 +123,7 @@ public class BaseClass extends MecanumDrive {
 
 // 3rd robot special
 
-    int roatate_prein0=160, rotate_in0=-30, roatate_prein1=80,rotate_in1=-30, roatate_prein2=80,rotate_in2=-30,rotate_idle=70,rotate_outtake=2350;//intake rotat could not over 70
+    int roatate_prein0=200, rotate_in0=-30, roatate_prein1=80,rotate_in1=-30, roatate_prein2=80,rotate_in2=-30,rotate_idle=70,rotate_outtake=2350;//intake rotat could not over 70
     int slide_in0=800,slide_in1=1200,slide_in2=1800,slide_idle=400,slide_outtake=2500,slide_rotate=1300;
     int intake_level=0;
     double handle_idle=0.05,handle_intake=0.36,handl_specimen_intake=0.05,handle_outtake=0;
@@ -999,7 +999,7 @@ public class BaseClass extends MecanumDrive {
 
            // flag[intake_shift] = false;
            flag[drive] = true;
-           pidftable[pidf_intake_up][pp]=0.006;  pidftable[pidf_intake_up][ii]=0;  pidftable[pidf_intake_up][dd]=0.00008;
+           pidftable[pidf_intake_up][pp]=0.005;  pidftable[pidf_intake_up][ii]=0;  pidftable[pidf_intake_up][dd]=0.00008;
            pidftable[pidf_intake_down][pp]=0.0035;  pidftable[pidf_intake_down][ii]=0;  pidftable[pidf_intake_down][dd]=0.00005;
            pidftable[pidf_outtake_up][pp]=0.002;  pidftable[pidf_outtake_up][ii]=0;  pidftable[pidf_outtake_up][dd]=0.00005;
            pidftable[pidf_outtake_down][pp]=0.0008;  pidftable[pidf_intake_down][ii]=0;  pidftable[pidf_intake_down][dd]=0.00005;
@@ -1336,9 +1336,9 @@ public class BaseClass extends MecanumDrive {
 
     {
         if(close)
-        {Intake.setPower(-0.9); delay(400);}
+        {Intake.setPower(-0.9); delay(1000);}
 
-        else {Intake.setPower(0.9);delay (400);}
+        else {Intake.setPower(0.9);delay (600);}
         Intake.setPower(0);
 
 

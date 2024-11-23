@@ -34,7 +34,7 @@ public class Debug extends LinearOpMode {
         double tmp=0;
         int tar=0;
         rbg.Gearbox.setPosition(0.05);
-        rbg.Intake_rot.setPosition(0.3);
+        rbg.Intake_rot.setPosition(0);
         rbg.Arm_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         rbg.Arm_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -168,15 +168,15 @@ public class Debug extends LinearOpMode {
             }
 
             if (gamepad1.right_trigger > 0.4){
-                rbg.Arm_right.setPower(0.3);
+                rbg.Slide_top.setPower(0.3);
                 sleep(500);
-                rbg.Arm_right.setPower(0);
+                rbg.Slide_top.setPower(0);
 
             }
             if (gamepad1.left_trigger > 0.4){
-                rbg.Arm_left.setPower(0.3);
+                rbg.Slide_bot.setPower(0.3);
                 sleep(500);
-                rbg.Arm_left.setPower(0);
+                rbg.Slide_bot.setPower(0);
 
             }
 
@@ -286,6 +286,8 @@ public class Debug extends LinearOpMode {
          //   telemetry.addLine("gamepad2  x/triangle  linerside,  square/circle armrotate");
             telemetry.addLine("gamepad2  dapad down/up handle        dpad left/right claw ort");
       //      telemetry.addLine("gamepad2 right/lefit bumper   handle rot");
+
+            telemetry.addData("Intake rot",rbg.intakerotpose);
             telemetry.update();
           //  update_flag=false;
 
