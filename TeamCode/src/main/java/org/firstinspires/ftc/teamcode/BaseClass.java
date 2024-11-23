@@ -99,7 +99,7 @@ public class BaseClass extends MecanumDrive {
     int rotatePos,slidePos,absrotategap;
 
 
-    double p = 0.00004, i = 0, d = 0.0001 ,f = 0.12,k=0.00003;//k = 0.00001;
+    double p = 0.00004, i = 0, d = 0.0001 ,f = 0.12,k=0.000035;//k = 0.00001;
 // idle, specman slides=400,rotate 380-,
 
 
@@ -117,14 +117,14 @@ public class BaseClass extends MecanumDrive {
     double[][] moveconfig= new double[20][20];
     int speedg=0,strafeg=1,turng=2,speedmax=3,strafemax=4,turnmax=5,xdis=6,ydis=7,adis=8,time=9;
     double[][] pidftable= new double[20][3];
-    int pidf_intake_up=0,pidf_intake_down=1, pidf_outtake_down=2,pidf_outtake_up=3;
+    int pidf_intake_up=0,pidf_intake_down=1, pidf_outtake_down=2,pidf_outtake_up=3, pidf_intake_idle = 4;
     int pp=0,ii=1,dd=2;
 
 
 // 3rd robot special
 
-    int roatate_prein0=200, rotate_in0=-30, roatate_prein1=80,rotate_in1=-30, roatate_prein2=80,rotate_in2=-30,rotate_idle=70,rotate_outtake=2350;//intake rotat could not over 70
-    int slide_in0=800,slide_in1=1200,slide_in2=1800,slide_idle=400,slide_outtake=2500,slide_rotate=1300;
+    int roatate_prein0=200, rotate_in0=-40, roatate_prein1=80,rotate_in1=-30, roatate_prein2=80,rotate_in2=-30,rotate_idle=70,rotate_outtake=2350;//intake rotat could not over 70
+    int slide_in0=800,slide_in1=1200,slide_in2=1600,slide_idle=400,slide_outtake=2500,slide_rotate=1300;
     int intake_level=0;
     double handle_idle=0.05,handle_intake=0.36,handl_specimen_intake=0.05,handle_outtake=0;
     double handlerot_intake=0.55; // 0,0.3.0.75,1;
@@ -134,20 +134,22 @@ public class BaseClass extends MecanumDrive {
     int [] rotate= new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     int [] slide= new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-    int slidev0=1000,slidev1=1800,slidev2=2500;
+    int slidev0=1000,slidev1=1800,slidev2=2700;
  //   double[] handle = new double[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     int idle=0,pin1=1,in1=2,pin2=3,in2=4,sin=5,sout=6,hang1=7,hang2=8,hang3=9,out=10,psout = 11,souta=12,psouta=13,sina=14;
 
 
 
 
-    boolean[] flag = new boolean[]{false,false,false,false, false, false, false, false,false, false, false, false, false, false, false, false, false,false, false, false, false, false, false,false};
+    boolean[] flag = new boolean[]{false,false,false,false, false, false, false, false,false, false, false, false, false, false, false, false, false,false, false, false, false, false, false,false, false};
     double[] stoptime = new double[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0};
     int[] step = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0,0,0,0,0,0,0};
     final int start = 0, first = 1, intake = 2, lift = 3, outtake = 4, intake_shift = 5, button_flip = 6;
     final int intake_adjustment = 7, specimenfirst= 8, adjust = 9, drive = 10, intake_ready = 11, hang = 12, specimen = 13,pause=14;
-    final int force = 15,delay=16, hang0 = 17,spicemen0=18,debug=19,asin=20,push=21;
+    final int force = 15,color_check=16, hang0 = 17,spicemen0=18,debug=19,asin=20,push=21;
     double soutadis=260 , sinadis=150; //250
+
+    int color_det = 0;
 
 
 
@@ -276,23 +278,23 @@ public class BaseClass extends MecanumDrive {
 //    }
 
 
-    public boolean color ()
-
-    {
-
-       if( Intake_color.green()>1900)  return true;
-       if ((Intake_color.red()>900)) {
-           if (baseblue) return false;
-           else return true;
-       }
-       else {
-           if (baseblue) return true;
-
-           else return false;
-
-       }
-
-
+    public boolean color () {
+        color_det = 0;
+        if (Intake_color.green() > 300){
+            color_det = 3; //detect yellow
+            return true; // take
+        }
+        if (Intake_color.red() > 150){
+            color_det = 1; //detect red
+            if (baseblue) return false; // if blue spit
+            else return true; // if red take
+        }
+        if (Intake_color.blue() > 120){
+            color_det = 2; //detect blue
+            if (baseblue) return true; // if blue take
+            else return false; // if red spit
+        }
+        return false;
     }
 
     public void hang() {
@@ -648,6 +650,19 @@ public class BaseClass extends MecanumDrive {
 
     }
 
+    public void pre_intakeB()
+
+    {
+        Intake_handle.setPosition(handle_intake-0.08);
+        Intake_rot.setPosition(handlerot_intake-0.5);
+        linearslide(slide_in0, slidev1);
+        pidfsetting(roatate_prein0, pidf_intake_up);
+        flag[intake_ready]=true;
+        intake_level=0;
+        timer(0,intake);
+
+    }
+
     public void intake_shift(double sticky,boolean drop)
 
     {
@@ -729,7 +744,7 @@ public class BaseClass extends MecanumDrive {
         Intake_handle.setPosition(handle_idle);
         Intake_rot.setPosition(handlerot_intake);
         linearslide(slide_idle, slidev0);
-        pidfsetting(rotate_idle, pidf_intake_up);
+        pidfsetting(rotate_idle, pidf_intake_idle);
 
     }
 
@@ -740,17 +755,36 @@ public class BaseClass extends MecanumDrive {
     {
 
         if(!timer(500,intake)) return;
+        timer(0,intake);
+        Intake.setPower(-1.0);
         pidfsetting(rotate_in0,pidf_intake_down);
-        delay(300);
-       claw(true,true);
-        Intake_handle.setPosition(handle_outtake);
-        Intake_rot.setPosition(handlerot_intake);
-        pidfsetting(rotate_idle,pidf_intake_up);
-        linearslide(slide_idle,slidev2);
-        flag[intake_ready]=false;
-        flag[button_flip]=false;
-       // intake_level=0;// might drop
-        delay(500);
+        color_det = 0;
+        while (Op.opModeIsActive() && color_det == 0 && !timer(1000,intake)){
+            delay(25);
+            flag[color_check] = color();
+
+        }
+
+        if (!flag[color_check]){
+            Intake.setPower(0.7);
+            delay(300);
+            Intake.setPower(0);
+            pre_intake();
+        }
+        else{
+            Intake_handle.setPosition(handle_outtake);
+            Intake_rot.setPosition(handlerot_intake);
+            pidfsetting(rotate_idle,pidf_intake_up);
+            linearslide(slide_idle,slidev2);
+            flag[intake_ready]=false;
+            flag[button_flip]=false;
+            // intake_level=0;// might drop
+            delay(300);
+            Intake.setPower(0);
+
+
+        }
+
 
     }
 
@@ -999,10 +1033,11 @@ public class BaseClass extends MecanumDrive {
 
            // flag[intake_shift] = false;
            flag[drive] = true;
-           pidftable[pidf_intake_up][pp]=0.005;  pidftable[pidf_intake_up][ii]=0;  pidftable[pidf_intake_up][dd]=0.00008;
+           pidftable[pidf_intake_up][pp]=0.0065;  pidftable[pidf_intake_up][ii]=0;  pidftable[pidf_intake_up][dd]=0.00009;
+           pidftable[pidf_intake_idle][pp]=0.0035;  pidftable[pidf_intake_idle][ii]=0;  pidftable[pidf_intake_idle][dd]=0.00008;
            pidftable[pidf_intake_down][pp]=0.0035;  pidftable[pidf_intake_down][ii]=0;  pidftable[pidf_intake_down][dd]=0.00005;
-           pidftable[pidf_outtake_up][pp]=0.002;  pidftable[pidf_outtake_up][ii]=0;  pidftable[pidf_outtake_up][dd]=0.00005;
-           pidftable[pidf_outtake_down][pp]=0.0008;  pidftable[pidf_intake_down][ii]=0;  pidftable[pidf_intake_down][dd]=0.00005;
+           pidftable[pidf_outtake_up][pp]=0.0016;  pidftable[pidf_outtake_up][ii]=0;  pidftable[pidf_outtake_up][dd]=0.00008;
+           pidftable[pidf_outtake_down][pp]=0.0006;  pidftable[pidf_outtake_down][ii]=0;  pidftable[pidf_outtake_down][dd]=0.00006;
 
 
 

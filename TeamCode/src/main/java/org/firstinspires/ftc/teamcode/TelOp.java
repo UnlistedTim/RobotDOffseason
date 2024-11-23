@@ -63,16 +63,20 @@ public class TelOp extends LinearOpMode {
                   //  if(gamepad2.left_bumper) {state = State.SPECIMENINTAKE;break;}
                     if (gamepad2.right_bumper&&rbg.flag[rbg.intake_ready]&& rbg.flag[rbg.button_flip]) {
                         rbg.intake();
-                        state=State.LIFT;
-                        speed_factor=1.0;
-                        break;
+                        if (rbg.flag[rbg.color_check]){
+                            state=State.LIFT;
+                            speed_factor=1.0;
+                            break;
+                        }
+
                     }
                     if(!rbg.flag[rbg.button_flip]&&rbg.flag[rbg.intake_ready]&&!gamepad2.right_bumper)
                     {
                         rbg.flag[rbg.button_flip]=true;// prevent gunner hold the right bumper.
                     }
                     if(!rbg.flag[rbg.intake_ready] &&gamepad2.right_bumper){
-                        rbg.pre_intake();
+                        //rbg.pre_intake();
+                        rbg.pre_intakeB();
                         speed_factor=0.4;
 
                 }
@@ -123,6 +127,7 @@ public class TelOp extends LinearOpMode {
                     if (gamepad1.left_bumper) {
                         rbg.intake_drop();
                         state = State.INTAKE;
+                        speed_factor=0.4;
                         break;
                     }
 
