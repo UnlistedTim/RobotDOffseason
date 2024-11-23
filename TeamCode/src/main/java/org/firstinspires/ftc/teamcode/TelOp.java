@@ -5,6 +5,8 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+
 @TeleOp(name = "TelMeet2", group = "AA")
 public class TelOp extends LinearOpMode {
     BaseClass rbg;// hardware init at Mecanumdrive.
@@ -76,7 +78,7 @@ public class TelOp extends LinearOpMode {
                     }
                     if(!rbg.flag[rbg.intake_ready] &&gamepad2.right_bumper){
                         //rbg.pre_intake();
-                        rbg.pre_intakeB();
+                        rbg.pre_intake();
                         speed_factor=0.4;
 
                 }
@@ -202,6 +204,11 @@ public class TelOp extends LinearOpMode {
             telemetry.addData("Intake rot", rbg.Intake_rot.getPosition());
            telemetry.addData("gerbox", rbg.Gearbox.getPosition());
             telemetry.addData("intake_lvel", rbg.intake_level);
+            telemetry.addData("Right arm motor current", rbg.Arm_right.getCurrent(CurrentUnit.AMPS));
+            telemetry.addData("Left arm motor current", rbg.Arm_left.getCurrent(CurrentUnit.AMPS));
+
+            telemetry.addData("Top slide motor current", rbg.Slide_top.getCurrent(CurrentUnit.AMPS));
+            telemetry.addData("Bot slide motor current", rbg.Slide_bot.getCurrent(CurrentUnit.AMPS));
 
             telemetry.update();
             }

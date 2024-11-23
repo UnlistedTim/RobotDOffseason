@@ -589,7 +589,7 @@ public class BaseClass extends MecanumDrive {
 
     public void intake_throw(){
         flag[lift] = false;
-        Intake.setPower(0.9);
+        Intake.setPower(-0.9);
         delay(400);
 
     }
@@ -756,7 +756,7 @@ public class BaseClass extends MecanumDrive {
 
         if(!timer(500,intake)) return;
         timer(0,intake);
-        Intake.setPower(-1.0);
+        Intake.setPower(1.0);
         pidfsetting(rotate_in0,pidf_intake_down);
         color_det = 0;
         while (Op.opModeIsActive() && color_det == 0 && !timer(1000,intake)){
@@ -766,7 +766,7 @@ public class BaseClass extends MecanumDrive {
         }
 
         if (!flag[color_check]){
-            Intake.setPower(0.7);
+            Intake.setPower(-0.7);
             delay(300);
             Intake.setPower(0);
             pre_intake();
@@ -1033,10 +1033,10 @@ public class BaseClass extends MecanumDrive {
 
            // flag[intake_shift] = false;
            flag[drive] = true;
-           pidftable[pidf_intake_up][pp]=0.0065;  pidftable[pidf_intake_up][ii]=0;  pidftable[pidf_intake_up][dd]=0.00009;
+           pidftable[pidf_intake_up][pp]=0.004;  pidftable[pidf_intake_up][ii]=0;  pidftable[pidf_intake_up][dd]=0.0001;
            pidftable[pidf_intake_idle][pp]=0.0035;  pidftable[pidf_intake_idle][ii]=0;  pidftable[pidf_intake_idle][dd]=0.00008;
            pidftable[pidf_intake_down][pp]=0.0035;  pidftable[pidf_intake_down][ii]=0;  pidftable[pidf_intake_down][dd]=0.00005;
-           pidftable[pidf_outtake_up][pp]=0.0016;  pidftable[pidf_outtake_up][ii]=0;  pidftable[pidf_outtake_up][dd]=0.00008;
+           pidftable[pidf_outtake_up][pp]=0.001;  pidftable[pidf_outtake_up][ii]=0;  pidftable[pidf_outtake_up][dd]=0.000012;
            pidftable[pidf_outtake_down][pp]=0.0006;  pidftable[pidf_outtake_down][ii]=0;  pidftable[pidf_outtake_down][dd]=0.00006;
 
 
@@ -1265,7 +1265,7 @@ public class BaseClass extends MecanumDrive {
         double pid = controller.calculate(rotatePos,rotateTarget);
         double ff = Math.cos(Math.toRadians(rotatePos/ticks_in_degree +rotateStartangle)) * (f + k*slidePos) ;// target
         double power = pid + ff;
-        Arm_left.setPower(power);
+        Arm_left.setPower(-power);
         Arm_right.setPower(power);// to be changed director.
 
     }
@@ -1371,9 +1371,9 @@ public class BaseClass extends MecanumDrive {
 
     {
         if(close)
-        {Intake.setPower(-0.9); delay(1000);}
+        {Intake.setPower(0.9); delay(1000);}
 
-        else {Intake.setPower(0.9);delay (600);}
+        else {Intake.setPower(-0.3);delay (500);}
         Intake.setPower(0);
 
 
