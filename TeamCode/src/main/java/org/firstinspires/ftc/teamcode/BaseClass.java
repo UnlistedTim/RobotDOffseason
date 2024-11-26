@@ -117,7 +117,7 @@ public class BaseClass extends MecanumDrive {
     double[][] moveconfig= new double[20][20];
     int speedg=0,strafeg=1,turng=2,speedmax=3,strafemax=4,turnmax=5,xdis=6,ydis=7,adis=8,time=9;
     double[][] pidftable= new double[20][3];
-    int pidf_intake_up=0,pidf_intake_down=1, pidf_outtake_down=2,pidf_outtake_up=3, pidf_intake_idle = 4, pidf_hang_up = 5;
+    int pidf_intake_up=0,pidf_intake_down=1, pidf_outtake_down=2,pidf_outtake_up=3, pidf_intake_idle = 4, pidf_hang_up = 5, pidf_hang2 = 6;
     int pp=0,ii=1,dd=2;
 
 
@@ -300,38 +300,47 @@ public class BaseClass extends MecanumDrive {
     public void hang() {
         stop_drive();
 
+        Intake_rot.setPosition(0.55);
+        Intake_handle.setPosition(handle_idle);
+
         pidfsetting(700, pidf_hang_up);
 
         linearslide(0,slidev1);
         delay(2000);
         Gearbox.setPosition(0.95); // High torque
         delay(1000);
-        linearslide(1000,slidev0);
-        delay(1000);
-        linearslide(4700,slidev1);
+        linearslideTq(1000,slidev1);
+
+        delay(2000); // 1000
+        Intake_handle.setPosition(0.7);
+        linearslideTq(4700,slidev2);
         delay(3000);
-        pidfsetting(1100, pidf_hang_up);
+        pidfsetting(1250, pidf_hang_up); // Hit arm with low rung
         delay(1000);
-        linearslide(4030,slidev1);
-        delay(1500);
-        pidfsetting(1800, pidf_hang_up);
-        delay(1500);
-        linearslide(1000,slidev1);
-        delay(3000);
-        pidfsetting(1839, pidf_hang_up);
-        delay(500);
-        linearslide(6800,slidev1);
-        delay(5000);
+        linearslideTq(4000,slidev2);
+        delay(2000); //1500
+        pidfsetting(1600, pidf_hang2);
+        delay(2500);
+        linearslideTq(-50,slidev2);
+        delay(8000); //3000
+//        telemetry.addData("linear slide top value", Slide_top.getCurrentPosition());
+//        telemetry.addData("linear slide bot value", Slide_bot.getCurrentPosition());
+//        telemetry.update();
+        pidfsetting(1839, pidf_hang2);
+        delay(1000);
+        linearslideTq(6800,slidev2);
+        delay(8000); //5000
         pidfsetting(2057, pidf_hang_up);
         delay(1500);
-        linearslide(6100,slidev1);
-        delay(2000);
-        pidfsetting(1576, pidf_hang_up);
+        linearslideTq(6100,slidev2);
+        delay(5000); // 2000
+        pidfsetting(1576, pidf_hang2);
         delay(500);
-        linearslide(1000,slidev1);
-        delay(4000);
+        linearslideTq(20,slidev2);
+        delay(100000);
 
     }
+
 
 
 
@@ -781,6 +790,16 @@ public class BaseClass extends MecanumDrive {
 
     }
 
+    public void linearslideTq( int target, int speed) {
+
+        //if (target > lshi || target < lslo) return;
+        Slide_top.setTargetPosition(target); // ne
+        Slide_bot.setTargetPosition(target);
+        Slide_top.setVelocity(speed);
+        Slide_bot.setVelocity(speed);
+
+    }
+
     public void pidfsetting(int target, int index)
 
     {
@@ -982,7 +1001,8 @@ public class BaseClass extends MecanumDrive {
            pidftable[pidf_outtake_up][pp]=0.001;  pidftable[pidf_outtake_up][ii]=0;  pidftable[pidf_outtake_up][dd]=0.000012;
            pidftable[pidf_outtake_down][pp]=0.0006;  pidftable[pidf_outtake_down][ii]=0;  pidftable[pidf_outtake_down][dd]=0.00006;
 
-           pidftable[pidf_hang_up][pp]=0.002;  pidftable[pidf_hang_up][ii]=0;  pidftable[pidf_hang_up][dd]=0.0001;
+           pidftable[pidf_hang_up][pp]=0.0015;  pidftable[pidf_hang_up][ii]=0;  pidftable[pidf_hang_up][dd]=0.0001;
+           pidftable[pidf_hang2][pp]=0.002;  pidftable[pidf_hang_up][ii]=0;  pidftable[pidf_hang_up][dd]=0.0001;
 
 
 

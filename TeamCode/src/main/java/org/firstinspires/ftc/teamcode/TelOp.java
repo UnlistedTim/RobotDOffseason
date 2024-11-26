@@ -172,7 +172,7 @@ public class TelOp extends LinearOpMode {
 
             // jerome test
             //if(gamepad1.share) rbg.hang();// 2 times.
-            if (gamepad1.share) rbg.hang();
+//            if (gamepad1.share) rbg.hang();
 //            if (gamepad1.dpad_down) {
 //                rbg.stop_drive();
 //                sleep(500);
@@ -185,6 +185,57 @@ public class TelOp extends LinearOpMode {
 //            }
 
             rbg.armrotatePIDF();
+
+            if (gamepad1.share){
+
+                telemetry.update();
+                //rbg.hang();
+                rbg.stop_drive();
+
+                rbg.Intake_rot.setPosition(0.55);
+                rbg.Intake_handle.setPosition(rbg.handle_idle);
+
+                rbg.pidfsetting(700, rbg.pidf_hang_up);
+
+                rbg.linearslide(0,rbg.slidev1);
+                rbg.delay(750);
+                rbg.Gearbox.setPosition(0.95); // High torque
+                rbg.delay(500);
+                rbg.linearslideTq(1000,rbg.slidev1);
+
+                rbg.delay(750); // 1000
+                rbg.Intake_handle.setPosition(0.7);
+                rbg.linearslideTq(4700,rbg.slidev2);
+                rbg.delay(1750);
+                rbg.pidfsetting(1325, rbg.pidf_hang_up); // Hit arm with low rung
+                rbg.delay(500);
+                rbg.linearslideTq(4000,rbg.slidev2);
+                rbg.delay(1000); //1500
+                rbg.pidfsetting(2000, rbg.pidf_hang2); //1600
+                rbg.delay(1000);
+                rbg.linearslideTq(-350,rbg.slidev2);
+                rbg.delay(1000); //3000
+                telemetry.addData("linear slide top value", rbg.Slide_top.getCurrentPosition());
+                telemetry.addData("linear slide bot value", rbg.Slide_bot.getCurrentPosition());
+                telemetry.addData("linear slide top current", rbg.Slide_top.getCurrent(CurrentUnit.AMPS));
+                telemetry.addData("linear slide bot current", rbg.Slide_bot.getCurrent(CurrentUnit.AMPS));
+
+                telemetry.addData("arm rot value", -rbg.Arm_right.getCurrentPosition());
+                telemetry.update();
+                rbg.delay(1000); //3000
+                rbg.pidfsetting(1839, rbg.pidf_hang_up);
+                rbg.delay(1000);
+                rbg.linearslideTq(6800,rbg.slidev2);
+                rbg.delay(3000); //5000
+                rbg.pidfsetting(2700, rbg.pidf_hang_up);
+                rbg.delay(1500);
+                rbg.linearslideTq(6100,rbg.slidev2);
+                rbg.delay(2000); // 2000
+                rbg.pidfsetting(1576, rbg.pidf_hang2);
+                rbg.delay(500);
+                rbg.linearslideTq(-400,rbg.slidev2);
+                rbg.delay(100000);
+            }
            // if (gamepad2.ps) rbg.flag[rbg.force] = true;
 
           //  if (gamepad2.dpad_up && gamepad2.dpad_down)   rbg.adjust(gamepad2.dpad_up, gamepad2.dpad_down);
