@@ -74,7 +74,7 @@ public class BaseClass extends MecanumDrive {
 
    // int armslideOutSpec = 858 /*1800*/;
 
-    double intakerotpose=0,gearboxpose=0,gearboxcurrent=0;
+    double intakerotpose=0,gearboxpose=0.95,gearboxcurrent=0;
     double arm_rot_power = 0;
     int arm_slide_pos = 0;
     int lslo=0,lshi=2800;
@@ -117,7 +117,7 @@ public class BaseClass extends MecanumDrive {
     double[][] moveconfig= new double[20][20];
     int speedg=0,strafeg=1,turng=2,speedmax=3,strafemax=4,turnmax=5,xdis=6,ydis=7,adis=8,time=9;
     double[][] pidftable= new double[20][3];
-    int pidf_intake_up=0,pidf_intake_down=1, pidf_outtake_down=2,pidf_outtake_up=3, pidf_intake_idle = 4;
+    int pidf_intake_up=0,pidf_intake_down=1, pidf_outtake_down=2,pidf_outtake_up=3, pidf_intake_idle = 4, pidf_hang_up = 5;
     int pp=0,ii=1,dd=2;
 
 
@@ -296,97 +296,40 @@ public class BaseClass extends MecanumDrive {
         }
         return false;
     }
-
+    //forhang
     public void hang() {
-        if (!timer(86000, start) && (!flag[force])) return;
-
         stop_drive();
-     //   linearslide( 0, armslideV3);
 
+        pidfsetting(700, pidf_hang_up);
 
-        move(-0.25);
-        Intake_handle.setPosition(handleHang);
-
-        flag[hang0] = true;
-
-        rotatetargetPIDF(armrotateHang1);
-        armrotatePIDF();
-
-        flag[hang0] = false;
-
-
-        timer(0,hang);
-        while((Arm_left.getCurrentPosition() < (armrotateHang1 - 100) || Slide_top.getCurrentPosition() > 300) && Op.opModeIsActive() && !timer(2000,hang)){
-
-            pause(20);
-            armrotatePIDF();
-        }
-        delay(300);
-
-
-        rotatetargetPIDF(armrotateHang2);
-
-        armrotatePIDF();
-
-        timer(0,hang);
-
-
-
-        while(  Arm_left.getCurrentPosition() < (armrotateHang2-80) && Op.opModeIsActive() && !timer(1000,hang)){
-            armrotatePIDF();
-            pause(15);
-        }
-
-        stop_drive();
-        rotatetargetPIDF(armrotateHang3);
-        armrotatePIDF();
-
-
-        delay(300);
-
-        move(0.25);
-        delay(300);
-
-        timer(0,hang);
-
-        while(Arm_left.getCurrentPosition() < (armrotateHang3 - 200) && Op.opModeIsActive() && !timer(800,hang)){
-            armrotatePIDF();
-            pause(15);
-        }
-        pause(300);
-        flag[hang] = true;
-        rotatetargetPIDF(armrotateHang4);
-        armrotatePIDF();
+        linearslide(0,slidev1);
+        delay(2000);
+        Gearbox.setPosition(0.95); // High torque
         delay(1000);
-        stop_drive();
-
-        delay(300000);
-
-
-
-
-
-
-
-
-
-
-
-
-//        pause(2000); // delay time
-//        stop_drive();
-//        linearslide(armRotate, 2310, armrotateV0);
-//        pause(800);
-//        stop_drive();
-//        flag[hang] = true;
-//
-//        // rot to here
-//        move(0.18); // transitions to forward moving, still turning arm more same direction
-//        pause(800); // delay time
-//        linearslide(armRotate, 150, armrotateV1); // Turn opposite direction to hang on
-//        pause(5000);// end;
-//        stop_drive();
-//        pause(300000);
+        linearslide(1000,slidev0);
+        delay(1000);
+        linearslide(4700,slidev1);
+        delay(3000);
+        pidfsetting(1100, pidf_hang_up);
+        delay(1000);
+        linearslide(4030,slidev1);
+        delay(1500);
+        pidfsetting(1800, pidf_hang_up);
+        delay(1500);
+        linearslide(1000,slidev1);
+        delay(3000);
+        pidfsetting(1839, pidf_hang_up);
+        delay(500);
+        linearslide(6800,slidev1);
+        delay(5000);
+        pidfsetting(2057, pidf_hang_up);
+        delay(1500);
+        linearslide(6100,slidev1);
+        delay(2000);
+        pidfsetting(1576, pidf_hang_up);
+        delay(500);
+        linearslide(1000,slidev1);
+        delay(4000);
 
     }
 
@@ -1039,6 +982,8 @@ public class BaseClass extends MecanumDrive {
            pidftable[pidf_outtake_up][pp]=0.001;  pidftable[pidf_outtake_up][ii]=0;  pidftable[pidf_outtake_up][dd]=0.000012;
            pidftable[pidf_outtake_down][pp]=0.0006;  pidftable[pidf_outtake_down][ii]=0;  pidftable[pidf_outtake_down][dd]=0.00006;
 
+           pidftable[pidf_hang_up][pp]=0.002;  pidftable[pidf_hang_up][ii]=0;  pidftable[pidf_hang_up][dd]=0.0001;
+
 
 
 
@@ -1269,6 +1214,8 @@ public class BaseClass extends MecanumDrive {
         Arm_right.setPower(power);// to be changed director.
 
     }
+
+
 
     public boolean sample_intake() {
         if(!flag[intake_ready]) return false;

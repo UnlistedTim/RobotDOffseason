@@ -33,7 +33,7 @@ public class Debug extends LinearOpMode {
         rbg = new BaseClass(this, p1);
         double tmp=0;
         int tar=0;
-        rbg.Gearbox.setPosition(0.05);
+        rbg.Gearbox.setPosition(0.95);
         rbg.Intake_rot.setPosition(0);
         rbg.Arm_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
@@ -66,10 +66,24 @@ public class Debug extends LinearOpMode {
         telemetry.update();
         rbg.timer(0,0);
         rbg.init(0);
+
+        rbg.Gearbox.setPosition(0.95);
 //        rbg.init(2);
 
         //    rbg.rotatetargetPIDF(rbg.rotateStart);
         waitForStart();
+
+        rbg.timer(0, rbg.start);
+
+        rbg.Arm_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rbg.Arm_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+
+        rbg.Arm_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rbg.Arm_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        // rbg.Intake_rot.setPosition(0.3);
+        //rbg.Intake_rot.setPosition(0.3);
+        sleep(500);
 
 //        rbg.Slide_bot.setTargetPosition(0);
 //       rbg.Slide_bot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
