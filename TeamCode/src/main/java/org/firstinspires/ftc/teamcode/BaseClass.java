@@ -117,7 +117,7 @@ public class BaseClass extends MecanumDrive {
     double[][] moveconfig= new double[20][20];
     int speedg=0,strafeg=1,turng=2,speedmax=3,strafemax=4,turnmax=5,xdis=6,ydis=7,adis=8,time=9;
     double[][] pidftable= new double[20][3];
-    int pidf_intake_up=0,pidf_intake_down=1, pidf_outtake_down=2,pidf_outtake_up=3, pidf_intake_idle = 4, pidf_hang_up = 5, pidf_hang2 = 6;
+    int pidf_intake_up=0,pidf_intake_down=1, pidf_outtake_down=2,pidf_outtake_up=3, pidf_intake_idle = 4, pidf_hang_up = 5, pidf_hang2 = 6, pidf_hang3 = 7;
     int pp=0,ii=1,dd=2;
 
 
@@ -472,6 +472,33 @@ public class BaseClass extends MecanumDrive {
        rightBack.setPower(rightBackPower);
     }
 
+    public void pre_hang(){
+        if (!flag[hang]){
+            linearslide(0,slidev1);
+            Intake_rot.setPosition(handlerot_intake);
+            Intake_handle.setPosition(handle_idle);
+            flag[hang] = true;
+            step[hang]=0;
+            return;
+        }
+        if ( step[hang]==0&& Slide_top.getCurrentPosition() < 10&& flag[hang] ){
+            linearslide(0,0);
+           pidfsetting(400, pidf_hang_up);
+            Gearbox.setPosition(0.95);
+            timer(0,hang);
+            step[hang]=1;
+            return;
+        }
+
+        if(step[hang]==1&&flag[hang]&& Slide_top.getCurrentPosition() < 15 && timer(600,hang)) {
+            linearslideTq(4600,0.95);
+
+            flag[hang]=false;
+            flag[hang0]=true;
+//            timer(0,hang);;
+        }
+    }
+
     public void intake_drop() {
 
         flag[lift] = false;
@@ -790,13 +817,13 @@ public class BaseClass extends MecanumDrive {
 
     }
 
-    public void linearslideTq( int target, int speed) {
+    public void linearslideTq( int target, double power) {
 
         //if (target > lshi || target < lslo) return;
         Slide_top.setTargetPosition(target); // ne
         Slide_bot.setTargetPosition(target);
-        Slide_top.setVelocity(speed);
-        Slide_bot.setVelocity(speed);
+        Slide_top.setPower(power);
+        Slide_bot.setPower(power);
 
     }
 
@@ -1001,8 +1028,9 @@ public class BaseClass extends MecanumDrive {
            pidftable[pidf_outtake_up][pp]=0.001;  pidftable[pidf_outtake_up][ii]=0;  pidftable[pidf_outtake_up][dd]=0.000012;
            pidftable[pidf_outtake_down][pp]=0.0006;  pidftable[pidf_outtake_down][ii]=0;  pidftable[pidf_outtake_down][dd]=0.00006;
 
-           pidftable[pidf_hang_up][pp]=0.0015;  pidftable[pidf_hang_up][ii]=0;  pidftable[pidf_hang_up][dd]=0.0001;
-           pidftable[pidf_hang2][pp]=0.002;  pidftable[pidf_hang_up][ii]=0;  pidftable[pidf_hang_up][dd]=0.0001;
+           pidftable[pidf_hang_up][pp]=0.0016;  pidftable[pidf_hang_up][ii]=0;  pidftable[pidf_hang_up][dd]=0.0001;
+           pidftable[pidf_hang2][pp]=0.0022;  pidftable[pidf_hang_up][ii]=0;  pidftable[pidf_hang_up][dd]=0.0001;
+           pidftable[pidf_hang3][pp]=0.006;  pidftable[pidf_hang3][ii]=0;  pidftable[pidf_hang3][dd]=0.00006;
 
 
 
@@ -1225,7 +1253,7 @@ public class BaseClass extends MecanumDrive {
 
     {
         rotatePos = -Arm_right.getCurrentPosition();
-        slidePos = Slide_bot.getCurrentPosition();
+        slidePos = Slide_top.getCurrentPosition();
         controller.setPID(p,i,d);
         double pid = controller.calculate(rotatePos,rotateTarget);
         double ff = Math.cos(Math.toRadians(rotatePos/ticks_in_degree +rotateStartangle)) * (f + k*slidePos) ;// target
