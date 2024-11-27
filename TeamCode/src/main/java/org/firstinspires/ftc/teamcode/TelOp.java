@@ -65,7 +65,12 @@ public class TelOp extends LinearOpMode {
         while (opModeIsActive()) {
             switch (state) {
                 case INTAKE:
-                  //  if(gamepad2.left_bumper) {state = State.SPECIMENINTAKE;break;}
+                    if(gamepad2.left_bumper) {
+                        rbg.pre_specimen();
+                        speed_factor = 0.5;
+                        state = State.SPECIMENINTAKE;
+                        break;
+                    }
                     if (gamepad2.right_bumper&&rbg.flag[rbg.intake_ready]&& rbg.flag[rbg.button_flip]) {
                         rbg.intake();
                         if (rbg.flag[rbg.color_check]){
@@ -115,6 +120,25 @@ public class TelOp extends LinearOpMode {
                     break;
 
                 case SPECIMENINTAKE:
+                    if(gamepad2.right_bumper) {
+                        state = State.INTAKE;
+                        rbg.pre_intake();
+                        speed_factor=0.4;
+                        break;
+                    }
+
+                    if (gamepad2.left_bumper){
+                        rbg.pre_specimen();
+                    }
+
+                    if (gamepad1.right_bumper || rbg.flag[rbg.spec]){
+                        speed_factor = 1.0;
+                        if (rbg.intake_specimen()){
+                            state = State.SPECIMENOUTTAKE;
+                        }
+                    }
+
+
 
                     break;
 
@@ -166,6 +190,15 @@ public class TelOp extends LinearOpMode {
 
 
                 case SPECIMENOUTTAKE:
+                    if (gamepad1.right_bumper || rbg.flag[rbg.outtake]) {
+
+                        if (rbg.outtake_spec()) {
+                            speed_factor = 1.0;
+                            state = State.INTAKE;
+                        }
+
+
+                    }
                     break;
 
             }
