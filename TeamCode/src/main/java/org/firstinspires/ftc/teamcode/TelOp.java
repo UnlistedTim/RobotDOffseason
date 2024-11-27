@@ -217,8 +217,8 @@ public class TelOp extends LinearOpMode {
                     rbg.delay(25);
                 }
                 rbg.k = 0.000035/2;
-                rbg.pidfsetting(1425, rbg.pidf_hang3); // Hit arm with low rung
-                rbg.delay(1000);
+                rbg.pidfsetting(1500, rbg.pidf_hang3); // Hit arm with low rung
+                rbg.delay(1100);
                 rbg.linearslideTq(4000,0.95);
                // rbg.delay(1000); //1500
                 rbg.pidfsetting(2000, rbg.pidf_hang2); //1600
@@ -239,9 +239,9 @@ public class TelOp extends LinearOpMode {
 
                 rbg.pidfsetting(1839, rbg.pidf_hang2);
                 rbg.delay(500);
-                rbg.linearslideTq(6700,0.95);
+                rbg.linearslideTq(6600,0.95);
 
-                while(opModeIsActive() && rbg.Slide_top.getCurrentPosition() < 6600){
+                while(opModeIsActive() && rbg.Slide_top.getCurrentPosition() < 6500){
                     rbg.delay(25);
                 }
                 rbg.pidfsetting(2700, rbg.pidf_hang2);
