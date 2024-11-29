@@ -192,6 +192,7 @@ public class TelOp extends LinearOpMode {
                         if (rbg.outtake_spec()) {
                             speed_factor = 1.0;
                             state = State.INTAKE;
+                            break;
                         }
 
 

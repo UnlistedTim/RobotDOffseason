@@ -123,7 +123,7 @@ public class BaseClass extends MecanumDrive {
 
 // 3rd robot special
 
-    int roatate_prein0=200, rotate_in0=-40, roatate_prein1=80,rotate_in1=-30, roatate_prein2=80,rotate_in2=-30,rotate_idle=70,rotate_outtake=2350, rotate_spec_in = 0, rotate_spec_out=2600;//intake rotat could not over 70
+    int roatate_prein0=250, rotate_in0=-40, roatate_prein1=80,rotate_in1=-30, roatate_prein2=80,rotate_in2=-30,rotate_idle=50,rotate_outtake=2350, rotate_spec_in = 0, rotate_spec_out=2600;//intake rotat could not over 70
     int slide_in0=800,slide_in1=1200,slide_in2=1600,slide_idle=400,slide_outtake=2600,slide_rotate=1300, slide_spec_out = 800;   //rotate_outtake 2350
     int intake_level=0;
     double handle_idle=0.05,handle_intake=0.36,handle_specimen_intake=0.05,handle_outtake=0;
@@ -822,6 +822,7 @@ public class BaseClass extends MecanumDrive {
             linearslide(slide_spec_out,slidev2);
             Intake_handle.setPosition(handle_outtake);
             flag[spec] = false;
+            flag[intake_ready]=false;
             step[specimen]=0;
             return true;
 
@@ -1099,9 +1100,9 @@ public class BaseClass extends MecanumDrive {
            flag[drive] = true;
            pidftable[pidf_intake_up][pp]=0.004;  pidftable[pidf_intake_up][ii]=0;  pidftable[pidf_intake_up][dd]=0.0001;
            pidftable[pidf_intake_idle][pp]=0.0035;  pidftable[pidf_intake_idle][ii]=0;  pidftable[pidf_intake_idle][dd]=0.00008;
-           pidftable[pidf_intake_down][pp]=0.0035;  pidftable[pidf_intake_down][ii]=0;  pidftable[pidf_intake_down][dd]=0.00005;
-           pidftable[pidf_outtake_up][pp]=0.0007;  pidftable[pidf_outtake_up][ii]=0;  pidftable[pidf_outtake_up][dd]=0.000018;
-           pidftable[pidf_outtake_up2][pp]=0.001;  pidftable[pidf_outtake_up2][ii]=0;  pidftable[pidf_outtake_up2][dd]=0.000001;
+           pidftable[pidf_intake_down][pp]=0.003;  pidftable[pidf_intake_down][ii]=0;  pidftable[pidf_intake_down][dd]=0.00005;
+           pidftable[pidf_outtake_up][pp]=0.00045;  pidftable[pidf_outtake_up][ii]=0;  pidftable[pidf_outtake_up][dd]=0.00002;
+           pidftable[pidf_outtake_up2][pp]=0.0015;  pidftable[pidf_outtake_up2][ii]=0;  pidftable[pidf_outtake_up2][dd]=0.000001;
 
            pidftable[pidf_outtake_down][pp]=0.0005;  pidftable[pidf_outtake_down][ii]=0;  pidftable[pidf_outtake_down][dd]=0.00008;
 
@@ -1509,7 +1510,7 @@ public class BaseClass extends MecanumDrive {
             flag[drive] = false;
              delay(250);
             flag[outtake] = true;
-            move(0.3);
+            move(0.25);
             timer(0,outtake);
             linearslide2(slide_idle,0.9);
 //           linearslide(slide_idle,slidev2);
