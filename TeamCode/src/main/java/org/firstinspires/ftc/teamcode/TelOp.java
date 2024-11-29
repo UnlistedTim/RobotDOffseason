@@ -138,8 +138,6 @@ public class TelOp extends LinearOpMode {
                         }
                     }
 
-
-
                     break;
 
 
@@ -188,7 +186,6 @@ public class TelOp extends LinearOpMode {
 //
 //                    }
 
-
                 case SPECIMENOUTTAKE:
                     if (gamepad1.right_bumper || rbg.flag[rbg.outtake]) {
 
@@ -198,6 +195,13 @@ public class TelOp extends LinearOpMode {
                         }
 
 
+                    }
+
+                    if (gamepad1.left_bumper) {
+                        rbg.spec_drop();
+                        state = State.SPECIMENINTAKE;
+                        speed_factor=0.5;
+                        break;
                     }
                     break;
 
