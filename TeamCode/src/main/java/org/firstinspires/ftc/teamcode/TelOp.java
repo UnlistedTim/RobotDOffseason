@@ -159,10 +159,10 @@ public class TelOp extends LinearOpMode {
                     }
 
                     if (gamepad1.touchpad) {
-                        rbg.intake_throw();
+                        rbg.intake_throw(); // throw sample, auto go to specimen pre intake
                         rbg.flag[rbg.intake_shift] = false;
-                        speed_factor = 1.0;
-                        state = State.INTAKE;
+                        speed_factor = 0.5;
+                        state = State.SPECIMENINTAKE;
                     }
                     break;
 

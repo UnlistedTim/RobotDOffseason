@@ -299,6 +299,8 @@ public class Debug extends LinearOpMode {
 
          //   telemetry.addLine("gamepad2  x/triangle  linerside,  square/circle armrotate");
             telemetry.addLine("gamepad2  dapad down/up handle        dpad left/right claw ort");
+            telemetry.addData("Bar distance", rbg.bar_dist.getDistance(DistanceUnit.MM));
+            telemetry.addData("Basket distance", rbg.basket_dist.getDistance(DistanceUnit.MM));
       //      telemetry.addLine("gamepad2 right/lefit bumper   handle rot");
 
             telemetry.addData("Intake rot",rbg.intakerotpose);
