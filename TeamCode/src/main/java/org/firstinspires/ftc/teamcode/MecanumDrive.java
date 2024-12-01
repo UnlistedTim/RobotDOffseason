@@ -549,7 +549,7 @@ public  class MecanumDrive {
         Arm_right = hardwareMap.get(DcMotorEx.class, "Arm_right");
         Arm_left = hardwareMap.get(DcMotorEx.class, "Arm_left");
         Slide_bot = hardwareMap.get(DcMotorEx.class, "Slide_bot");
-        Slide_top = hardwareMap.get(DcMotorEx.class, "Slide_bot");
+        Slide_top = hardwareMap.get(DcMotorEx.class, "Slide_top");
 
         front_led_green = hardwareMap.get(LED.class, "front_led_green");
         front_led_red = hardwareMap.get(LED.class, "front_led_red");

@@ -65,75 +65,53 @@ public class TelOp extends LinearOpMode {
         while (opModeIsActive()) {
             switch (state) {
                 case INTAKE:
-                    if(gamepad2.left_bumper) {
+                    if (gamepad2.left_bumper) {
                         rbg.pre_specimen();
                         speed_factor = 0.5;
                         state = State.SPECIMENINTAKE;
                         break;
                     }
-                    if (gamepad2.right_bumper&&rbg.flag[rbg.intake_ready]&& rbg.flag[rbg.button_flip]) {
+                    if (gamepad2.right_bumper && rbg.flag[rbg.intake_ready] && rbg.flag[rbg.button_flip]) {
                         rbg.intake();
-                        if (rbg.flag[rbg.color_check]){
-                            state=State.LIFT;
-                            speed_factor=1.0;
+                        if (rbg.flag[rbg.color_check]) {
+                            state = State.LIFT;
+                            speed_factor = 1.0;
                             break;
                         }
 
                     }
-                    if(!rbg.flag[rbg.button_flip]&&rbg.flag[rbg.intake_ready]&&!gamepad2.right_bumper)
-                    {
-                        rbg.flag[rbg.button_flip]=true;// prevent gunner hold the right bumper.
+                    if (!rbg.flag[rbg.button_flip] && rbg.flag[rbg.intake_ready] && !gamepad2.right_bumper) {
+                        rbg.flag[rbg.button_flip] = true;// prevent gunner hold the right bumper.
                     }
-                    if(!rbg.flag[rbg.intake_ready] &&gamepad2.right_bumper){
+                    if (!rbg.flag[rbg.intake_ready] && gamepad2.right_bumper) {
                         //rbg.pre_intake();
                         rbg.pre_intake();
-                        speed_factor=0.4;
+                        speed_factor = 0.4;
 
-                }
-
-                    if (rbg.flag[rbg.intake_ready]) {
-                       rbg.intake_shift(gamepad2.right_stick_y,false);
-                        rbg.pre_intake_adjust(gamepad2.left_stick_x,gamepad2.left_stick_y);
                     }
 
+                    if (rbg.flag[rbg.intake_ready]) {
+                        rbg.intake_shift(gamepad2.right_stick_y, false);
+                        rbg.pre_intake_adjust(gamepad2.left_stick_x, gamepad2.left_stick_y);
+                    }
 
-
-
-
-
-//
-//                    if (gamepad1.right_bumper) {
-//                        if (!rbg.flag[rbg.specimen]) {
-//                            if (rbg.sample_intake()) {
-//                                state = State.LIFT;
-//                                speed_factor = 1.0;
-//                            }
-//                        } else {
-//                            if (rbg.specimen_intake()) {
-//                                speed_factor = 1.0;
-//                                state = State.OUTTAKE;
-//                                break;
-//                            }
-//                        }
-//
-//                    }
                     break;
 
                 case SPECIMENINTAKE:
-                    if(gamepad2.right_bumper) {
+                    if (gamepad2.right_bumper) {
                         state = State.INTAKE;
                         rbg.pre_intake();
-                        speed_factor=0.4;
+                        speed_factor = 0.4;
                         break;
                     }
 
-                    if (gamepad2.left_bumper){
+                    if (gamepad2.left_bumper) {
                         rbg.pre_specimen();
                     }
 
-                    if (gamepad1.right_bumper || rbg.flag[rbg.spec]){
+                    if (gamepad1.right_bumper || rbg.flag[rbg.spec]) {
                         speed_factor = 1.0;
-                        if (rbg.intake_specimen()){
+                        if (rbg.intake_specimen()) {
                             state = State.SPECIMENOUTTAKE;
                         }
                     }
@@ -154,7 +132,7 @@ public class TelOp extends LinearOpMode {
                     if (gamepad1.left_bumper) {
                         rbg.intake_drop();
                         state = State.INTAKE;
-                        speed_factor=0.4;
+                        speed_factor = 0.4;
                         break;
                     }
 
@@ -170,21 +148,15 @@ public class TelOp extends LinearOpMode {
 
                     if (gamepad1.right_bumper || rbg.flag[rbg.outtake]) {
 
-                            if (rbg.outtake()) {
-                                speed_factor = 1.0;
-                                state = State.INTAKE;
-                            }
+                        if (rbg.outtake()) {
+                            speed_factor = 1.0;
+                            state = State.INTAKE;
+                        }
 
 
                     }
 
                     break;
-//                    if (rbg.flag[rbg.specimen] && gamepad1.left_bumper) {
-//                        rbg.specimen_drop();
-//                        speed_factor = 1.0;
-//                        state = State.INTAKE;
-//
-//                    }
 
                 case SPECIMENOUTTAKE:
                     if (gamepad1.right_bumper || rbg.flag[rbg.outtake]) {
@@ -194,108 +166,30 @@ public class TelOp extends LinearOpMode {
                             state = State.INTAKE;
                             break;
                         }
-
-
                     }
-
                     if (gamepad1.left_bumper) {
                         rbg.spec_drop();
                         state = State.SPECIMENINTAKE;
-                        speed_factor=0.5;
+                        speed_factor = 0.5;
                         break;
                     }
                     break;
 
             }
 
-            // jerome test
-            //if(gamepad1.share) rbg.hang();// 2 times.
-//            if (gamepad1.share) rbg.hang();
-//            if (gamepad1.dpad_down) {
-//                rbg.stop_drive();
-//                sleep(500);
-//                if (gamepad1.dpad_down) {
-//                    rbg.stop_drive();
-//                    rbg.Handle.setPosition(rbg.handleIdle);
-//                    sleep(300);
-//                    rbg.reset();
-//                }
-//            }
-
             rbg.armrotatePIDF();
 
-            if (gamepad2.share||rbg.flag[rbg.hang]){
+            if (rbg.timer(86000, rbg.start)) {
+                if (gamepad2.share) {
+                    rbg.pre_hang();
+                }
+                if (gamepad1.share) {
+                    rbg.hang();
+                }
 
-                rbg.pre_hang();
             }
 
-            if (gamepad1.share){
 
-                telemetry.update();
-                //rbg.hang();
-                //rbg.stop_drive();
-
-
-
-               // rbg.pidfsetting(700, rbg.pidf_hang_up);
-
-
-               // rbg.delay(750);
-//                rbg.Gearbox.setPosition(0.95); // High torque
-//                rbg.delay(500);
-//                rbg.linearslideTq(1000,rbg.slidev1);
-//
-//                rbg.delay(750); // 1000
-//                rbg.Intake_handle.setPosition(0.7);
-//                rbg.linearslideTq(4700,rbg.slidev2);
-//                rbg.delay(1750);
-                if(!rbg.flag[rbg.hang0]) break;
-                while (rbg.Slide_top.getCurrentPosition() < 4500 && opModeIsActive())
-                {
-                    rbg.delay(25);
-                }
-                rbg.k = 0.000035/2;
-                rbg.pidfsetting(1500, rbg.pidf_hang3); // Hit arm with low rung
-                rbg.delay(1100);
-                rbg.linearslideTq(4000,0.95);
-               // rbg.delay(1000); //1500
-                rbg.pidfsetting(2000, rbg.pidf_hang2); //1600
-              //  rbg.delay(1000);
-                rbg.linearslideTq(-500,0.95);
-
-                telemetry.addData("linear slide top value", rbg.Slide_top.getCurrentPosition());
-                telemetry.addData("linear slide bot value", rbg.Slide_bot.getCurrentPosition());
-                telemetry.addData("linear slide top current", rbg.Slide_top.getCurrent(CurrentUnit.AMPS));
-                telemetry.addData("linear slide bot current", rbg.Slide_bot.getCurrent(CurrentUnit.AMPS));
-
-                telemetry.addData("arm rot value", -rbg.Arm_right.getCurrentPosition());
-                telemetry.update();
-                while(opModeIsActive()&&!gamepad1.share)
-                {
-                    rbg.delay(25);
-                }
-
-                rbg.pidfsetting(1839, rbg.pidf_hang2);
-                rbg.delay(500);
-                rbg.linearslideTq(6600,0.95);
-
-                while(opModeIsActive() && rbg.Slide_top.getCurrentPosition() < 6500){
-                    rbg.delay(25);
-                }
-                rbg.pidfsetting(2700, rbg.pidf_hang2);
-                rbg.delay(1000);
-                rbg.linearslideTq(6000,0.95);
-                rbg.delay(500); // 2000
-                rbg.pidfsetting(1576, rbg.pidf_hang2);
-                rbg.delay(500);
-                rbg.linearslideTq(-500,0.95);
-
-                while(opModeIsActive() && !gamepad1.share){
-                    rbg.delay(25);
-                }
-                rbg.linearslideTq(-500,0);
-                rbg.delay(100000);
-            }
            // if (gamepad2.ps) rbg.flag[rbg.force] = true;
 
           //  if (gamepad2.dpad_up && gamepad2.dpad_down)   rbg.adjust(gamepad2.dpad_up, gamepad2.dpad_down);

@@ -33,6 +33,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDir
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
@@ -298,45 +299,34 @@ public class BaseClass extends MecanumDrive {
     }
     //forhang
     public void hang() {
-        stop_drive();
+        if(!flag[hang0]) return;
+        while (Slide_top.getCurrentPosition() < 4500 && Op.opModeIsActive()) {delay(25);}
+        k = 0.000035/2;
+        pidfsetting(1500, pidf_hang3); // Hit arm with low rung
+        delay(1100);
+        linearslideTq(4000,0.98);
+        // rbg.delay(1000); //1500
+        pidfsetting(2000, pidf_hang2); //1600
+        //  rbg.delay(1000);
+        linearslideTq(-500,0.98);
+        while(Op.opModeIsActive()&&!gamepad1.share) {delay(25);}
 
-        Intake_rot.setPosition(0.55);
-        Intake_handle.setPosition(handle_idle);
-
-        pidfsetting(700, pidf_hang_up);
-
-        linearslide(0,slidev1);
-        delay(2000);
-        Gearbox.setPosition(0.95); // High torque
-        delay(1000);
-        linearslideTq(1000,slidev1);
-
-        delay(2000); // 1000
-        Intake_handle.setPosition(0.7);
-        linearslideTq(4700,slidev2);
-        delay(3000);
-        pidfsetting(1250, pidf_hang_up); // Hit arm with low rung
-        delay(1000);
-        linearslideTq(4000,slidev2);
-        delay(2000); //1500
-        pidfsetting(1600, pidf_hang2);
-        delay(2500);
-        linearslideTq(-50,slidev2);
-        delay(8000); //3000
-//        telemetry.addData("linear slide top value", Slide_top.getCurrentPosition());
-//        telemetry.addData("linear slide bot value", Slide_bot.getCurrentPosition());
-//        telemetry.update();
         pidfsetting(1839, pidf_hang2);
+        delay(500);
+        linearslideTq(6600,0.98);
+        while(Op.opModeIsActive() && Slide_top.getCurrentPosition() < 6500){delay(25);}
+        pidfsetting(2700, pidf_hang2);
         delay(1000);
-        linearslideTq(6800,slidev2);
-        delay(8000); //5000
-        pidfsetting(2057, pidf_hang_up);
-        delay(1500);
-        linearslideTq(6100,slidev2);
-        delay(5000); // 2000
+        linearslideTq(6000,0.98);
+        delay(500); // 2000
         pidfsetting(1576, pidf_hang2);
         delay(500);
-        linearslideTq(20,slidev2);
+        linearslideTq(-500,0.98);
+
+        while(Op.opModeIsActive() && !gamepad1.share){
+            delay(25);
+        }
+        linearslideTq(-500,0);
         delay(100000);
 
     }
@@ -502,7 +492,8 @@ public class BaseClass extends MecanumDrive {
     public void intake_drop() {
 
         flag[lift] = false;
-        claw(false,false);
+        Intake.setPower(-0.5);
+        delay(500);
 
         Intake_handle.setPosition(handleIdle);
         if (timer(4000, intake)) {
@@ -521,10 +512,12 @@ public class BaseClass extends MecanumDrive {
     public void spec_drop(){
         Intake.setPower(-0.8);
         delay(300);
-        Intake_handle.setPosition(handle_idle+0.01);
+        Intake_handle.setPosition(handle_idle); // TODO change this value
         Intake_rot.setPosition(handlerot_intake);
+
+
+        pidfsetting(rotate_spec_in,pidf_intake_spec);
         linearslide(slide_idle, slidev1);
-        pidfsetting(rotate_idle, pidf_outtake_down);
         flag[intake_ready]=true;
         intake_level=0;
         timer(0,intake);
@@ -565,6 +558,8 @@ public class BaseClass extends MecanumDrive {
         }
         return runtime.milliseconds() - stoptime[i] > period;
     }
+
+
 
     public void specimen_drop(){
         flag[lift] = false;
@@ -652,10 +647,14 @@ public class BaseClass extends MecanumDrive {
     public void pre_specimen()
 
     {
-        Intake_handle.setPosition(handle_idle+0.01);
+
+
+
+        Intake_handle.setPosition(handle_idle); // change later
         Intake_rot.setPosition(handlerot_intake);
-        linearslide(slide_idle, slidev1);
-        pidfsetting(rotate_idle, pidf_intake_idle);
+        pidfsetting(rotate_spec_in,pidf_intake_spec);
+        linearslide(slide_idle,slidev2);
+
         flag[intake_ready]=true;
         intake_level=0;
         timer(0,intake);
@@ -1458,7 +1457,7 @@ public class BaseClass extends MecanumDrive {
         if(close)
         {Intake.setPower(0.9); delay(1000);}
 
-        else {Intake.setPower(-0.2);delay (500);} // -0.2
+        else {Intake.setPower(-0.15);delay (500);} // -0.2
         Intake.setPower(0);
 
 
