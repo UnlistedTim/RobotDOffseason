@@ -41,6 +41,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.LED;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -127,6 +128,12 @@ public  class MecanumDrive {
 
     public DistanceSensor bar_dist;
     public DistanceSensor basket_dist;
+
+    public LED front_led_red;
+    public LED front_led_green;
+
+    public LED rear_led_red;
+    public LED rear_led_green;
 
     public IMU imu;
 
@@ -543,6 +550,11 @@ public  class MecanumDrive {
         Arm_left = hardwareMap.get(DcMotorEx.class, "Arm_left");
         Slide_bot = hardwareMap.get(DcMotorEx.class, "Slide_bot");
         Slide_top = hardwareMap.get(DcMotorEx.class, "Slide_bot");
+
+        front_led_green = hardwareMap.get(LED.class, "front_led_green");
+        front_led_red = hardwareMap.get(LED.class, "front_led_red");
+        rear_led_green = hardwareMap.get(LED.class, "rear_led_green");
+        rear_led_red = hardwareMap.get(LED.class, "rear_led_red");
 
 //        arm_grab = hardwareMap.get(Servo.class, "arm_grab");
         Intake_rot = hardwareMap.get(Servo.class, "Intake_rot");
