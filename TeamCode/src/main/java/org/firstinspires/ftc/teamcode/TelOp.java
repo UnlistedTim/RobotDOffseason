@@ -65,11 +65,13 @@ public class TelOp extends LinearOpMode {
         while (opModeIsActive()) {
             switch (state) {
                 case INTAKE:
-                    if (gamepad2.left_bumper) {
-                        rbg.pre_specimen();
-                        speed_factor = 0.5;
-                        state = State.SPECIMENINTAKE;
-                        break;
+                    if (gamepad2.left_bumper || rbg.flag[rbg.pre_spec]) {
+                        if(rbg.pre_spec()){
+                            speed_factor = 0.5;
+                            state = State.SPECIMENINTAKE;
+                            break;
+                        }
+
                     }
                     if (gamepad2.right_bumper && rbg.flag[rbg.intake_ready] && rbg.flag[rbg.button_flip]) {
                         rbg.intake();
@@ -167,20 +169,20 @@ public class TelOp extends LinearOpMode {
                             break;
                         }
                     }
-                    if (gamepad1.left_bumper) {
-                        rbg.spec_drop();
-                        state = State.SPECIMENINTAKE;
-                        speed_factor = 0.5;
-                        break;
-                    }
+//                    if (gamepad1.left_bumper) {
+//                        rbg.spec_drop();
+//                        state = State.SPECIMENINTAKE;
+//                        speed_factor = 0.5;
+//                        break;
+//                    }
                     break;
 
             }
 
             rbg.armrotatePIDF();
 
-            if (rbg.timer(86000, rbg.start)) {
-                if (gamepad2.share) {
+            if (rbg.timer(86000, rbg.start) || rbg.flag[rbg.force]) {
+                if (gamepad2.share || rbg.flag[rbg.hang]) {
                     rbg.pre_hang();
                 }
                 if (gamepad1.share) {
@@ -190,7 +192,7 @@ public class TelOp extends LinearOpMode {
             }
 
 
-           // if (gamepad2.ps) rbg.flag[rbg.force] = true;
+            if (gamepad2.ps) rbg.flag[rbg.force] = true;
 
           //  if (gamepad2.dpad_up && gamepad2.dpad_down)   rbg.adjust(gamepad2.dpad_up, gamepad2.dpad_down);
             rbg.robot_centric(gamepad1.right_stick_y, gamepad1.right_stick_x, gamepad1.left_stick_x, speed_factor);
