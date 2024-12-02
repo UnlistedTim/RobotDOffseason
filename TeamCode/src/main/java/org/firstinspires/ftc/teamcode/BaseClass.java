@@ -300,12 +300,14 @@ public class BaseClass extends MecanumDrive {
     //forhang
     public void hang() {
         if(!flag[hang0]) return;
-        while (Slide_top.getCurrentPosition() < 4500 && Op.opModeIsActive()) {delay(25);}
+        while (Slide_top.getCurrentPosition() < 4500 && Op.opModeIsActive()) {
+            delay(25);
+        }
         k = 0.000035/2;
         pidfsetting(1500, pidf_hang3); // Hit arm with low rung
-        while ((-Arm_right.getCurrentPosition()) < 1450 && Op.opModeIsActive())
-        {delay(25);}
-        delay(100);
+        while ((-Arm_right.getCurrentPosition()) < 1400 && Op.opModeIsActive())
+        {delay(50);}
+       // delay(100);
         linearslideTq(4000,0.98);
         // rbg.delay(1000); //1500
         pidfsetting(2000, pidf_hang2); //1600
@@ -469,14 +471,14 @@ public class BaseClass extends MecanumDrive {
 
     public void pre_hang(){
         if (!flag[hang]){
-            linearslide(0,slidev1);
+            linearslide(0,slidev2);
             Intake_rot.setPosition(handlerot_intake);
             Intake_handle.setPosition(handle_idle);
             flag[hang] = true;
             step[hang]=0;
             return;
         }
-        if ( step[hang]==0&& Slide_top.getCurrentPosition() < 10&& flag[hang] ){
+        if ( step[hang]==0&& Slide_top.getCurrentPosition() < 10 ){
             linearslide(0,0);
            pidfsetting(400, pidf_hang_up);
             Gearbox.setPosition(0.95);
@@ -485,9 +487,8 @@ public class BaseClass extends MecanumDrive {
             return;
         }
 
-        if(step[hang]==1&&flag[hang]&& Slide_top.getCurrentPosition() < 15 && timer(600,hang)) {
+        if(step[hang]==1&&timer(600,hang)) {
             linearslideTq(4600,0.95);
-
             flag[hang]=false;
             flag[hang0]=true;
 //            timer(0,hang);;
@@ -1149,7 +1150,7 @@ public class BaseClass extends MecanumDrive {
 
            pidftable[pidf_hang_up][pp]=0.0016;  pidftable[pidf_hang_up][ii]=0;  pidftable[pidf_hang_up][dd]=0.0001;
            pidftable[pidf_hang2][pp]=0.0022;  pidftable[pidf_hang_up][ii]=0;  pidftable[pidf_hang_up][dd]=0.0001;
-           pidftable[pidf_hang3][pp]=0.01;  pidftable[pidf_hang3][ii]=0;  pidftable[pidf_hang3][dd]=0.00004;
+           pidftable[pidf_hang3][pp]=0.002 ; pidftable[pidf_hang3][ii]=0;  pidftable[pidf_hang3][dd]=0.00002;
 
            pidftable[pidf_outtake_spec][pp]=0.00025;  pidftable[pidf_outtake_spec][ii]=0;  pidftable[pidf_outtake_spec][dd]=0.00002; // may need to decrease p in future (large turn)
            pidftable[pidf_outtake_spec1][pp]=0.0016;  pidftable[pidf_outtake_spec1][ii]=0.00001;  pidftable[pidf_outtake_spec1][dd]=0.0000; // small turn maintain spec outtake accuracy
