@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
-@TeleOp(name = "TelMeet2", group = "AA")
+@TeleOp(name = "TelopRegional", group = "AA")
 public class TelOp extends LinearOpMode {
     BaseClass rbg;// hardware init at Mecanumdrive.
     double speed_factor = 1.0;
@@ -181,12 +181,15 @@ public class TelOp extends LinearOpMode {
 
             rbg.armrotatePIDF();
 
-            if (rbg.timer(86000, rbg.start) || rbg.flag[rbg.force]) {
+            if (rbg.timer(88000, rbg.start) || rbg.flag[rbg.force]) {
                 if (gamepad2.share || rbg.flag[rbg.hang]) {
                     rbg.pre_hang();
                 }
                 if (gamepad1.share) {
-                    rbg.hang();
+                   rbg.hang();
+                 //   k = k/4;
+                  //  rbg.pidfsetting(1500,rbg.pidf_hang3); // Hit arm with low rung
+                   // rbg.delay(300);
                 }
 
             }
@@ -201,13 +204,16 @@ public class TelOp extends LinearOpMode {
 //            telemetry.addData("TempInput", rbg.tempinput);
 //            telemetry.update();
 
-          telemetry.addData("armlinerslide", rbg.Slide_top.getCurrentPosition());
+             telemetry.addData("armlinerslide", rbg.Slide_top.getCurrentPosition());
             telemetry.addData("armrotate position", -rbg.Arm_right.getCurrentPosition());
 
 
             telemetry.addData("Colors red", rbg.Intake_color.red());
             telemetry.addData("Colors green", rbg.Intake_color.green());
             telemetry.addData("Colors blue", rbg.Intake_color.blue());
+            telemetry.addData("LEFT power", rbg.Arm_left.getPower());
+
+
 
 
             telemetry.addData("Intake HANDLE", rbg.  Intake_handle.getPosition());

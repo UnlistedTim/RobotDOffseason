@@ -13,7 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-@Autonomous(name = "Automeet2", group = "A")
+@Autonomous(name = "AutoRegional", group = "A")
 //@Disabled
 @Config
 public class Auto extends LinearOpMode {
@@ -22,135 +22,84 @@ public class Auto extends LinearOpMode {
 
     Pose2d pp = new Pose2d(0, 0, 0);
     BaseClass rbg;
-    Pose2d start = new Pose2d(0, 0, Math.toRadians(0));
-    double x, y, heading;
+   // Pose2d start = new Pose2d(0, 0, Math.toRadians(0));
+
 
     @Override
     public void runOpMode() {
         rbg = new BaseClass(this, pp);
-        sleep(200);
         rbg.init(0);
-        rbg.init(2);
-        sleep(200);
-        telemetry.addData(">", "Press Play to start op mode ");
-//        x = rbg.pose.position.x;
-//        y = rbg.pose.position.y;
-//        heading = Math.toDegrees(rbg.pose.heading.toDouble());
+
         telemetry.update();
-
-
+        sleep(500);
+        rbg.init(2);//rest the roatioan 0 positon
+        sleep(500);
+        telemetry.addLine("Make sure the arm was already placed  on the right location before initialization");
+        telemetry.addLine("Now Push the linear slide all the way down , turn the arm to the target position and load the specimen.");
+        telemetry.addLine("Aftr that, hold the arm and press gunner gamepad right bumper.");
+        telemetry.update();
+        while(!gamepad1.right_bumper&&opModeIsActive())
+        {
+        sleep(100);
+        }
+        rbg.init(3);
+        sleep(500);
+        telemetry.addData(">", "Press Play to start op mode ");
+        telemetry.update();
         waitForStart();
+        rbg.init(4);
         while (opModeIsActive()) {
 
-//            telemetry.addData("x", rbg.pose.position.x);
-//            telemetry.addData("y", rbg.pose.position.y);
-//            telemetry.addData("heading", rbg.imu.getRobotYawPitchRollAngles().getYaw((AngleUnit.DEGREES)));
-//            telemetry.update();
-         //   sleep(10000);
+            rbg.move(0.3);
+            rbg.delay(150);
+
+            rbg.pidfsetting(rbg.rotate_spec_out,rbg.pidf_outtake_spec);//pre postion   rbg.Intake_handle.setPosition(rbg.handle_specimen_outtake);
+            rbg.delay(500);
+            rbg.Intake_handle.setPosition(rbg.handle_specimen_outtake);
+            rbg.linearslide(rbg.slide_idle, rbg.slidev2);
 
 
-
-//            rbg.stop_drive();
-//            sleep(1000000000);
-
-
-
-
-
-
-
-            rbg.pmove(0,false); //forward
-            rbg.flag[rbg.asin]=true;
-            rbg.aspecimen_outtake();
-            rbg.flag[rbg.asin]=false;
-            rbg.pmove(1,true);//strafe for intake
-            rbg.aspicmenintake();
-             rbg.pmove(8,true); // strafe for sample outtake
-            rbg.aspecimen_outtake();
-            rbg.pmove(9,true); // strafe to push 1st sample
-            rbg.pmove(2,false);//forward to get behind 1st sample
-            rbg.pmove(3,true);//strafe to align with first sample
-            rbg.pmove(4,false);//backward to push 1st sample to hp
-            rbg.pmove(5,false);//forward go to 2nd sample
-            rbg.pmove(6,true);//strafe to align with 2nd sample
-            rbg.pmove(7,false);//backward to push 2nd sample to hp
-            rbg.flag[rbg.push]=true;
-            rbg.aspicmenintake();
-            rbg.pmove(10,true);//strafe
-            rbg.flag[rbg.asin]=true;
-            rbg.aspecimen_outtake();
-            rbg.pmove(13,true);
-
-
-
-            rbg.pmove(11,true);//strafe
-            rbg.aspicmenintake();
-            rbg.pmove(12,true);
-            rbg.aspecimen_outtake();
-            rbg.pmove(13,true);
-            rbg.stop_drive();
-//            rbg.armRotate.setPower(0);
-//             rbg.armRotateLeft.setPower((0));
-             sleep(2000);
-
-//            rbg.rotatetargetPIDF(0);
-//
-//            rbg.stop_drive();
-//            rbg.armRotate.setPower(-0.12);
-//            rbg.armRotateLeft.setPower((0.12));
-//            rbg.pause(200);
-//            rbg.armRotate.setPower(0);
-//            rbg.armRotateLeft.setPower((0));
-//            sleep(1000000000);
-
-
-//
-//
+            rbg.aspec_outtake();
+            //   rbg.rotate[rbg.soutb]=4000;
+            //   rbg.updatePoseEstimate();
+            rbg.afmove(0,true);//strafe samples
+            rbg.afmove(1,false);// forward for sampels
+            rbg.afmove(2,true);//strafe for first samples
+            rbg.afmove(3,false);//push the first sample
 //            rbg.updatePoseEstimate();
-//            telemetry.addData("x", rbg.pose.position.x);
+//            telemetry.addData("3x", rbg.pose.position.x);
 //            telemetry.addData("y", rbg.pose.position.y);
 //            telemetry.addData("heading", rbg.imu.getRobotYawPitchRollAngles().getYaw((AngleUnit.DEGREES)));
 //            telemetry.update();
-//            //outtake
-//            rbg.delay(100000000);
-//
-//
-//
-//
-//            //intake
-//            rbg.pmove(8,true);//strafe
-//            //outake
-//            rbg.pmove(9,true);//strafe
-//            //intake
-//            rbg.pmove(9,true);//strafe
-//            //outake;
-//
-//
-////            rbg.move(-0.3);
-////            rbg.delay(600); //800
-////            rbg.stop_drive();
-//            rbg.aspecimen_outtake();
-//            rbg.movecontrol(45);
-//            rbg.aspicmenintake();
-//            rbg.movecontrol(-48);
-//          //  rbg.delay(1100);
-//            rbg.aspecimen_outtake();
-//
-//            rbg.movecontrol(55);
-//            rbg.stop_drive();
-//            rbg.delay(100);
-//            rbg.rotatetargetPIDF(0);
-//         //   rbg.delay(400);
-//            rbg.move(0.3);
-//            rbg.delay(450);
-//
-//            rbg.stop_drive();
-//            rbg.armRotate.setPower(-0.12);
-//            rbg.armRotateLeft.setPower((0.12));
-//            rbg.pause(400);
+
+            rbg.afmove(4,false);//forward for second sample
+//            telemetry.addData("4x", rbg.pose.position.x);
+//            telemetry.addData("y", rbg.pose.position.y);
+//            telemetry.addData("heading", rbg.imu.getRobotYawPitchRollAngles().getYaw((AngleUnit.DEGREES)));
+//            telemetry.update();
+            rbg.afmove(5,true);//strafe for second sampl
+            rbg.afmove(6,false);//push the seond samples and intake
+            // rbg.delay(200000000);
+            rbg.aspec_outtake();;
+            rbg.afmove(7,true);//strafe for outtake
+            rbg.aspec_outtake();;
+            rbg.afmove(8,true);//strafe for intake
+            rbg.aspec_outtake();;
+            rbg.afmove(9,true);//strafe for outtake
+            rbg.aspec_outtake();;
+            rbg.afmove(10,true);//strafe for intake;
+            rbg.aspec_outtake();;
+            rbg.afmove(11,true);//strafe for outtake;
+            rbg.aspec_outtake();;
 //            rbg.armRotate.setPower(0);
-//            rbg.armRotateLeft.setPower((0));
-//            sleep(1000000000);
+//            rbg.armRotateLeft.setPower(0);
+            rbg.rotateTarget=0;
+            rbg.afmove(12,true);//strafe for park;
+            rbg.stop_drive();;//strafe for park;
+//            rbg.armRotateLeft.setPower(0);
+//            rbg.armRotate.setPower(0);
+            //  rbg.armRotateLeft.setPower((0));
+            sleep(50000);
 
 
         }
