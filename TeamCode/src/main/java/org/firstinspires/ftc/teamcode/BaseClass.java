@@ -100,7 +100,7 @@ public class BaseClass extends MecanumDrive {
     int rotatePos,slidePos,absrotategap;
 
     double pid ,power, ff;
-    double p = 0.00004, i = 0, d = 0.0001 ,f = 0.12,k=0.00005;//k = 0.000035;
+    double p = 0.00004, i = 0, d = 0.0001 ,f = 0.12,k = 0.00004; //0.000035
 // idle, specman slides=400,rotate 380-,
 
 
@@ -246,21 +246,19 @@ public class BaseClass extends MecanumDrive {
     //forhang
     public void hang() {
         if(!flag[hang0]) return;
-        while (Slide_top.getCurrentPosition() < 4500 && Op.opModeIsActive()) {
-            delay(50);
-        }
-        k = k/2;
-        pidfsetting(1500, pidf_hang3); // Hit arm with low rung
+        linearslideTq(4600,0.98);
+        pidfsetting(1600, pidf_hang3); // Hit arm with low rung //1500
+
         while ((-Arm_right.getCurrentPosition()) < 1200 && Op.opModeIsActive())
-        {delay(50);}
+        {pause(50);}
        delay(100);
         linearslideTq(4000,0.98);
         // rbg.delay(1000); //1500
         pidfsetting(2000, pidf_hang2); //1600
         //  rbg.delay(1000);
-        linearslideTq(50,0.98);
+        linearslideTq(-400,0.98);
 
-        while(Op.opModeIsActive()&&Slide_top.getCurrentPosition() > 100) {delay(25);}
+        while(Op.opModeIsActive()&&Slide_top.getCurrentPosition() > -350) {delay(25);}
 
 
         pidfsetting(1839, pidf_hang2);
@@ -273,14 +271,16 @@ public class BaseClass extends MecanumDrive {
         delay(500); // 2000
         pidfsetting(1576, pidf_hang2);
         delay(500);
-        linearslideTq(50,0.98);
+        linearslideTq(-400,0.98);
 
-        while(Op.opModeIsActive() && Slide_top.getCurrentPosition() > 100){
+        while(Op.opModeIsActive() && Slide_top.getCurrentPosition() > -350){
             delay(25);
         }
-        delay(300);
-        linearslideTq(50,0);
-        delay(100000);
+        delay(1000);
+        linearslideTq(-400,0);
+        Arm_left.setPower(0);
+        Arm_right.setPower(0);
+        pause(100000);
 
     }
 
@@ -330,7 +330,7 @@ public class BaseClass extends MecanumDrive {
         }
         if ( step[hang]==0&& Slide_top.getCurrentPosition() < 10 ){
             linearslideTq(0,0);
-            pidfsetting(400, pidf_hang_up);
+
             Gearbox.setPosition(0.95);
             timer(0,hang);
             step[hang]=1;
@@ -338,7 +338,7 @@ public class BaseClass extends MecanumDrive {
         }
 
         if(step[hang]==1&&timer(600,hang)) {
-            linearslideTq(4600,0.95);
+            linearslideTq(2500,0.98);
             flag[hang]=false;
             flag[hang0]=true;
             step[hang]=-1;
@@ -561,7 +561,7 @@ public class BaseClass extends MecanumDrive {
 
     public boolean intake_specimen() {
         if (!flag[spec]){
-            Intake.setPower(0.5);
+            Intake.setPower(0.4);
             move(-0.25);
             delay(300);
             stop_drive();
@@ -734,7 +734,7 @@ public class BaseClass extends MecanumDrive {
            pidftable[pidf_outtake_down][pp]=0.0005;  pidftable[pidf_outtake_down][ii]=0;  pidftable[pidf_outtake_down][dd]=0.00008;
            pidftable[pidf_hang_up][pp]=0.0016;  pidftable[pidf_hang_up][ii]=0;  pidftable[pidf_hang_up][dd]=0.0001;
            pidftable[pidf_hang2][pp]=0.0022;  pidftable[pidf_hang_up][ii]=0;  pidftable[pidf_hang_up][dd]=0.0001;
-           pidftable[pidf_hang3][pp]=0.004; pidftable[pidf_hang3][ii]=0;  pidftable[pidf_hang3][dd]=0.00001;
+           pidftable[pidf_hang3][pp]=0.004; pidftable[pidf_hang3][ii]=0;  pidftable[pidf_hang3][dd]=0.0000;
            pidftable[pidf_outtake_spec][pp]=0.00025;  pidftable[pidf_outtake_spec][ii]=0;  pidftable[pidf_outtake_spec][dd]=0.00002; // may need to decrease p in future (large turn)
            pidftable[pidf_outtake_spec1][pp]=0.0016;  pidftable[pidf_outtake_spec1][ii]=0.00001;  pidftable[pidf_outtake_spec1][dd]=0.0000; // small turn maintain spec outtake accuracy
            pidftable[pidf_outtake_spec_down][pp]=0.0075;  pidftable[pidf_outtake_spec_down][ii]=0;  pidftable[pidf_outtake_spec_down][dd]=0.00001;
@@ -935,12 +935,12 @@ public class BaseClass extends MecanumDrive {
             Intake_handle.setPosition(0.25);
             Intake_rot.setPosition(handlerot_intake);
             pidfsetting(rotate_spec_first+350,pidf_intake_spec);
-            delay(600);
-            pidfsetting(rotate_spec_first,pidf_outtake_up2);
-            delay(300);
+            delay(500);
+            pidfsetting(rotate_spec_first,pidf_intake_down);
+            delay(350);
             linearslide(900,slidev0);// first outtake
             delay(300);
-         while(Op.opModeIsActive()&& bar_dist.getDistance(DistanceUnit.MM)>260)
+         while(!Op.isStopRequested()&& bar_dist.getDistance(DistanceUnit.MM)>260)
             {
             delay(25);
             }
@@ -1031,6 +1031,9 @@ public class BaseClass extends MecanumDrive {
         pid = controller.calculate(rotatePos,rotateTarget);
         ff = Math.cos(Math.toRadians(rotatePos/ticks_in_degree +rotateStartangle)) * (f + k*slidePos) ;// target
         power = pid + ff;
+
+        if (power > 1.0) power = 0.98;
+        if (power < -1.0) power = -0.98;
         Arm_left.setPower(-power);
         Arm_right.setPower(power);// to be changed director.
 
@@ -1120,16 +1123,16 @@ public class BaseClass extends MecanumDrive {
             stop_drive();
             flag[drive] = false;
             Intake.setPower(0.8);
-            move(0.3);
-            delay(50);
 
-            Intake_handle.setPosition(handle_outtake);
+
+            Intake_handle.setPosition(handle_specimen_outtake - 0.07);
+//            linearslide(slide_spec_out + 400, slidev2);
             pidfsetting(rotate_spec_out + 650,pidf_outtake_spec_down ); //300
-            delay(150); //250
+            delay(200); //250
 
             Intake.setPower(-0.9);
             stop_drive();
-            delay(150); //150
+            delay(200); //150
             Intake.setPower(0);
             move(-0.55);
             flag[outtake] = true;

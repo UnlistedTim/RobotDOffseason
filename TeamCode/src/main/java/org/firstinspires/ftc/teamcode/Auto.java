@@ -38,9 +38,10 @@ public class Auto extends LinearOpMode {
         telemetry.addLine("Now Push the linear slide all the way down , turn the arm to the target position and load the specimen.");
         telemetry.addLine("Aftr that, hold the arm and press gunner gamepad right bumper.");
         telemetry.update();
-        while(!gamepad1.right_bumper&&opModeIsActive())
+        while(opModeIsActive())
         {
-        sleep(100);
+        sleep(20);
+        if(gamepad1.right_bumper) break;
         }
         rbg.init(3);
         sleep(500);
