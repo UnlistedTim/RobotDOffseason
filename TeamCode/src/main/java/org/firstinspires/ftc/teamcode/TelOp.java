@@ -12,7 +12,7 @@ public class TelOp extends LinearOpMode {
     BaseClass rbg;// hardware init at Mecanumdrive.
     double speed_factor = 1.0;
 
-    public enum State {
+    public enum State { // linear slide 600, arm 1500, rot 0.2
         INTAKE,
         SPECIMENINTAKE,
         LIFT,
@@ -73,13 +73,19 @@ public class TelOp extends LinearOpMode {
                         }
 
                     }
+
+                    if (gamepad1.left_bumper) {
+                        rbg.intake_drop();
+                        state = State.INTAKE;
+                        speed_factor = 0.4;
+                        break;
+                    }
                     if (gamepad2.right_bumper && rbg.flag[rbg.intake_ready] && rbg.flag[rbg.button_flip]) {
-                        rbg.intake();
-                        if (rbg.flag[rbg.color_check]) {
-                            state = State.LIFT;
-                            speed_factor = 1.0;
-                            break;
-                        }
+                        //rbg.intake();
+                        rbg.intake_no_color();
+                        state = State.LIFT;
+                        speed_factor = 1.0;
+                        break;
 
                     }
                     if (!rbg.flag[rbg.button_flip] && rbg.flag[rbg.intake_ready] && !gamepad2.right_bumper) {
@@ -100,11 +106,13 @@ public class TelOp extends LinearOpMode {
                     break;
 
                 case SPECIMENINTAKE:
-                    if (gamepad2.right_bumper) {
-                        state = State.INTAKE;
-                        rbg.pre_intake();
-                        speed_factor = 0.4;
-                        break;
+                    if (gamepad2.right_bumper || rbg.flag[rbg.pre_samp]) {
+                        if (rbg.pre_intake()){
+                            state = State.INTAKE;
+                            speed_factor = 0.4;
+                            break;
+                        }
+
                     }
 
                     if (gamepad2.left_bumper) {

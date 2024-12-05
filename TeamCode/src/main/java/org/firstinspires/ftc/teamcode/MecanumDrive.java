@@ -584,8 +584,8 @@ public  class MecanumDrive {
                 logoFacingDirection, usbFacingDirection));
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters imuparameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
-                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
+                RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
+                RevHubOrientationOnRobot.UsbFacingDirection.UP));
         imu.initialize(imuparameters);
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
