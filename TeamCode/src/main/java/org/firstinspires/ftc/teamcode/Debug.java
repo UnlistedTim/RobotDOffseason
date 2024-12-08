@@ -33,7 +33,7 @@ public class Debug extends LinearOpMode {
         rbg = new BaseClass(this, p1);
         double tmp=0;
         int tar=0;
-        rbg.Gearbox.setPosition(0.05);
+        rbg.Gearbox.setPosition(0);
         rbg.Intake_rot.setPosition(0);
         rbg.Arm_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 

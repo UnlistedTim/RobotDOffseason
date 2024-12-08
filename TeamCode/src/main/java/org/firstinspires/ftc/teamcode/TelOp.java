@@ -38,28 +38,29 @@ public class TelOp extends LinearOpMode {
         telemetry.addLine("Press Start Now!:");
         telemetry.update();
         waitForStart();
-
-        rbg.timer(0, rbg.start);
-        rbg.Slide_bot.setTargetPosition(0);
-        rbg.Slide_bot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rbg.Slide_bot.setVelocity(0);
-
-
-        rbg.Slide_top.setTargetPosition(0);
-        rbg.Slide_top.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rbg.Slide_top.setVelocity(0);
-        rbg.Arm_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rbg.Arm_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-
-        rbg.Arm_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rbg.Arm_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rbg.postion_reset();
+        idle();
+//        rbg.timer(0, rbg.start);
+//
+//
+//        rbg.Slide_bot.setTargetPosition(0);
+//        rbg.Slide_bot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        rbg.Slide_bot.setVelocity(0);
+//        rbg.Slide_top.setTargetPosition(0);
+//        rbg.Slide_top.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        rbg.Slide_top.setVelocity(0);
+//        rbg.Arm_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        rbg.Arm_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//
+//
+//        rbg.Arm_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        rbg.Arm_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         // rbg.Intake_rot.setPosition(0.3);
         //rbg.Intake_rot.setPosition(0.3);
-        sleep(500);
+     //   sleep(500);
 
 
-        rbg.init(1);
+       // rbg.init(1);
       //  state = State.INTAKE;
 
         while (opModeIsActive()) {
@@ -82,10 +83,12 @@ public class TelOp extends LinearOpMode {
                     }
                     if (gamepad2.right_bumper && rbg.flag[rbg.intake_ready] && rbg.flag[rbg.button_flip]) {
                         //rbg.intake();
-                        rbg.intake_no_color();
-                        state = State.LIFT;
-                        speed_factor = 1.0;
-                        break;
+                        if(rbg.intake_no_color()) {
+
+                            state = State.LIFT;
+                            speed_factor = 1.0;
+                            break;
+                        }
 
                     }
                     if (!rbg.flag[rbg.button_flip] && rbg.flag[rbg.intake_ready] && !gamepad2.right_bumper) {

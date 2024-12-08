@@ -75,12 +75,7 @@ public class Auto extends LinearOpMode {
             rbg.afmove(4,false);//forward for second sample
             rbg.afmove(5,true);//strafe for second sampl
             rbg.afmove(6,false);//push the seond samples and intake
-            rbg.stop_drive();
-            rbg.updatePoseEstimate();
-            telemetry.addData("x",rbg.pose.position.x);
-            telemetry.addData("y",rbg.pose.position.y);
-            telemetry.update();
-            rbg.delay(10000000);
+
             rbg.aspec_intake();;
             rbg.afmove(7,true);//strafe for outtake
             rbg.aspec_outtake();;
@@ -99,6 +94,12 @@ public class Auto extends LinearOpMode {
 //            rbg.armRotate.setPower(0);
             //  rbg.armRotateLeft.setPower((0));
             sleep(50000);
+            rbg.stop_drive();
+            rbg.updatePoseEstimate();
+            telemetry.addData("x",rbg.pose.position.x);
+            telemetry.addData("y",rbg.pose.position.y);
+            telemetry.update();
+            rbg.delay(10000000);
 
 
         }
