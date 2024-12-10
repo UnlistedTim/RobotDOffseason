@@ -81,10 +81,9 @@ public class TelOp extends LinearOpMode {
                         speed_factor = 0.4;
                         break;
                     }
-                    if (gamepad2.right_bumper && rbg.flag[rbg.intake_ready] && rbg.flag[rbg.button_flip]) {
+                    if ((gamepad2.right_bumper && rbg.flag[rbg.intake_ready] && rbg.flag[rbg.button_flip]) || rbg.flag[rbg.intake_slide]) {
                         //rbg.intake();
                         if(rbg.intake_no_color()) {
-
                             state = State.LIFT;
                             speed_factor = 1.0;
                             break;

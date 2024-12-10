@@ -1,22 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.SequentialAction;
-import com.acmerobotics.roadrunner.Vector2d;
-import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
-@Autonomous(name = "AutoRegional", group = "A")
+@Autonomous(name = "AutoSpecimen", group = "A")
 //@Disabled
 @Config
-public class Auto extends LinearOpMode {
+public class Autospecimen extends LinearOpMode {
     // private ElapsedTime runtime = new ElapsedTime();
 
 
@@ -29,7 +21,7 @@ public class Auto extends LinearOpMode {
     public void runOpMode() {
         rbg = new BaseClass(this, pp);
         rbg.init(0);
-
+        rbg.baserest=true;
 
         telemetry.update();
         sleep(500);
@@ -86,20 +78,15 @@ public class Auto extends LinearOpMode {
             rbg.afmove(10,true);//strafe for intake;
             rbg.aspec_intake();;
             rbg.afmove(11,true);//strafe for outtake;
+            rbg.flag[rbg.last]=true;
             rbg.aspec_outtake();;
-            rbg.rotateTarget=0;
             rbg.afmove(12,true);//strafe for park;
+            if(rbg.Slide_top.getCurrentPosition()<10) rbg.baserest=false;
             rbg.stop_drive();;//strafe for park;
 //            rbg.armRotateLeft.setPower(0);
 //            rbg.armRotate.setPower(0);
             //  rbg.armRotateLeft.setPower((0));
             sleep(50000);
-            rbg.stop_drive();
-            rbg.updatePoseEstimate();
-            telemetry.addData("x",rbg.pose.position.x);
-            telemetry.addData("y",rbg.pose.position.y);
-            telemetry.update();
-            rbg.delay(10000000);
 
 
         }
