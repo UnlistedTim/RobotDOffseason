@@ -55,7 +55,6 @@ public class Autosample extends LinearOpMode {
 
         rbg.timer(0,8);
         while (opModeIsActive()) {
-
            rbg.asamplefirstmove();
             rbg.amove(0); //preload sample move to outake
             rbg.asample_outtake();

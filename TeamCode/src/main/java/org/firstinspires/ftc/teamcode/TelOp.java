@@ -179,14 +179,13 @@ public class TelOp extends LinearOpMode {
                             break;
                         }
                     }
-//                    if (gamepad1.left_bumper) {
-//                        rbg.spec_drop();
-//                        state = State.SPECIMENINTAKE;
-//                        speed_factor = 0.5;
-//                        break;
-//                    }
+                    if (gamepad1.left_bumper) {
+                        rbg.intake_throw();
+                        state = State.SPECIMENINTAKE;
+                        speed_factor = 0.5;
+                        break;
+                    }
                     break;
-
             }
 
             rbg.armrotatePIDF();
