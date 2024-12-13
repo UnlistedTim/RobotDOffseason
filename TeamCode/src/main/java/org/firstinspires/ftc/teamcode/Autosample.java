@@ -80,74 +80,9 @@ public class Autosample extends LinearOpMode {
             rbg.amove(5);
             rbg.flag[rbg.last]=true;
             rbg.asample_intake();
-            rbg.flag[rbg.last]=false;
             rbg.amove(6);
             rbg.asample_outtake();
-            rbg.delay(300);
-            rbg.updatePoseEstimate();
-            rbg.delay(200);
-            telemetry.addData("x0",rbg.xo);
-            telemetry.addData("y0",rbg.yo);
-            telemetry.addData("a0",rbg.ao);
-
-            telemetry.addData("x",rbg.pose.position.x);
-            telemetry.addData("y",rbg.pose.position.y);
-            telemetry.addData("a",rbg.imu.getRobotYawPitchRollAngles().getYaw((AngleUnit.DEGREES)));
-            telemetry.update();
-            rbg.delay(1000000000);
-
-
-
-            // Specific to last sample
-
-           // rbg.flag[rbg.ain]=true;
-           // rbg.rotatetargetPIDF(rbg.rotate[rbg.pain3]); // preintake arm pos
-            //rbg.linearslide(rbg.armSlide, rbg.slide[rbg.pain3], rbg.armslideV3);
-           rbg.armrotatePIDF();
-            rbg.delay(250);
-          //  rbg.flag[rbg.ain]=true;
-
-          //  rbg.rotatetargetPIDF(rbg.rotate[rbg.ain3]); //intake arm pos value
-            rbg.armrotatePIDF();
-            rbg.delay(200);
-
-          //  rbg.Claw.setPosition(rbg.clawClose);
-            rbg.delay(350); // 300
-        //    rbg.linearslide(rbg.armSlide, rbg.slide[rbg.idle], rbg.armslideV3);
-
-            rbg.delay(150);
-
-          //  rbg.Handle.setPosition(rbg.handleOut1);
-          //  rbg.rotatetargetPIDF(rbg.rotate[rbg.idle]);
-            rbg.delay(150);
-            rbg.amove(6);
-
-            rbg.asample_outtake();
-         //   rbg.flag[rbg.lasta] = true;
-            rbg.move(0.3);
-         //   rbg.linearslide(rbg.armSlide,rbg.slide[rbg.aend],rbg.armslideV3);
-            // rbg.Handle.setPosition();
-            rbg.delay(100);
-            // rbg.stop_drive();
-
-
-          //  rbg.rotatetargetPIDF(rbg.rotate[rbg.aend]);
-            rbg.delay(100);
-            //    rbg.stop_drive();
-
-            rbg.amove(7);
-            rbg.move(0.45);
-          //  rbg.linearslide(rbg.armSlide,1000,2000);
-           // double prey=0; rbg.flagreset=true;
-            while(opModeIsActive()&&!rbg.timer(29800,8)) {
-
-                rbg.armrotatePIDF();
-                rbg.updatePoseEstimate();
-            //    if (Math.abs(rbg.pose.position.y - prey) < 0.01) break;
-             //   prey=rbg.pose.position.y;
-            }
-         //   rbg.armRotate.setPower(0);
-          //  rbg.armRotateLeft.setPower(0);
+            rbg.delay(500);
             rbg.stop_drive();
             sleep(100000);
 

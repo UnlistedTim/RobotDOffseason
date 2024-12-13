@@ -562,7 +562,7 @@ public  class MecanumDrive {
         Intake_handle = hardwareMap.get(Servo.class, "Intake_handle");
         Gearbox = hardwareMap.get(Servo.class, "Gearbox");
 
-        Intake_color = hardwareMap.get(ColorSensor.class, "Intake_color");
+//        Intake_color = hardwareMap.get(ColorSensor.class, "Intake_color");
         Arm_touch = hardwareMap.get(DigitalChannel.class,"Arm_touch");
 
         basket_dist = hardwareMap.get(DistanceSensor.class,"basket_dist");

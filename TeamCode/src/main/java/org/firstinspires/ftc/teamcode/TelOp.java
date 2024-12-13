@@ -11,13 +11,15 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 public class TelOp extends LinearOpMode {
     BaseClass rbg;// hardware init at Mecanumdrive.
     double speed_factor = 1.0;
+    double rotpowerl=0,rotpowerr=0;
 
     public enum State { // linear slide 600, arm 1500, rot 0.2
         INTAKE,
         SPECIMENINTAKE,
         LIFT,
         OUTTAKE,
-        SPECIMENOUTTAKE;
+        SPECIMENOUTTAKE,
+        RESTMODE;
     }
 
     State state = State.INTAKE;
@@ -34,12 +36,13 @@ public class TelOp extends LinearOpMode {
         telemetry.addLine("Do not press start  ");
         telemetry.update();
         rbg.init(0);
-        sleep(500);
+        rbg.init(1);
+        sleep(300);
         telemetry.addLine("Press Start Now!:");
         telemetry.update();
         waitForStart();
-        rbg.postion_reset();
-        idle();
+        rbg.rotation_reset();
+
 //        rbg.timer(0, rbg.start);
 //
 //
@@ -75,7 +78,7 @@ public class TelOp extends LinearOpMode {
 
                     }
 
-                    if (gamepad1.left_bumper) {
+                    if (gamepad1.left_bumper||rbg.flag[rbg.idle_ready]) {
                         rbg.intake_drop();
                         state = State.INTAKE;
                         speed_factor = 0.4;
@@ -108,23 +111,36 @@ public class TelOp extends LinearOpMode {
                     break;
 
                 case SPECIMENINTAKE:
-                    if (gamepad2.right_bumper || rbg.flag[rbg.pre_samp]) {
-                        if (rbg.pre_intake()){
+//                    if (gamepad2.right_bumper || rbg.flag[rbg.pre_samp]) {
+//                        if (rbg.pre_intake()){
+//                            state = State.INTAKE;
+//                            speed_factor = 0.4;
+//                            break;
+//                        }
+//
+//                    }
+                    if(gamepad2.right_bumper ) {
+
+                       // idel for preintake.
+
+                        {
+                            rbg.directdle();
                             state = State.INTAKE;
-                            speed_factor = 0.4;
                             break;
                         }
 
+
                     }
 
-                    if (gamepad2.left_bumper) {
-                        rbg.pre_specimen();
-                    }
+//                    if (gamepad2.left_bumper) {
+//                        rbg.pre_specimen();
+//                    }
 
                     if (gamepad1.right_bumper || rbg.flag[rbg.spec]) {
                         speed_factor = 1.0;
                         if (rbg.intake_specimen()) {
                             state = State.SPECIMENOUTTAKE;
+
                         }
                     }
 
@@ -141,11 +157,12 @@ public class TelOp extends LinearOpMode {
                         }
 
                     }
-                    if (gamepad1.left_bumper) {
-                        rbg.intake_drop();
-                        state = State.INTAKE;
-                        speed_factor = 0.4;
-                        break;
+                    if (gamepad1.left_bumper||rbg.flag[rbg.idle_ready]) {
+                        if(rbg.intake_drop()) {
+                            state = State.INTAKE;
+                            speed_factor = 0.4;
+                            break;
+                        }
                     }
 
                     if (gamepad1.touchpad) {
@@ -186,6 +203,81 @@ public class TelOp extends LinearOpMode {
                         break;
                     }
                     break;
+                case RESTMODE:
+                    rbg.stop_drive();
+                    rotpowerl=0.2;
+                    rotpowerr=0.2;
+                    rbg.Slide_bot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    rbg.Slide_bot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    rbg.Slide_top.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    rbg.Slide_top.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    sleep(500);
+                    while (opModeIsActive())
+
+
+                    {
+
+                        sleep(10);
+                       if(gamepad1.left_bumper){
+                           rotpowerl=rotpowerl+0.1;
+                           if(rotpowerl>0.6) rotpowerl=0.7;
+                           rbg.Arm_left.setPower(rotpowerl);
+                           rbg.Arm_right.setPower(-rotpowerl);
+                           rbg.Slide_top.setPower(-0.3);
+                           rbg.Slide_bot.setPower(-0.3);
+                           sleep(1000);
+                       }
+                        if(gamepad1.right_bumper){
+                            rotpowerr=rotpowerr+0.1;
+                         if(rotpowerr>0.6) rotpowerr=0.7;
+
+                            rbg.Arm_left.setPower(-rotpowerr);
+                            rbg.Arm_right.setPower(+rotpowerr);
+                            rbg.Slide_top.setPower(-0.6);
+                            rbg.Slide_bot.setPower(-0.6);
+                            sleep(300);
+                            rbg.Arm_left.setPower(-0.13);
+                            rbg.Arm_right.setPower(+0.13);
+                            rbg.Slide_top.setPower(-0.4);
+                            rbg.Slide_bot.setPower(-0.4);
+                            sleep(500);
+                            rbg.Arm_left.setPower(-0.1);
+                            rbg.Arm_right.setPower(+0.1);
+                            rbg.Slide_top.setPower(-0.4);
+                            rbg.Slide_bot.setPower(-0.4);
+                            sleep(100);
+                            rbg.Arm_left.setPower(0);
+                            rbg.Arm_right.setPower(0);
+                            rbg.Slide_top.setPower(-0.2);
+                            rbg.Slide_bot.setPower(-0.2);
+                            sleep(500);
+                            rbg.Slide_top.setPower(0);
+                            rbg.Slide_bot.setPower(0);
+
+                        }
+
+                        if(gamepad1.ps){
+
+                            rbg.Slide_bot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                            rbg.Slide_bot.setTargetPosition(0);
+                            rbg.Slide_bot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                            rbg.Slide_bot.setVelocity(0);
+
+                            rbg.Slide_top.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                            rbg.Slide_top.setTargetPosition(0);
+                            rbg.Slide_top.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                            rbg.Slide_top.setVelocity(0);
+                            sleep(400);
+
+                            rbg.rotation_reset();
+                            state = State.INTAKE;
+                            break;
+                        }
+
+
+                    }
+
+                    break;
             }
 
             rbg.armrotatePIDF();
@@ -209,7 +301,9 @@ public class TelOp extends LinearOpMode {
           //  if (gamepad2.dpad_up && gamepad2.dpad_down)   rbg.adjust(gamepad2.dpad_up, gamepad2.dpad_down);
             rbg.robot_centric(gamepad1.right_stick_y, gamepad1.right_stick_x, gamepad1.left_stick_x, speed_factor);
 
-
+            if(gamepad1.ps) {
+                state = State.RESTMODE;
+            }
 //            telemetry.addData("TempInput", rbg.tempinput);
 //            telemetry.update();
 
@@ -217,9 +311,6 @@ public class TelOp extends LinearOpMode {
             telemetry.addData("armrotate position", -rbg.Arm_right.getCurrentPosition());
 
 
-            telemetry.addData("Colors red", rbg.Intake_color.red());
-            telemetry.addData("Colors green", rbg.Intake_color.green());
-            telemetry.addData("Colors blue", rbg.Intake_color.blue());
             telemetry.addData("LEFT power", rbg.Arm_left.getPower());
 
 
