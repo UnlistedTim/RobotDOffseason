@@ -307,26 +307,26 @@ public class TelOp extends LinearOpMode {
 //            telemetry.addData("TempInput", rbg.tempinput);
 //            telemetry.update();
 
-             telemetry.addData("armlinerslide", rbg.Slide_top.getCurrentPosition());
-            telemetry.addData("armrotate position", -rbg.Arm_right.getCurrentPosition());
-
-
-            telemetry.addData("LEFT power", rbg.Arm_left.getPower());
-
-
-
-
-            telemetry.addData("Intake HANDLE", rbg.  Intake_handle.getPosition());
-            telemetry.addData("Intake rot", rbg.Intake_rot.getPosition());
-           telemetry.addData("gerbox", rbg.Gearbox.getPosition());
-            telemetry.addData("intake_lvel", rbg.intake_level);
-            telemetry.addData("Right arm motor current", rbg.Arm_right.getCurrent(CurrentUnit.AMPS));
-            telemetry.addData("Left arm motor current", rbg.Arm_left.getCurrent(CurrentUnit.AMPS));
-
-            telemetry.addData("Top slide motor current", rbg.Slide_top.getCurrent(CurrentUnit.AMPS));
-            telemetry.addData("Bot slide motor current", rbg.Slide_bot.getCurrent(CurrentUnit.AMPS));
-
-            telemetry.update();
+//             telemetry.addData("armlinerslide", rbg.Slide_top.getCurrentPosition());
+//            telemetry.addData("armrotate position", -rbg.Arm_right.getCurrentPosition());
+//
+//
+//            telemetry.addData("LEFT power", rbg.Arm_left.getPower());
+//
+//
+//
+//
+//            telemetry.addData("Intake HANDLE", rbg.  Intake_handle.getPosition());
+//            telemetry.addData("Intake rot", rbg.Intake_rot.getPosition());
+//           telemetry.addData("gerbox", rbg.Gearbox.getPosition());
+//            telemetry.addData("intake_lvel", rbg.intake_level);
+//            telemetry.addData("Right arm motor current", rbg.Arm_right.getCurrent(CurrentUnit.AMPS));
+//            telemetry.addData("Left arm motor current", rbg.Arm_left.getCurrent(CurrentUnit.AMPS));
+//
+//            telemetry.addData("Top slide motor current", rbg.Slide_top.getCurrent(CurrentUnit.AMPS));
+//            telemetry.addData("Bot slide motor current", rbg.Slide_bot.getCurrent(CurrentUnit.AMPS));
+//
+//            telemetry.update();
             }
         }
     }
