@@ -205,6 +205,8 @@ public class TelOp extends LinearOpMode {
                     break;
                 case RESTMODE:
                     rbg.stop_drive();
+
+                    rbg.Intake_handle.setPosition(rbg.handle_intake);
                     rotpowerl=0.2;
                     rotpowerr=0.2;
                     rbg.Slide_bot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -246,8 +248,8 @@ public class TelOp extends LinearOpMode {
                             rbg.Slide_top.setPower(-0.4);
                             rbg.Slide_bot.setPower(-0.4);
                             sleep(100);
-                            rbg.Arm_left.setPower(0);
-                            rbg.Arm_right.setPower(0);
+                            rbg.Arm_left.setPower(0.1);
+                            rbg.Arm_right.setPower(-0.1);
                             rbg.Slide_top.setPower(-0.2);
                             rbg.Slide_bot.setPower(-0.2);
                             sleep(500);

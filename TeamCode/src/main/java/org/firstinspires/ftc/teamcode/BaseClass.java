@@ -708,10 +708,10 @@ public class BaseClass extends MecanumDrive {
 
            //pidfsetting(rotate_spec_in+300,pidf_intake_aspec);
              move(-0.25);
-             delay(315);
+             delay(310);
             Intake.setPower(0.4);
             move(-0.18);
-            delay(280);
+            delay(300);
             stop_drive();
             pidfsetting(rotate_spec_out,pidf_outtake_spec);//pre postion.
              move(0.3);
@@ -731,7 +731,7 @@ public class BaseClass extends MecanumDrive {
         move(0.3);
        pidfsetting(rotate_spec_out,pidf_outtake_spec1);
        delay(200);
-        linearslide(slide_spec_out-20,slidev2);
+        linearslide(slide_spec_out-30,slidev2);
        Intake_handle.setPosition(handle_specimen_outtake);
 
         while (bar_dist.getDistance(DistanceUnit.MM)>105&& Op.opModeIsActive())
@@ -741,7 +741,7 @@ public class BaseClass extends MecanumDrive {
         Intake.setPower(0.9);
         delay(50);
         Intake_handle.setPosition(handle_specimen_outtake - 0.04);
-        linearslide(slide_spec_out,slidev2);
+        linearslide(slide_spec_out-20,slidev2);
         delay(20);
         stop_drive();
 
@@ -751,7 +751,7 @@ public class BaseClass extends MecanumDrive {
         pidfsetting(rotate_spec_out + 600, pidf_aspec_outtake);
         delay(150); //150
         Intake.setPower(0);
-        move(-0.55);
+        move(-0.6);
         if(!flag[last]) {
             linearslide(slide_idle-10, slidev2);
             delay(250);
@@ -1056,7 +1056,7 @@ public class BaseClass extends MecanumDrive {
            afmoveconfig[7] [strafemax]=0.7;
            afmoveconfig[7] [turnmax]=0.25;
            afmoveconfig[7] [xdis]=15;
-           afmoveconfig[7] [ydis]=1;
+           afmoveconfig[7] [ydis]=-1;
            afmoveconfig[7] [adis]=0;
            afmoveconfig[7] [time]=2000;
 
@@ -1079,7 +1079,7 @@ public class BaseClass extends MecanumDrive {
            afmoveconfig[9] [strafemax]=0.7;
            afmoveconfig[9] [turnmax]=0.25;
            afmoveconfig[9] [xdis]=15;
-           afmoveconfig[9] [ydis]=3;
+           afmoveconfig[9] [ydis]=2;
            afmoveconfig[9] [adis]=0;
            afmoveconfig[9] [time]=2000;
 
@@ -1102,7 +1102,7 @@ public class BaseClass extends MecanumDrive {
            afmoveconfig[11] [strafemax]=0.7;
            afmoveconfig[11] [turnmax]=0.25;
            afmoveconfig[11] [xdis]=15;
-           afmoveconfig[11] [ydis]=5; //2
+           afmoveconfig[11] [ydis]=4; //2
            afmoveconfig[11] [adis]=0;
            afmoveconfig[11] [time]=2000;
            //strafe for parking
