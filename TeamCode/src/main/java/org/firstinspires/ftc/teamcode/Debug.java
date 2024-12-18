@@ -44,20 +44,16 @@ public class Debug extends LinearOpMode {
 
         rbg.Arm_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rbg.Arm_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rbg.Slide_bot.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         rbg.Slide_bot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rbg.Slide_bot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//        Slide_bot.setVelocity(0);
-//        Slide_top.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        rbg.Slide_bot.setTargetPosition(0);
+        rbg.Slide_bot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rbg.Slide_bot.setVelocity(0);
 
         rbg.Slide_top.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rbg.Slide_top.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rbg.Slide_top.setPower(0);
-        rbg.Slide_bot.setPower(0);
-
-        rbg.Arm_right.setPower(0);
-       rbg.Arm_left.setPower(0);
+        rbg.Slide_top.setTargetPosition(0);
+        rbg.Slide_top.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rbg.Slide_top.setVelocity(0);
 
 
         if (isStopRequested()) return;
@@ -173,13 +169,13 @@ public class Debug extends LinearOpMode {
 
             }
 
-            if (gamepad1.left_bumper) {
-               // rbg.preintake();
-            }
-
-            if (gamepad1.right_bumper) {
-                rbg.intake();
-            }
+//            if (gamepad1.left_bumper) {
+//               // rbg.preintake();
+//            }
+//
+//            if (gamepad1.right_bumper) {
+//                rbg.intake();
+//            }
 
             if (gamepad1.right_trigger > 0.4){
                 rbg.Slide_top.setPower(0.3);
@@ -191,6 +187,15 @@ public class Debug extends LinearOpMode {
                 rbg.Slide_bot.setPower(0.3);
                 sleep(500);
                 rbg.Slide_bot.setPower(0);
+
+            }
+
+            if (gamepad1.left_bumper){
+                rbg.outtake_spec_pre();
+            }
+
+            if (gamepad1.right_bumper){
+                rbg.outtake_spec_test();
 
             }
 
@@ -262,16 +267,16 @@ public class Debug extends LinearOpMode {
 
 
 
-   //  rbg.armrotatePIDF();
+     rbg.armrotatePIDF();
          //   rbg.armrotatePIDF();
           //  rbg.armrotatePIDF();
             telemetry.addData("armlinerslide", rbg.Slide_top.getCurrentPosition());
             telemetry.addData("armrotate position", -rbg.Arm_right.getCurrentPosition());
 
 
-            telemetry.addData("Colors red", rbg.Intake_color.red());
-            telemetry.addData("Colors green", rbg.Intake_color.green());
-            telemetry.addData("Colors blue", rbg.Intake_color.blue());
+//            telemetry.addData("Colors red", rbg.Intake_color.red());
+//            telemetry.addData("Colors green", rbg.Intake_color.green());
+//            telemetry.addData("Colors blue", rbg.Intake_color.blue());
 
 
             telemetry.addData("Intake HANDLE", rbg.  Intake_handle.getPosition());

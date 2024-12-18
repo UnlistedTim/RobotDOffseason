@@ -232,7 +232,6 @@ public class TelOp extends LinearOpMode {
                         if(gamepad1.right_bumper){
                             rotpowerr=rotpowerr+0.1;
                          if(rotpowerr>0.6) rotpowerr=0.7;
-
                             rbg.Arm_left.setPower(-rotpowerr);
                             rbg.Arm_right.setPower(+rotpowerr);
                             rbg.Slide_top.setPower(-0.6);

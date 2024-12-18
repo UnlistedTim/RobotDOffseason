@@ -1717,6 +1717,46 @@ public class BaseClass extends MecanumDrive {
 
     }
 
+    public void outtake_spec_pre() {
+            stop_drive();
+            //Intake.setPower(0.8);
+            pidfsetting(1700,pidf_outtake_up2 ); //1575
+            delay(500);
+            linearslide(1140,slidev1);
+            Intake_handle.setPosition(0.34);
+
+    }
+
+
+    public void outtake_spec_test(){
+        stop_drive();
+        Intake.setPower(0.8);
+        delay(50);
+        linearslide(1140+900,slidev2);
+        //Intake_handle.setPosition(0.34);
+      //  pidfsetting(1575,pidf_outtake_down ); //650
+        delay(700);
+        Intake.setPower(-0.8);
+        delay(100);
+        move(-0.6);
+        delay(400);
+        stop_drive();
+        Intake.setPower(0);
+        linearslide(slide_idle,slidev1);
+        delay(2000);
+        pidfsetting(rotate_idle,pidf_outtake_spec);
+
+
+
+    }
+
+
+
+
+
+
+
+
     public void delay(double time)
     {
 
