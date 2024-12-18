@@ -199,6 +199,8 @@ public class Debug extends LinearOpMode {
 
             }
 
+            //test
+
 //            if (rbg.arm_rot_power <= 1.0 &&  gamepad2.right_bumper) {
 //                rbg.arm_rot_power += 0.02;
 //                rbg.Arm_right.setPower(-rbg.arm_rot_power);
