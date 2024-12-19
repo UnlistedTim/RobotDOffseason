@@ -95,9 +95,9 @@ public class LocalizationTest extends OpMode {
         poseUpdater.update();
         dashboardPoseTracker.update();
 
-        double y = -gamepad1.left_stick_y; // Remember, this is reversed!
-        double x = gamepad1.left_stick_x; // this is strafing
-        double rx = gamepad1.right_stick_x;
+        double y = -gamepad1.right_stick_y; // Remember, this is reversed!
+        double x = gamepad1.right_stick_x; // this is strafing
+        double rx = gamepad1.left_stick_x;
 
         // Denominator is the largest motor power (absolute value) or 1
         // This ensures all the powers maintain the same ratio, but only when
