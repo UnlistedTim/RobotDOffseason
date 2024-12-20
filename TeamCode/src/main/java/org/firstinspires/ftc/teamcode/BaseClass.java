@@ -947,6 +947,8 @@ public class BaseClass extends MecanumDrive {
            Gearbox.setPosition(0);
 
            flag[drive] = true;
+
+
            pidftable[pidf_intake_up][pp]=0.0024;  pidftable[pidf_intake_up][ii]=0;  pidftable[pidf_intake_up][dd]=0.0001;
            pidftable[pidf_intake_idle][pp]=0.003;  pidftable[pidf_intake_idle][ii]=0;  pidftable[pidf_intake_idle][dd]=0.00008;
            pidftable[pidf_intake_down][pp]=0.002;  pidftable[pidf_intake_down][ii]=0;  pidftable[pidf_intake_down][dd]=0.00005;
@@ -1416,6 +1418,45 @@ public class BaseClass extends MecanumDrive {
             delay(200);
             pidfsetting(roatate_prein0-250 ,pidf_outtake_down);
         }
+
+
+    }
+
+    public void pedrosample_preouttake() {
+
+//        pidfsetting(rotate_outtake, pidf_outtake_up);
+//        Intake_handle.setPosition(handle_outtake);
+//        Intake_rot.setPosition(handlerot_intake);
+//        delay(300);
+
+        pidfsetting(rotate_outtake+50, pidf_aouttake_up2);
+        linearslide(slide_outtake-20, slidev2);
+        // delay(40);
+        timer(0, 4);
+        // delay(2000000);
+
+
+
+    }
+
+    public void pedrosample_outtake() {
+
+        Intake.setPower(-0.26);//-0.28
+        delay(300);
+        Intake.setPower(0);
+        // delay(100);
+        Intake_handle.setPosition(0.3);// lift the handle for a temp  higher locaiton.
+        delay(50);
+        move(0.25);
+        delay(100);
+        linearslide(400, slidev2);
+        delay(200);
+        stop_drive();
+        Intake_handle.setPosition(handle_intake);
+        delay(200);
+        linearslide(-10, slidev1);
+        delay(200);
+        pidfsetting(roatate_prein0-250 ,pidf_outtake_down);
 
 
     }
