@@ -105,7 +105,8 @@ public class TelOp extends LinearOpMode {
 
                     if (rbg.flag[rbg.intake_ready]) {
                         rbg.intake_shift(gamepad2.right_stick_y, false);
-                        rbg.pre_intake_adjust(gamepad2.left_stick_x, gamepad2.left_stick_y);
+                       // rbg.pre_intake_adjust(gamepad2.left_stick_x, gamepad2.left_stick_y);
+                        rbg.intake_smooth_adjustst(gamepad2.left_stick_y);
                     }
 
                     break;

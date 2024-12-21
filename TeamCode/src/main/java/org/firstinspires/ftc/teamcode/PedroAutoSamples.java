@@ -95,10 +95,10 @@ public class PedroAutoSamples extends OpMode {
     public LED front_led_red;
     public LED front_led_green;
 
-    private DcMotorEx leftFront;
-    private DcMotorEx leftRear;
-    private DcMotorEx rightFront;
-    private DcMotorEx rightRear;
+    public DcMotorEx leftFront;
+    public DcMotorEx leftBack;
+    public DcMotorEx rightFront;
+    public DcMotorEx rightBack;
 
     PIDController controller;
 
@@ -266,9 +266,10 @@ public class PedroAutoSamples extends OpMode {
     public void move(double power) {
        leftFront .setPower(power);
         rightFront.setPower(power);
-        leftRear.setPower(power);
-        rightRear.setPower(power);
+        leftBack.setPower(power);
+        rightBack.setPower(power);
     }
+    
 
     /** This switch is called continuously and runs the pathing, at certain points, it triggers the action state.
      * Everytime the switch changes case, it will reset the timer. (This is because of the setPathState() method)
@@ -457,6 +458,9 @@ public class PedroAutoSamples extends OpMode {
     @Override
     public void init() {
 
+        follower = new Follower(hardwareMap);
+
+
         pidftable[pidf_intake_up][ppp]=0.0024;  pidftable[pidf_intake_up][ii]=0;  pidftable[pidf_intake_up][dd]=0.0001;
         pidftable[pidf_intake_idle][ppp]=0.003;  pidftable[pidf_intake_idle][ii]=0;  pidftable[pidf_intake_idle][dd]=0.00008;
         pidftable[pidf_intake_down][ppp]=0.002;  pidftable[pidf_intake_down][ii]=0;  pidftable[pidf_intake_down][dd]=0.00005;
@@ -468,7 +472,10 @@ public class PedroAutoSamples extends OpMode {
 
 
 
-
+        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
+        leftBack = hardwareMap.get(DcMotorEx.class, "leftBack");
+        rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
+        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
 
 
 //        RevHubOrientationOnRobot.LogoFacingDirection logoFacingDirection =
@@ -543,7 +550,7 @@ public class PedroAutoSamples extends OpMode {
        // s0.0016
 
 
-        follower = new Follower(hardwareMap);
+
         follower.setStartingPose(startPose);
 
         buildPaths();

@@ -150,7 +150,7 @@ public class BaseClass extends MecanumDrive {
     double[] stoptime = new double[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0};
     int[] step = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0,0,0,0,0,0,0};
     final int start = 0, spec_check = 1, intake = 2, lift = 3, outtake = 4, intake_shift = 5, button_flip = 6;
-    final int intake_adjustment = 7, intake_slide= 8, last = 9, drive = 10, intake_ready = 11, hang = 12, specimen = 13,pause=14;
+    final int intake_adjustment = 7, intake_slide= 8, last = 9, drive = 10, intake_ready = 11, hang = 12, specimen = 13,smooth_adj=14;
     final int force = 15,color_check=16, hang0 = 17,idle_ready=18,hang2=19,asin=20,push=21, spec = 22,pre_spec=23, pre_samp = 24;
 
 
@@ -356,6 +356,12 @@ public class BaseClass extends MecanumDrive {
 
     public boolean intake_drop() {
 
+        if (!timer(4000,intake)){
+            pre_intake();
+            return true;
+
+        }
+
 
         if(!flag[idle_ready]) {
             stop_drive();
@@ -382,7 +388,7 @@ public class BaseClass extends MecanumDrive {
 
         return false;
 
-        }
+    }
 
 
 
@@ -478,6 +484,17 @@ public class BaseClass extends MecanumDrive {
 
 
     }
+
+    public void  intake_smooth_adjustst(double sticky) {
+
+        if(sticky<-0.3) {linearslide(slide_in2,slidev0) ;flag[smooth_adj]=true;return ;}
+        if(sticky>0.3)  {linearslide(slide_in0,slidev0); flag[smooth_adj]=true;return;}
+        if(flag[smooth_adj]) {
+            linearslide(Slide_top.getCurrentPosition(),slidev0);
+            flag[smooth_adj]=false;}
+    }
+
+
     public void pre_intake() {
 
             Intake.setPower(0);
