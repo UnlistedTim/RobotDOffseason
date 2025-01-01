@@ -357,6 +357,8 @@ public class BaseClass extends MecanumDrive {
     public boolean intake_drop() {
 
         if (!timer(4000,intake)){
+            Intake.setPower(-0.6);
+            delay(200);
             pre_intake();
             return true;
 
@@ -471,14 +473,11 @@ public class BaseClass extends MecanumDrive {
     }
 
 
-      public void pre_intake_adjust(double adjustx, double adjusty) {
+      public void pre_intake_adjust(double adjustx) {
         if(!timer(300,intake_adjustment)) return;
-        if((Math.abs(adjustx)<0.7&&Math.abs(adjusty)<0.7)) return;
-        int sl=Slide_bot.getTargetPosition();
+        if(Math.abs(adjustx)<0.7) return;
         double tar=Intake_rot.getPosition();
         timer(0,intake_adjustment);
-        if(adjusty<-0.7 && sl<slide_in2)  {linearslide(sl+100,slidev2) ;return;}
-        if(adjusty>0.7 && sl>slide_in0)  {linearslide(sl-100,slidev2) ;return;}
         if(adjustx<-0.7)  {Intake_rot.setPosition(tar-0.25);return;}
         if(adjustx>0.7)  {Intake_rot.setPosition(tar+0.25);;}
 
@@ -487,8 +486,8 @@ public class BaseClass extends MecanumDrive {
 
     public void  intake_smooth_adjustst(double sticky) {
 
-        if(sticky<-0.3) {linearslide(slide_in2,slidev0) ;flag[smooth_adj]=true;return ;}
-        if(sticky>0.3)  {linearslide(slide_in0,slidev0); flag[smooth_adj]=true;return;}
+        if(sticky<-0.5) {linearslide(slide_in2,slidev0) ;flag[smooth_adj]=true;return ;}
+        if(sticky>0.5)  {linearslide(slide_in0,slidev0); flag[smooth_adj]=true;return;}
         if(flag[smooth_adj]) {
             linearslide(Slide_top.getCurrentPosition(),slidev0);
             flag[smooth_adj]=false;}
@@ -496,8 +495,6 @@ public class BaseClass extends MecanumDrive {
 
 
     public void pre_intake() {
-
-            Intake.setPower(0);
             Intake_handle.setPosition(handle_intake);
             Intake_rot.setPosition(handlerot_intake);
             pidfsetting(roatate_prein0, pidf_intake_up);
@@ -506,6 +503,7 @@ public class BaseClass extends MecanumDrive {
             flag[pre_samp] = false;
             intake_level=0;
             timer(0,intake);
+            Intake.setPower(0);
         }
 
 
@@ -970,7 +968,7 @@ public class BaseClass extends MecanumDrive {
            pidftable[pidf_intake_idle][pp]=0.003;  pidftable[pidf_intake_idle][ii]=0;  pidftable[pidf_intake_idle][dd]=0.00008;
            pidftable[pidf_intake_down][pp]=0.002;  pidftable[pidf_intake_down][ii]=0;  pidftable[pidf_intake_down][dd]=0.00005;
            pidftable[pidf_outtake_up][pp]=0.00037;  pidftable[pidf_outtake_up][ii]=0;  pidftable[pidf_outtake_up][dd]=0.000023;//
-           pidftable[pidf_outtake_up2][pp]=0.00075;  pidftable[pidf_outtake_up2][ii]=0.00012;  pidftable[pidf_outtake_up2][dd]=0.0001;//0.0025
+           pidftable[pidf_outtake_up2][pp]=0.00055;  pidftable[pidf_outtake_up2][ii]=0.0;  pidftable[pidf_outtake_up2][dd]=0.0001;//0.00075 // i = 0.00012
            pidftable[pidf_intake_spec][pp]=0.00035;  pidftable[pidf_intake_spec][ii]=0;  pidftable[pidf_intake_spec][dd]=0.00006; // turn from 0 degrees to 180, may need to decrease P and increase D
            pidftable[pidf_intake_spec2][pp]=0.001;  pidftable[pidf_intake_spec2][ii]=0;  pidftable[pidf_intake_spec2][dd]=0.00002;
            pidftable[pidf_outtake_down][pp]=0.00035;  pidftable[pidf_outtake_down][ii]=0;  pidftable[pidf_outtake_down][dd]=0.00012;
@@ -1674,7 +1672,7 @@ public class BaseClass extends MecanumDrive {
         if(-(Arm_right.getCurrentPosition())>2000){
             stop_drive();
             pidfsetting(rotate_outtake+50,pidf_outtake_up2);
-            linearslide(slide_outtake,slidev2);
+            linearslide(slide_outtake,slidev0);
             flag[lift]=false;
             return true;
         }

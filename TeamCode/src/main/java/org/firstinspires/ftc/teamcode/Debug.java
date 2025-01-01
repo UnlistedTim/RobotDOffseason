@@ -81,14 +81,14 @@ public class Debug extends LinearOpMode {
         //rbg.Intake_rot.setPosition(0.3);
         sleep(500);
 
-//        rbg.Slide_bot.setTargetPosition(0);
-//       rbg.Slide_bot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        rbg.Slide_bot.setVelocity(0);
-//
-//
-//        rbg.Slide_top.setTargetPosition(0);
-//        rbg.Slide_top.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        rbg.Slide_top.setVelocity(0);
+        rbg.Slide_bot.setTargetPosition(0);
+       rbg.Slide_bot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rbg.Slide_bot.setVelocity(0);
+
+
+        rbg.Slide_top.setTargetPosition(0);
+        rbg.Slide_top.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rbg.Slide_top.setVelocity(0);
         rbg.Arm_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rbg.Arm_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 

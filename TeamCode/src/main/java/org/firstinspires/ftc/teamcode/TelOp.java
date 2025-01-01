@@ -105,7 +105,7 @@ public class TelOp extends LinearOpMode {
 
                     if (rbg.flag[rbg.intake_ready]) {
                         rbg.intake_shift(gamepad2.right_stick_y, false);
-                       // rbg.pre_intake_adjust(gamepad2.left_stick_x, gamepad2.left_stick_y);
+                        rbg.pre_intake_adjust(gamepad2.left_stick_x);
                         rbg.intake_smooth_adjustst(gamepad2.left_stick_y);
                     }
 
@@ -233,7 +233,7 @@ public class TelOp extends LinearOpMode {
                         if(gamepad1.right_bumper){
                             rotpowerr=rotpowerr+0.1;
                          if(rotpowerr>0.6) rotpowerr=0.7;
-                            rbg.Arm_left.setPower(-rotpowerr);
+                             rbg.Arm_left.setPower(-rotpowerr);
                             rbg.Arm_right.setPower(+rotpowerr);
                             rbg.Slide_top.setPower(-0.6);
                             rbg.Slide_bot.setPower(-0.6);
@@ -306,29 +306,29 @@ public class TelOp extends LinearOpMode {
             if(gamepad1.ps) {
                 state = State.RESTMODE;
             }
-//            telemetry.addData("TempInput", rbg.tempinput);
-//            telemetry.update();
 
-//             telemetry.addData("armlinerslide", rbg.Slide_top.getCurrentPosition());
-//            telemetry.addData("armrotate position", -rbg.Arm_right.getCurrentPosition());
-//
-//
-//            telemetry.addData("LEFT power", rbg.Arm_left.getPower());
-//
-//
-//
-//
-//            telemetry.addData("Intake HANDLE", rbg.  Intake_handle.getPosition());
-//            telemetry.addData("Intake rot", rbg.Intake_rot.getPosition());
-//           telemetry.addData("gerbox", rbg.Gearbox.getPosition());
-//            telemetry.addData("intake_lvel", rbg.intake_level);
-//            telemetry.addData("Right arm motor current", rbg.Arm_right.getCurrent(CurrentUnit.AMPS));
-//            telemetry.addData("Left arm motor current", rbg.Arm_left.getCurrent(CurrentUnit.AMPS));
-//
-//            telemetry.addData("Top slide motor current", rbg.Slide_top.getCurrent(CurrentUnit.AMPS));
-//            telemetry.addData("Bot slide motor current", rbg.Slide_bot.getCurrent(CurrentUnit.AMPS));
-//
-//            telemetry.update();
+
+             telemetry.addData("armlinerslide top", rbg.Slide_top.getCurrentPosition());
+            telemetry.addData("armlinerslide bot", rbg.Slide_bot.getCurrentPosition());
+            telemetry.addData("armrotate position", -rbg.Arm_right.getCurrentPosition());
+
+
+            telemetry.addData("LEFT power", rbg.Arm_left.getPower());
+
+
+
+
+            telemetry.addData("Intake HANDLE", rbg.  Intake_handle.getPosition());
+            telemetry.addData("Intake rot", rbg.Intake_rot.getPosition());
+           telemetry.addData("gerbox", rbg.Gearbox.getPosition());
+            telemetry.addData("intake_lvel", rbg.intake_level);
+            telemetry.addData("Right arm motor current", rbg.Arm_right.getCurrent(CurrentUnit.AMPS));
+            telemetry.addData("Left arm motor current", rbg.Arm_left.getCurrent(CurrentUnit.AMPS));
+
+            telemetry.addData("Top slide motor current", rbg.Slide_top.getCurrent(CurrentUnit.AMPS));
+            telemetry.addData("Bot slide motor current", rbg.Slide_bot.getCurrent(CurrentUnit.AMPS));
+
+            telemetry.update();
             }
         }
     }

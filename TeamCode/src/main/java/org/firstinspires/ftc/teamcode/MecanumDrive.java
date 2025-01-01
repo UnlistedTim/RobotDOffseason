@@ -596,6 +596,9 @@ public  class MecanumDrive {
         Arm_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Arm_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        Slide_bot.setDirection(DcMotorSimple.Direction.REVERSE);
+        Slide_top.setDirection(DcMotorSimple.Direction.REVERSE);
+
 
         Slide_bot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         Slide_bot.setTargetPosition(0);
@@ -606,6 +609,8 @@ public  class MecanumDrive {
         Slide_top.setTargetPosition(0);
         Slide_top.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         Slide_top.setVelocity(0);
+
+
 
 
     }
