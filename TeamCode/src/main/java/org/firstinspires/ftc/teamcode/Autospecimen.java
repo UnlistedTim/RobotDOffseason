@@ -73,7 +73,7 @@ public class Autospecimen extends LinearOpMode {
             rbg.afmove(5,true);//strafe for second sampl
             rbg.afmove(6,false);//push the seond samples and intake
 
-            rbg.aspec_intake();;
+            rbg.aspec_intake();
             rbg.afmove(7,true);//strafe for outtake
             rbg.aspec_outtake();;
             rbg.afmove(8,true);//strafe for intake

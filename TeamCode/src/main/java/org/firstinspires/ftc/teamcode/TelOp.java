@@ -303,9 +303,9 @@ public class TelOp extends LinearOpMode {
           //  if (gamepad2.dpad_up && gamepad2.dpad_down)   rbg.adjust(gamepad2.dpad_up, gamepad2.dpad_down);
             rbg.robot_centric(gamepad1.right_stick_y, gamepad1.right_stick_x, gamepad1.left_stick_x, speed_factor);
 
-            if(gamepad1.ps) {
-                state = State.RESTMODE;
-            }
+//            if(gamepad1.ps) {
+//                state = State.RESTMODE;
+//            }
 
 
              telemetry.addData("armlinerslide top", rbg.Slide_top.getCurrentPosition());

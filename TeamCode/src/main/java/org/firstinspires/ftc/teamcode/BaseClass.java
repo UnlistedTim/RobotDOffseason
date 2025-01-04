@@ -250,7 +250,7 @@ public class BaseClass extends MecanumDrive {
     }
     //forhang
     public void hang() {
-        if(!flag[hang0]) return;
+        if(!flag[hang0] || Slide_top.getCurrentPosition() < 4000 ) return;
         k=k/6;
         move(0.3);
         linearslideTq(4600,0.98);
@@ -420,7 +420,7 @@ public class BaseClass extends MecanumDrive {
 
        if(step[spec_check]==1&&Slide_top.getCurrentPosition()<300)
        {
-           pidfsetting(rotate_spec_in+215 ,pidf_intake_spec);
+           pidfsetting(rotate_spec_in+170 ,pidf_intake_spec);
 
           // timer(0,pre_spec);
            step[spec_check]=0;
@@ -461,11 +461,12 @@ public class BaseClass extends MecanumDrive {
     public void intake_throw(){
         stop_drive();
         Intake_handle.setPosition(handle_specimen_intake);
-        pidfsetting(rotate_spec_in+215 ,pidf_intake_spec);
+        pidfsetting(rotate_spec_in+170 ,pidf_intake_spec);
         linearslide(slide_idle,slidev2);
         delay(600);
        // pidfsetting(rotate_spec_in,pidf_intake_spec2);
         Intake.setPower(-0.25); // may lower like -0.2
+
         flag[pre_spec]=true;
         delay(300);
         flag[lift] = false;
@@ -748,7 +749,7 @@ public class BaseClass extends MecanumDrive {
         move(0.3);
        pidfsetting(rotate_spec_out,pidf_outtake_spec1);
        delay(200);
-        linearslide(slide_spec_out-30,slidev2);
+        linearslide(slide_spec_out-65,slidev2);
        Intake_handle.setPosition(handle_specimen_outtake);
 
         while (bar_dist.getDistance(DistanceUnit.MM)>105&& Op.opModeIsActive())
@@ -758,7 +759,7 @@ public class BaseClass extends MecanumDrive {
         Intake.setPower(0.9);
         delay(50);
         Intake_handle.setPosition(handle_specimen_outtake - 0.04);
-        linearslide(slide_spec_out-20,slidev2);
+        linearslide(slide_spec_out-55,slidev2);
         delay(20);
         stop_drive();
 
@@ -1630,7 +1631,7 @@ public class BaseClass extends MecanumDrive {
             delay(250);
             Intake_handle.setPosition(handle_idle); // change later
           //  Intake_rot.setPosition(handlerot_intake);
-            pidfsetting(rotate_spec_in+50,pidf_intake_spec);
+            pidfsetting(rotate_spec_in,pidf_intake_spec);
             stop_drive();
             delay(100);
             flag[specimen]=false;
