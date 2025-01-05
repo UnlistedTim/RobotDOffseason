@@ -989,6 +989,7 @@ public class BaseClass extends MecanumDrive {
            pidftable[pidf_aintake_down][pp]=0.0015;  pidftable[pidf_aintake_down][ii]=0;  pidftable[pidf_aintake_down][dd]=0.00018;// 0.0015,0.0001
            pidftable[pidf_aouttake_up2][pp]=0.001;  pidftable[pidf_aouttake_up2][ii]=0.00018;  pidftable[pidf_aouttake_up2][dd]=0.0000;//0
 
+
            // strafe for smaples
            afmoveconfig[0] [speedg]=0.035;
            afmoveconfig[0] [strafeg]=0.15;
@@ -1641,18 +1642,13 @@ public class BaseClass extends MecanumDrive {
     }
 
 
-    public void armrotatePIDF()
-
-    {
+    public void armrotatePIDF() {
         rotatePos = -Arm_right.getCurrentPosition();
         slidePos = Slide_top.getCurrentPosition();
         controller.setPID(p,i,d);
         pid = controller.calculate(rotatePos,rotateTarget);
         ff = Math.cos(Math.toRadians(rotatePos/ticks_in_degree +rotateStartangle)) * (f + k*slidePos) ;// target
         power = pid + ff;
-
-//        if (power > 1.0) power = 0.98;
-//        if (power < -1.0) power = -0.98;
         Arm_left.setPower(-power);
         Arm_right.setPower(power);// to be changed director.
 
