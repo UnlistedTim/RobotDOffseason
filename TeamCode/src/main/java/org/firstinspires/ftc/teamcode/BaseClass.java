@@ -129,7 +129,7 @@ public class BaseClass extends MecanumDrive {
 
 
 // 3rd robot special
-    int roatate_prein0=375, rotate_in0=-40, rotate_idle=30,rotate_outtake=2400, rotate_spec_in = 4100, rotate_spec_out=1500,rotate_spec_first=1450;//intake rotat could not over 70
+    int roatate_prein0=415, rotate_in0=-40, rotate_idle=30,rotate_outtake=2400, rotate_spec_in = 4100, rotate_spec_out=1500,rotate_spec_first=1450;//intake rotat could not over 70
     int slide_in0=800,slide_in1=1200,slide_in2=1600,slide_idle=200,slide_outtake=2470,slide_rotate=1000, slide_spec_out = 350;   //rotate_outtake 2350
     int intake_level=0;
     double handle_idle=0.05,handle_intake=0.37,handle_specimen_intake=0.07,handle_outtake=0 ,handle_specimen_outtake = 0.1;
