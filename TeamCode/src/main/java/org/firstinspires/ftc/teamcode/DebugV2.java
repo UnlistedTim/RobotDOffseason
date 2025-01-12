@@ -30,6 +30,9 @@ public class DebugV2 extends LinearOpMode {
 
     double clawpos = 0.7;
 
+    double clawopen = 0.72;
+    double clawclose = 0.93;
+
     double offset = -200 +360;
 
 
@@ -206,8 +209,15 @@ public class DebugV2 extends LinearOpMode {
 
             }
             if (gamepad2.triangle) {
+
+                Claw.setPosition(clawclose);
+                clawpos = clawclose;
+
+
             }
             if (gamepad2.cross) {
+                Claw.setPosition(clawopen);
+                clawpos = clawopen;
             }
 
 
@@ -320,6 +330,8 @@ public class DebugV2 extends LinearOpMode {
 
          //   rbg.armrotatePIDF();
           //  rbg.armrotatePIDF();
+
+
             telemetry.addData("armlinerslide", Slide_top.getCurrentPosition());
             telemetry.addData("armrotate position", angle);
 
