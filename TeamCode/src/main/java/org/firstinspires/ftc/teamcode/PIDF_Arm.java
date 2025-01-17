@@ -83,12 +83,12 @@ public class PIDF_Arm extends OpMode{
 
         Arm_encoder= hardwareMap.get(AnalogInput.class, "Arm_encoder");
 
-        Arm_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        Arm_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         Arm_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         Arm_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        Arm_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        Arm_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         Arm_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         Arm_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -134,6 +134,7 @@ public class PIDF_Arm extends OpMode{
         if (angle < 360 && angle > 300) angle-=360;
 
         int armPos = (int) (angle * 8192.0/360);// negative to change the vaule for easy understanding;
+//        int slidePos = -Slide_bot.getCurrentPosition();
         int slidePos = -Slide_top.getCurrentPosition();
       //  slidePos = 0;
      //   if (Math.abs(armPos-target)<400) d=0.0008; else d=0.002;
@@ -150,9 +151,13 @@ public class PIDF_Arm extends OpMode{
         telemetry.addData("PID power", pid);
         telemetry.addData("Total Power", power);
         telemetry.addData("slide pos", slidePos);
+        telemetry.addData("slide bot pos", Slide_bot.getCurrentPosition());
 
         telemetry.addData("Current right", Arm_right.getCurrent(CurrentUnit.AMPS));
         telemetry.addData("Current left", Arm_left.getCurrent(CurrentUnit.AMPS));
+
+        telemetry.addData("Current slide top", Slide_top.getCurrent(CurrentUnit.AMPS));
+        telemetry.addData("current slide bottom", Slide_bot.getCurrent(CurrentUnit.AMPS));
         telemetry.update();
 
     }

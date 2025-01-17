@@ -30,6 +30,10 @@ public class BaseClass extends MecanumDrive {
     public LinearOpMode Op;
 
    // double intakerotpose=0,gearboxpose=0;
+
+    // p 0.00012 down: spec outtake to intake idle (100) and sample outtake to intake idle (100)
+
+    // p 0.0002 up: intake idle (100) to spec outtake and intake idle to sample outtake
     double speed_index=1;
     double arm_angle=0;
     double claw_close=0.93,claw_open=0.72;

@@ -208,12 +208,9 @@ public class TelOp extends LinearOpMode {
 
             rbg.armrotatePIDF();
 
-            if(gamepad1.left_bumper)
-
-            {
+            if(gamepad1.left_bumper) {
                if (rbg.drop())  state = State.IDLE;
-               else
-                   state = State.SAMPLEINTAKE;
+               else state = State.SAMPLEINTAKE;
             }
 
             if (rbg.timer(88000, rbg.start) || rbg.flag[rbg.force]) {
