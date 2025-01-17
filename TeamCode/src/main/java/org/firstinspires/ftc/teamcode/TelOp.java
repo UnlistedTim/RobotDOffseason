@@ -7,22 +7,27 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
-@TeleOp(name = "TelopRegional", group = "AA")
+@TeleOp(name = "TelopState A", group = "AA")
 public class TelOp extends LinearOpMode {
     BaseClass rbg;// hardware init at Mecanumdrive.
     double speed_factor = 1.0;
-    double rotpowerl=0,rotpowerr=0;
+  //  double rotpowerl=0,rotpowerr=0;
+
 
     public enum State { // linear slide 600, arm 1500, rot 0.2
-        INTAKE,
+        IDLE,
+        SAMPLEINTAKE,
+        INTAKEIDLE,
         SPECIMENINTAKE,
-        LIFT,
-        OUTTAKE,
-        SPECIMENOUTTAKE,
-        RESTMODE;
+        SPECINTAKE,
+        SAMPLELIFT,
+        SAMPLEOUTTAKE,
+        SPECOUTTAKE,
+
+
     }
 
-    State state = State.INTAKE;
+    State state = State.IDLE;
 
 
 
@@ -37,252 +42,179 @@ public class TelOp extends LinearOpMode {
         telemetry.update();
         rbg.init(0);
         rbg.init(1);
-        sleep(300);
+        sleep(500);
         telemetry.addLine("Press Start Now!:");
         telemetry.update();
         waitForStart();
-        rbg.rotation_reset();
-
-//        rbg.timer(0, rbg.start);
-//
-//
-//        rbg.Slide_bot.setTargetPosition(0);
-//        rbg.Slide_bot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        rbg.Slide_bot.setVelocity(0);
-//        rbg.Slide_top.setTargetPosition(0);
-//        rbg.Slide_top.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        rbg.Slide_top.setVelocity(0);
-//        rbg.Arm_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        rbg.Arm_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//
-//
-//        rbg.Arm_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        rbg.Arm_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        // rbg.Intake_rot.setPosition(0.3);
-        //rbg.Intake_rot.setPosition(0.3);
-     //   sleep(500);
-
-
-       // rbg.init(1);
-      //  state = State.INTAKE;
+        rbg.pre_idle();
+     //   rbg.rotation_reset();
 
         while (opModeIsActive()) {
             switch (state) {
-                case INTAKE:
-                    if (gamepad2.left_bumper || rbg.flag[rbg.pre_spec]) {
-                        if(rbg.pre_spec()){
-                            speed_factor = 0.5;
-                            state = State.SPECIMENINTAKE;
-                            break;
-                        }
+               case IDLE:
+                   if(!rbg.flag[rbg.idleready])
+                   {
+                       rbg.idle_ready();
+                       if(speed_factor<1)speed_factor=rbg.speed_index;// ater sample outtake
+                       break;
+                   }
+                   if(gamepad2.right_bumper) {
+                       rbg.pre_sampleintake();
+                       state = State.SAMPLEINTAKE;
+                       break;
 
-                    }
+                   };
+                   if(gamepad2.left_bumper) {
+                       rbg.pre_specintake(false);
+                       state = State.SPECINTAKE;
+                       break;
 
-                    if (gamepad1.left_bumper||rbg.flag[rbg.idle_ready]) {
-                        rbg.intake_drop();
-                        state = State.INTAKE;
-                        speed_factor = 0.4;
-                        break;
-                    }
-                    if ((gamepad2.right_bumper && rbg.flag[rbg.intake_ready] && rbg.flag[rbg.button_flip]) || rbg.flag[rbg.intake_slide]) {
-                        //rbg.intake();
-                        if(rbg.intake_no_color()) {
-                            state = State.LIFT;
-                            speed_factor = 1.0;
-                            break;
-                        }
+                   };
 
-                    }
-                    if (!rbg.flag[rbg.button_flip] && rbg.flag[rbg.intake_ready] && !gamepad2.right_bumper) {
-                        rbg.flag[rbg.button_flip] = true;// prevent gunner hold the right bumper.
-                    }
-                    if (!rbg.flag[rbg.intake_ready] && gamepad2.right_bumper) {
-                        //rbg.pre_intake();
-                        rbg.pre_intake();
-                        speed_factor = 0.4;
+//                   if(gamepad1.touchpad) {
+//                       rbg.pre_specintake(true);
+//                       state = State.SPECINTAKE;
+//                       break;
+//                   }
+//                   break;
 
-                    }
+               case SAMPLEINTAKE:
+                   if(!rbg.flag[rbg.sampleintakeready])
+                   {
+                       speed_factor=0.3;
+                       rbg.sampleintake_ready(gamepad2.right_bumper);
+                       break;
+                   }
 
-                    if (rbg.flag[rbg.intake_ready]) {
-                        rbg.intake_shift(gamepad2.right_stick_y, false);
-                        rbg.pre_intake_adjust(gamepad2.left_stick_x);
-                        rbg.intake_smooth_adjustst(gamepad2.left_stick_y);
-                    }
+                   if(gamepad2.right_bumper) {
+                       rbg.sampleintake();
+                       speed_factor=1;
+                       state = State.INTAKEIDLE;
+                       break;
+                   }
 
-                    break;
+                   if(gamepad2.left_bumper) {
+                       rbg.pre_specintake(false);
+                       speed_factor=1;
+                       state = State.SPECINTAKE;
+                       break;
+                   }
 
-                case SPECIMENINTAKE:
-//                    if (gamepad2.right_bumper || rbg.flag[rbg.pre_samp]) {
-//                        if (rbg.pre_intake()){
-//                            state = State.INTAKE;
-//                            speed_factor = 0.4;
-//                            break;
-//                        }
-//
-//                    }
-                    if(gamepad2.right_bumper ) {
+                  break;
 
-                       // idel for preintake.
-
-                        {
-                            rbg.directdle();
-                            state = State.INTAKE;
-                            break;
-                        }
-
-
-                    }
-
-//                    if (gamepad2.left_bumper) {
-//                        rbg.pre_specimen();
-//                    }
-
-                    if (gamepad1.right_bumper || rbg.flag[rbg.spec]) {
-                        speed_factor = 1.0;
-                        if (rbg.intake_specimen()) {
-                            state = State.SPECIMENOUTTAKE;
-
-                        }
-                    }
-
-                    break;
-
-
-                case LIFT:
-
-                    if (gamepad1.right_bumper || rbg.flag[rbg.lift]) {
-                        if (rbg.lift()) {
-                            speed_factor = 0.3;
-                            state = State.OUTTAKE;
-                            break;
-                        }
-
-                    }
-                    if (gamepad1.left_bumper||rbg.flag[rbg.idle_ready]) {
-                        if(rbg.intake_drop()) {
-                            state = State.INTAKE;
-                            speed_factor = 0.4;
-                            break;
-                        }
-                    }
-
-                    if (gamepad1.touchpad) {
-                        rbg.intake_throw(); // throw sample, auto go to specimen pre intake
-                        rbg.flag[rbg.intake_shift] = false;
-                        speed_factor = 0.5;
-                        state = State.SPECIMENINTAKE;
-                    }
-                    break;
-
-                case OUTTAKE:
-
-                    if (gamepad1.right_bumper || rbg.flag[rbg.outtake]) {
-
-                        if (rbg.outtake()) {
-                            speed_factor = 1.0;
-                            state = State.INTAKE;
-                        }//cool
-
-
-                    }
-
-                    break;
-
-                case SPECIMENOUTTAKE:
-                    if (gamepad1.right_bumper || rbg.flag[rbg.outtake]) {
-
-                        if (rbg.outtake_spec()) {
-                            speed_factor = 1.0;
-                            state = State.INTAKE;
-                            break;
-                        }
-                    }
-                    if (gamepad1.left_bumper) {
-                        rbg.intake_throw();
-                        state = State.SPECIMENINTAKE;
-                        speed_factor = 0.5;
-                        break;
-                    }
-                    break;
-                case RESTMODE:
-                    rbg.stop_drive();
-
-                    rbg.Intake_handle.setPosition(rbg.handle_intake);
-                    rotpowerl=0.2;
-                    rotpowerr=0.2;
-                    rbg.Slide_bot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    rbg.Slide_bot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                    rbg.Slide_top.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    rbg.Slide_top.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                    sleep(500);
-                    while (opModeIsActive())
-
-
+                case INTAKEIDLE:
+                    if(!rbg.flag[rbg.intakeidleready])
                     {
+                        rbg.intakeidle_ready();
+                        break;
+                    }
+                    if(gamepad2.right_bumper) {
+                        rbg.pre_samplelift(false);
+                        state = State.SAMPLELIFT;
+                        break;
+                    };
 
-                        sleep(10);
-                       if(gamepad1.left_bumper){
-                           rotpowerl=rotpowerl+0.1;
-                           if(rotpowerl>0.6) rotpowerl=0.7;
-                           rbg.Arm_left.setPower(rotpowerl);
-                           rbg.Arm_right.setPower(-rotpowerl);
-                           rbg.Slide_top.setPower(-0.3);
-                           rbg.Slide_bot.setPower(-0.3);
-                           sleep(1000);
-                       }
-                        if(gamepad1.right_bumper){
-                            rotpowerr=rotpowerr+0.1;
-                         if(rotpowerr>0.6) rotpowerr=0.7;
-                             rbg.Arm_left.setPower(-rotpowerr);
-                            rbg.Arm_right.setPower(+rotpowerr);
-                            rbg.Slide_top.setPower(-0.6);
-                            rbg.Slide_bot.setPower(-0.6);
-                            sleep(300);
-                            rbg.Arm_left.setPower(-0.13);
-                            rbg.Arm_right.setPower(+0.13);
-                            rbg.Slide_top.setPower(-0.4);
-                            rbg.Slide_bot.setPower(-0.4);
-                            sleep(500);
-                            rbg.Arm_left.setPower(-0.1);
-                            rbg.Arm_right.setPower(+0.1);
-                            rbg.Slide_top.setPower(-0.4);
-                            rbg.Slide_bot.setPower(-0.4);
-                            sleep(100);
-                            rbg.Arm_left.setPower(0.1);
-                            rbg.Arm_right.setPower(-0.1);
-                            rbg.Slide_top.setPower(-0.2);
-                            rbg.Slide_bot.setPower(-0.2);
-                            sleep(500);
-                            rbg.Slide_top.setPower(0);
-                            rbg.Slide_bot.setPower(0);
+                    if(gamepad2.left_bumper) {
+                        rbg.pre_specintake(false);
+                      state = State.SPECINTAKE;
+                        break;
+                    };
 
-                        }
-
-                        if(gamepad1.ps){
-
-                            rbg.Slide_bot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                            rbg.Slide_bot.setTargetPosition(0);
-                            rbg.Slide_bot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                            rbg.Slide_bot.setVelocity(0);
-
-                            rbg.Slide_top.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                            rbg.Slide_top.setTargetPosition(0);
-                            rbg.Slide_top.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                            rbg.Slide_top.setVelocity(0);
-                            sleep(400);
-
-                            rbg.rotation_reset();
-                            state = State.INTAKE;
-                            break;
-                        }
+                    if(gamepad1.right_bumper) {
+                        rbg.pre_samplelift(true);
+                        state = State.SAMPLELIFT;
+                        break;
+                    };
 
 
+                break;
+
+               case SPECINTAKE:
+                   if(!rbg.flag[rbg.specintakeready])
+                   {
+                       rbg.specintake_ready();
+                       break;
+                   }
+                   speed_factor=0.4;
+                   if(gamepad1.touchpad||rbg.flag[rbg.placement])
+                   {
+                       rbg.specplacment();
+                   }
+                   if(gamepad1.right_bumper)
+                   {
+                       rbg.specintake();
+                       rbg.pre_specouttake();
+                   }
+                   break;
+
+                case SAMPLELIFT:
+                   if(!rbg.flag[rbg.sampleouttakeready])
+                   {
+                      if(!rbg.flag[rbg.lift] && gamepad1.right_bumper)  rbg.flag[rbg.lift]=true;
+                      rbg.samplelift_ready();
+                       break;
+                   }
+                if(gamepad1.right_bumper||rbg.flag[rbg.lift])
+                {
+                   rbg.pre_sampleouttake();
+                   speed_factor=0.3;
+                   state = State.SAMPLEOUTTAKE;
+                }
+
+               break;
+
+                case SAMPLEOUTTAKE:
+                    if(!rbg.flag[rbg.sampleouttakeready])
+                    {
+                        rbg.sampleouttake_ready();
+                        break;
                     }
 
-                    break;
+                 if(gamepad2.right_bumper)
+                 {
+                     rbg.sampleouttake();
+                     rbg.pre_idle();
+
+                     state = State.IDLE;
+                     break;
+                 }
+
+                 break;
+
+
+               case SPECOUTTAKE:
+                   if(!rbg.flag[rbg.specouttakeready])
+                   {
+                       rbg.specouttake_ready();
+                       break;
+                   }
+
+                   if(gamepad1.right_bumper) {
+                       rbg.specouttake();
+                       rbg.pre_idle();
+                       state = State.IDLE;
+
+                   }
+
+
+                   break;
+
+
+
+
+
+
             }
 
             rbg.armrotatePIDF();
+
+            if(gamepad1.left_bumper)
+
+            {
+               if (rbg.drop())  state = State.IDLE;
+               else
+                   state = State.SAMPLEINTAKE;
+            }
 
             if (rbg.timer(88000, rbg.start) || rbg.flag[rbg.force]) {
                 if (gamepad2.share || rbg.flag[rbg.hang]) {
@@ -318,8 +250,8 @@ public class TelOp extends LinearOpMode {
 
 
 
-            telemetry.addData("Intake HANDLE", rbg.  Intake_handle.getPosition());
-            telemetry.addData("Intake rot", rbg.Intake_rot.getPosition());
+//            telemetry.addData("Intake HANDLE", rbg.  Intake_handle.getPosition());
+//            telemetry.addData("Intake rot", rbg.Intake_rot.getPosition());
            telemetry.addData("gerbox", rbg.Gearbox.getPosition());
             telemetry.addData("intake_lvel", rbg.intake_level);
             telemetry.addData("Right arm motor current", rbg.Arm_right.getCurrent(CurrentUnit.AMPS));

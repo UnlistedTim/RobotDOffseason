@@ -132,7 +132,7 @@ public class DebugV2 extends LinearOpMode {
         telemetry.addLine("Press Start Now!:");
         telemetry.update();
 
-        Gearbox.setPosition(0.05); // 0.05
+        Gearbox.setPosition(0); // 0.05
 //        init(2);
 
         //    rotatetargetPIDF(rotateStart);
@@ -153,9 +153,8 @@ public class DebugV2 extends LinearOpMode {
 
 
         while (opModeIsActive()) {
-
             angle = 360 - ((Arm_encoder.getVoltage() / 3.2 * 360 + offset) % 360);
-            if (angle < 360 && angle > 300) angle-=360;
+            if ( angle > 300) angle-=360;
            // Intake_rot.setPosition(0);
 
 
@@ -227,7 +226,7 @@ public class DebugV2 extends LinearOpMode {
             if (gamepad2.square) {
             }
             if(gamepad1.dpad_up) {
-                if (clawpos <= 0.99){
+                if (clawpos <= 0.98){
                     clawpos+=0.02;
                     Claw.setPosition(clawpos);
                     sleep(300);
@@ -238,7 +237,7 @@ public class DebugV2 extends LinearOpMode {
             }
             if(gamepad1.dpad_down)
             {
-                if (clawpos >= 0.01){
+                if (clawpos >= 0.02){
                     clawpos-=0.02;
                     Claw.setPosition(clawpos);
                     sleep(300);
@@ -249,88 +248,7 @@ public class DebugV2 extends LinearOpMode {
 
             }
 
-//            if (gamepad1.left_bumper) {
-//               // rbg.preintake();
-//            }
 //
-//            if (gamepad1.right_bumper) {
-//                rbg.intake();
-//            }
-
-
-
-            //test
-
-//            if (rbg.arm_rot_power <= 1.0 &&  gamepad2.right_bumper) {
-//                rbg.arm_rot_power += 0.02;
-//                rbg.Arm_right.setPower(-rbg.arm_rot_power);
-//                rbg.Arm_left.setPower(-rbg.arm_rot_power);
-//                rbg.timer(0, 0);
-//            }
-//
-//            if (rbg.arm_rot_power >= -1.0 && gamepad2.left_bumper ) {
-//
-//                rbg.arm_rot_power -= 0.02;
-//                rbg.Arm_right.setPower(rbg.arm_rot_power);
-//                rbg.Arm_left.setPower(rbg.arm_rot_power);
-//                rbg.timer(0, 0);
-//            }
-            
-//            if (gamepad1.dpad_up){
-//                rbg.arm_slide_pos +=100;
-//                rbg.Slide_top.setTargetPosition(rbg.arm_slide_pos);
-//                rbg.Slide_top.setVelocity(1000);
-//                rbg.Slide_bot.setTargetPosition(rbg.arm_slide_pos);
-//                rbg.Slide_bot.setVelocity(1000);
-//                rbg.timer(0, 0);
-//
-//            }
-//            if (gamepad1.dpad_down){
-//                rbg.arm_slide_pos -=100;
-//                rbg.Slide_top.setTargetPosition(rbg.arm_slide_pos);
-//                rbg.Slide_top.setVelocity(1000);
-//                rbg.Slide_bot.setTargetPosition(rbg.arm_slide_pos);
-//                rbg.Slide_bot.setVelocity(1000);
-//                rbg.timer(0, 0);
-//
-//            }
-//            if (gamepad2.square) {rbg.armrotatePos -=rbg.armrotateStep; rbg.timer(0,0);}
-//            if (gamepad2.square) {rbg.armrotatePos-= ; rbg.timer(0,0);}
-//            if (gamepad2.circle) {rbg.armrotatePos += rbg.armrotateStep;; rbg.timer(0,0);}
-
-//
-//
-////        if(Math.abs(rbg.armslidePos-rbg.armslideCurrent)>5){
-////            if(rbg.armslidePos>rbg.armslideH) rbg.armslidePos=rbg.armslideH;
-////            if(rbg.armslidePos<rbg.armslideL) rbg.armslidePos=rbg.armslideL;
-////            rbg.linearslide(rbg.armSlide,rbg.armslidePos,rbg.armslideV3);
-////            rbg.armslideCurrent=rbg.armslidePos;
-////            update_flag=true;
-////
-////        }
-//
-////        if(Math.abs(rbg.armrotatePos-rbg.armrotateCurrent)>3){
-////                if(rbg.armrotatePos>rbg.armrotateH) rbg.armrotatePos=rbg.armrotateH;
-////                if(rbg.armrotatePos<rbg.armrotateL) rbg.armrotatePos=rbg.armrotateL;
-////               // rbg.linearslide(rbg.armRotate,rbg.armrotatePos,rbg.armrotateV2);
-////                rbg.rotatetargetPIDF(rbg.armrotatePos);
-////              //  rbg.armrotatePIDF();
-////                rbg.armrotateCurrent=rbg.armrotatePos;
-////                update_flag=true;
-////            }
-//
-////
-//        if(Math.abs(rbg.handlePos-rbg.handleCurrent)>0.001)
-       //        rbg.rotatetargetPIDF(rbg.armrotatePos)rbg.rotatetargetPIDF(rbg.armrotatePos)
-//      //  rbg.rotatetargetPIDF(rbg.armrotatePos);
-//     //   rbg.armrotatePIDF();
-//     //   rbg.robot_centric(gamepad1.right_stick_y, gamepad1.right_stick_x, gamepad1.left_stick_x, 0.5);
-
-
-
-         //   rbg.armrotatePIDF();
-          //  rbg.armrotatePIDF();
-
 
             telemetry.addData("armlinerslide", Slide_top.getCurrentPosition());
             telemetry.addData("armrotate position", angle);
@@ -342,36 +260,12 @@ public class DebugV2 extends LinearOpMode {
 
 
 
-//            telemetry.addData("Colors red", rbg.Intake_color.red());
-//            telemetry.addData("Colors green", rbg.Intake_color.green());
-//            telemetry.addData("Colors blue", rbg.Intake_color.blue());
-
-
-//            telemetry.addData("Intake HANDLE", Intake_handle.getPosition());
-//            telemetry.addData("Intake rot", Intake_rot.getPosition());
-          //  telemetry.addData("Intake rot", rbg.Intake_rot.getPosition());
+//
            telemetry.addData("gerbox", Gearbox.getPosition());
-         //   telemetry.addData("intake handle", rbg.Intake_handle.getPosition());
-
-
-
-           // telemetry.addData("armrotate pos ",  rbg.rotateticks);
-//            telemetry.addData("armrotate target", rbg.rotateTarget);
-//            telemetry.addData("armrotate read", rbg.Arm_left.getCurrentPosition());
-        //    telemetry.addData("armrotate read", rbg.Arm_left.getCurrent(CurrentUnit.MILLIAMPS));
-
-//            telemetry.addData("armrslide currentalert",  rbg.armSlide.getCurrentAlert(CurrentUnit.MILLIAMPS));
-//            telemetry.addData("armrotate currentalert",   rbg.armRotate.
-//
-//
-//            (CurrentUnit.MILLIAMPS));
-    //        telemetry.addData("armrslide current",  rbg.armSlide.getCurrent(CurrentUnit.MILLIAMPS));
-           // telemetry.addData("armrotate current",   rbg.armRotate.getCurrent(CurrentUnit.MILLIAMPS));
-   //         telemetry.addData("armrslide current",  rbg.armSlide.isOverCurrent());
-       //     telemetry.addData("armrotate current",   rbg.armRotate.isOverCurrent());
-
-         //   telemetry.addLine("gamepad2  x/triangle  linerside,  square/circle armrotate");
-            telemetry.addLine("gamepad2  dapad down/up handle        dpad left/right claw ort");
+       ;
+            telemetry.addLine("gamepad2  dapad down/up handle        dpad left/right hadle ort");
+            telemetry.addLine("gamepad2  triangle clawcolse        cross claw open");
+            telemetry.addLine("gamepad1  dapd up  +        dpad downn-");
 //            telemetry.addData("Bar distance", bar_dist.getDistance(DistanceUnit.MM));
 //            telemetry.addData("Basket distance", rbg.basket_dist.getDistance(DistanceUnit.MM));
       //      telemetry.addLine("gamepad2 right/lefit bumper   handle rot");

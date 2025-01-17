@@ -32,6 +32,7 @@ import com.acmerobotics.roadrunner.ftc.PositionVelocityPair;
 import com.acmerobotics.roadrunner.ftc.RawEncoder;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -120,14 +121,17 @@ public  class MecanumDrive {
 
 
     public  DcMotorEx Arm_right, Arm_left, Slide_top,Slide_bot;
-    public  Servo Intake_rot,Intake_handle, Gearbox;
+    public  Servo Left_handle,Right_handle, Claw, Gearbox;
+    public AnalogInput Arm_encoder;
     public DigitalChannel Arm_touch;
-    public CRServo Intake;
+    //public CRServo Intake;
     public  VoltageSensor voltageSensor;
     public ColorSensor Intake_color;
 
     public DistanceSensor bar_dist;
     public DistanceSensor basket_dist;
+
+
 
     public LED front_led_red;
     public LED front_led_green;
@@ -551,20 +555,27 @@ public  class MecanumDrive {
         Slide_bot = hardwareMap.get(DcMotorEx.class, "Slide_bot");
         Slide_top = hardwareMap.get(DcMotorEx.class, "Slide_top");
 
+        //Make the encoder value be postive
+
+
+
         front_led_green = hardwareMap.get(LED.class, "front_led_green");
         front_led_red = hardwareMap.get(LED.class, "front_led_red");
         rear_led_green = hardwareMap.get(LED.class, "rear_led_green");
         rear_led_red = hardwareMap.get(LED.class, "rear_led_red");
+        Right_handle = hardwareMap.get(Servo.class, "Right_handle");
+        Claw = hardwareMap.get(Servo.class, "Claw");
+        Left_handle = hardwareMap.get(Servo.class, "Left_handle");
 
 //        arm_grab = hardwareMap.get(Servo.class, "arm_grab");
-        Intake_rot = hardwareMap.get(Servo.class, "Intake_rot");
-        Intake = hardwareMap.get(CRServo.class, "Intake");
-        Intake_handle = hardwareMap.get(Servo.class, "Intake_handle");
+      //  Intake_rot = hardwareMap.get(Servo.class, "Intake_rot");
+      //  Intake = hardwareMap.get(CRServo.class, "Intake");
+      //  Intake_handle = hardwareMap.get(Servo.class, "Intake_handle");
         Gearbox = hardwareMap.get(Servo.class, "Gearbox");
 
 //        Intake_color = hardwareMap.get(ColorSensor.class, "Intake_color");
+        Arm_encoder= hardwareMap.get(AnalogInput.class, "Arm_encoder");
         Arm_touch = hardwareMap.get(DigitalChannel.class,"Arm_touch");
-
         basket_dist = hardwareMap.get(DistanceSensor.class,"basket_dist");
         bar_dist = hardwareMap.get(DistanceSensor.class,"bar_dist");
 
@@ -596,8 +607,6 @@ public  class MecanumDrive {
         Arm_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Arm_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        Slide_bot.setDirection(DcMotorSimple.Direction.REVERSE);
-        Slide_top.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
         Slide_bot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

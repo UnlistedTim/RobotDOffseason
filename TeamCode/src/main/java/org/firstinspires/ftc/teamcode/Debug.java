@@ -35,7 +35,7 @@ public class Debug extends LinearOpMode {
         double tmp=0;
         int tar=0;
 //        rbg.Gearbox.setPosition(0);
-        rbg.Intake_rot.setPosition(0);
+//        rbg.Intake_rot.setPosition(0);
         rbg.Arm_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         rbg.Arm_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -114,46 +114,46 @@ public class Debug extends LinearOpMode {
             if (gamepad2.dpad_up) {
                 rbg.handlePos += rbg.handleStep;;
 
-                rbg.Intake_handle.setPosition(rbg.handlePos);
+//                rbg.Intake_handle.setPosition(rbg.handlePos);
                 rbg.timer(0, 0);
             }
             if (gamepad2.dpad_down) {
                 rbg.handlePos -= rbg.handleStep;
-                rbg.Intake_handle.setPosition(rbg.handlePos);
+//                rbg.Intake_handle.setPosition(rbg.handlePos);
                 rbg.timer(0, 0);
             }
-            if (gamepad2.dpad_left) {
-                rbg.intakerotpose -= rbg.clawStep;
-                rbg.Intake_rot.setPosition(rbg.intakerotpose);
-                rbg.timer(0, 0);
-            }
-            if (gamepad2.dpad_right) {
-                rbg.intakerotpose += rbg.clawStep;
-                rbg.Intake_rot.setPosition(rbg.intakerotpose);
-                rbg.timer(0, 0);
-            }
-            if (gamepad2.triangle) {
-                rbg.gearboxpose += rbg.clawStep;
-                rbg.Gearbox.setPosition(rbg.gearboxpose);
-                rbg.timer(0, 0);
-            }
-            if (gamepad2.cross) {
-                rbg.gearboxpose -= rbg.clawStep;
-                rbg.Gearbox.setPosition(rbg.gearboxpose);
-                rbg.timer(0, 0);
-            }
+//            if (gamepad2.dpad_left) {
+//                rbg.intakerotpose -= rbg.clawStep;
+////                rbg.Intake_rot.setPosition(rbg.intakerotpose);
+//                rbg.timer(0, 0);
+//            }
+//            if (gamepad2.dpad_right) {
+//                rbg.intakerotpose += rbg.clawStep;
+////                rbg.Intake_rot.setPosition(rbg.intakerotpose);
+//                rbg.timer(0, 0);
+//            }
+//            if (gamepad2.triangle) {
+//                rbg.gearboxpose += rbg.clawStep;
+//                rbg.Gearbox.setPosition(rbg.gearboxpose);
+//                rbg.timer(0, 0);
+//            }
+//            if (gamepad2.cross) {
+//                rbg.gearboxpose -= rbg.clawStep;
+//                rbg.Gearbox.setPosition(rbg.gearboxpose);
+//                rbg.timer(0, 0);
+//            }
 
 
 
             if (gamepad2.circle) {
-                rbg.Intake.setPower(0.8);
+//                rbg.Intake.setPower(0.8);
                 sleep(500);
-                rbg.Intake.setPower(0);
+//                rbg.Intake.setPower(0);
             }
             if (gamepad2.square) {
-                rbg.Intake.setPower(-0.8);
+//                rbg.Intake.setPower(-0.8);
                 sleep(500);
-                rbg.Intake.setPower(0);
+//                rbg.Intake.setPower(0);
             }
             if(gamepad1.dpad_up)
             {
@@ -282,8 +282,8 @@ public class Debug extends LinearOpMode {
 //            telemetry.addData("Colors blue", rbg.Intake_color.blue());
 
 
-            telemetry.addData("Intake HANDLE", rbg.  Intake_handle.getPosition());
-            telemetry.addData("Intake rot", rbg.Intake_rot.getPosition());
+//            telemetry.addData("Intake HANDLE", rbg.  Intake_handle.getPosition());
+//            telemetry.addData("Intake rot", rbg.Intake_rot.getPosition());
           //  telemetry.addData("Intake rot", rbg.Intake_rot.getPosition());
            telemetry.addData("gerbox", rbg.Gearbox.getPosition());
          //   telemetry.addData("intake handle", rbg.Intake_handle.getPosition());
@@ -311,7 +311,7 @@ public class Debug extends LinearOpMode {
             telemetry.addData("Basket distance", rbg.basket_dist.getDistance(DistanceUnit.MM));
       //      telemetry.addLine("gamepad2 right/lefit bumper   handle rot");
 
-            telemetry.addData("Intake rot",rbg.intakerotpose);
+         //   telemetry.addData("Intake rot",rbg.intakerotpose);
             telemetry.update();
           //  update_flag=false;
 

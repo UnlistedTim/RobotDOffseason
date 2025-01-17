@@ -41,7 +41,7 @@ public class Autospecimen extends LinearOpMode {
         sleep(20);
         if(gamepad1.right_bumper) break;
 
-        if (gamepad1.triangle){rbg.field = 1;}
+       // if (gamepad1.triangle){rbg.field = 1;}
 
         }
         rbg.init(3);
