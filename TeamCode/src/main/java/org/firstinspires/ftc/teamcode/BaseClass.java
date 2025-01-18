@@ -37,7 +37,7 @@ public class BaseClass extends MecanumDrive {
     double speed_index=1;
     double arm_angle=0;
     double claw_close=0.93,claw_open=0.72;
-    double arm_angle_target;
+    double arm_angle_target,arm_pose,arm_pose_target;
     double arm_angle_idle=0,arm_angle_preintake=5,arm_arngle_intake=0,arm_angle_sampleouttake=107,arm_angle_specintake=197,arm_angle_specouttake=40;
     double lefthandle_idle=0.58,lefthandle_intake=0.28,lefthandle_left45=0.24,lefthandle_left90=0.14,lefthandle_right45=0.34,lefthandle_right90=0.44;
     double lefthandle_sampleouttake=0.66,lefthandle_specintake=0.48,lefthandle_specouttake=0.96,lefthandle_start=0;
@@ -1094,6 +1094,7 @@ public class BaseClass extends MecanumDrive {
         d = pidftable[index][dd];
     }
         arm_angle_target=target;
+         arm_pose_target=target*22.755556;
         controller.setPID(p,i,d);
         armrotatePIDF();
     }
@@ -1867,9 +1868,9 @@ public class BaseClass extends MecanumDrive {
 
         arm_angle_update();
         slidePos = Slide_top.getCurrentPosition();
-
-        pid = controller.calculate( arm_angle,arm_angle_target);
-        ff = Math.cos(Math.toRadians(arm_angle)) * (f + k*slidePos) ;// target
+        arm_pose=arm_angle*22.7555556;
+        pid = controller.calculate( arm_pose,arm_pose_target);
+        ff = Math.cos(Math.toRadians(arm_angle)) * f ;// target
         power = pid + ff;
         Arm_left.setPower(-power);
         Arm_right.setPower(power);// to be changed director.
