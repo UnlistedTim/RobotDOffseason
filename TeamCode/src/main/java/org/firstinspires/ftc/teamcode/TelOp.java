@@ -71,12 +71,7 @@ public class TelOp extends LinearOpMode {
 
                    };
 
-//                   if(gamepad1.touchpad) {
-//                       rbg.pre_specintake(true);
-//                       state = State.SPECINTAKE;
-//                       break;
-//                   }
-//                   break;
+
 
                case SAMPLEINTAKE:
                    if(!rbg.flag[rbg.sampleintakeready])
@@ -98,7 +93,13 @@ public class TelOp extends LinearOpMode {
                        speed_factor=1;
                        state = State.SPECINTAKE;
                        break;
+
+
+
                    }
+
+                  rbg.intake_smooth_shift(gamepad2.right_stick_y);
+                   rbg.intake_claw_rotate(gamepad2.left_stick_x);
 
                   break;
 
@@ -135,16 +136,29 @@ public class TelOp extends LinearOpMode {
                        rbg.specintake_ready();
                        break;
                    }
-                   speed_factor=0.4;
+                   if(gamepad2.right_bumper) {
+                       rbg.linearslide(rbg.slide_idle,rbg.slidev2 );
+                       rbg.pre_samplelift(false);
+                       state = State.SAMPLELIFT;
+                       break;
+                   };
+
+
                    if(gamepad1.touchpad||rbg.flag[rbg.placement])
                    {
                        rbg.specplacment();
+                       speed_factor=0.4;
                    }
                    if(gamepad1.right_bumper)
                    {
                        rbg.specintake();
                        rbg.pre_specouttake();
+                       speed_factor=1;
+
                    }
+
+
+
                    break;
 
                 case SAMPLELIFT:
@@ -160,6 +174,12 @@ public class TelOp extends LinearOpMode {
                    speed_factor=0.3;
                    state = State.SAMPLEOUTTAKE;
                 }
+                if(gamepad2.left_bumper) {
+                    rbg.pre_specintake(false);
+                    state = State.SPECINTAKE;
+                    break;
+                    };
+
 
                break;
 
@@ -170,7 +190,7 @@ public class TelOp extends LinearOpMode {
                         break;
                     }
 
-                 if(gamepad2.right_bumper)
+                 if(gamepad1.right_bumper)
                  {
                      rbg.sampleouttake();
                      rbg.pre_idle();
@@ -206,6 +226,7 @@ public class TelOp extends LinearOpMode {
 
             }
 
+
             rbg.armrotatePIDF();
 
             if(gamepad1.left_bumper) {
@@ -229,7 +250,7 @@ public class TelOp extends LinearOpMode {
 
             if (gamepad2.ps) rbg.flag[rbg.force] = true;
 
-          //  if (gamepad2.dpad_up && gamepad2.dpad_down)   rbg.adjust(gamepad2.dpad_up, gamepad2.dpad_down);
+
             rbg.robot_centric(gamepad1.right_stick_y, gamepad1.right_stick_x, gamepad1.left_stick_x, speed_factor);
 
 //            if(gamepad1.ps) {
