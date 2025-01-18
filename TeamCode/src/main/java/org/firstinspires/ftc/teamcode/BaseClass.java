@@ -1863,9 +1863,7 @@ public class BaseClass extends MecanumDrive {
 
     }
 
-
     public void armrotatePIDF() {
-
         arm_angle_update();
         slidePos = Slide_top.getCurrentPosition();
         arm_pose=arm_angle*22.7555556;
@@ -1874,7 +1872,6 @@ public class BaseClass extends MecanumDrive {
         power = pid + ff;
         Arm_left.setPower(-power);
         Arm_right.setPower(power);// to be changed director.
-
     }
 
 
