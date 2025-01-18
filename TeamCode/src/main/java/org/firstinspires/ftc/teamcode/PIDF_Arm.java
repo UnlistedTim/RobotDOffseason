@@ -83,15 +83,16 @@ public class PIDF_Arm extends OpMode{
 
         Arm_encoder= hardwareMap.get(AnalogInput.class, "Arm_encoder");
 
-        Arm_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         Arm_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         Arm_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        Arm_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         Arm_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         Arm_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        Arm_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        Arm_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
 
         Slide_bot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -121,8 +122,6 @@ public class PIDF_Arm extends OpMode{
 
             Slide_bot.setVelocity(700);
             Slide_top.setVelocity(700);
-
-            pause(2000);
 
         }
 
