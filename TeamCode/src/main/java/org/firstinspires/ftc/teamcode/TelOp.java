@@ -144,8 +144,7 @@ public class TelOp extends LinearOpMode {
                    };
 
 
-                   if(gamepad1.touchpad||rbg.flag[rbg.placement])
-                   {
+                   if(gamepad1.touchpad||rbg.flag[rbg.placement]){
                        rbg.specplacment();
                        speed_factor=0.4;
                    }
@@ -162,14 +161,12 @@ public class TelOp extends LinearOpMode {
                    break;
 
                 case SAMPLELIFT:
-                   if(!rbg.flag[rbg.sampleouttakeready])
-                   {
+                   if(!rbg.flag[rbg.sampleouttakeready]) {
                       if(!rbg.flag[rbg.lift] && gamepad1.right_bumper)  rbg.flag[rbg.lift]=true;
                       rbg.samplelift_ready();
                        break;
                    }
-                if(gamepad1.right_bumper||rbg.flag[rbg.lift])
-                {
+                if(gamepad1.right_bumper||rbg.flag[rbg.lift]) {
                    rbg.pre_sampleouttake();
                    speed_factor=0.3;
                    state = State.SAMPLEOUTTAKE;
@@ -184,14 +181,12 @@ public class TelOp extends LinearOpMode {
                break;
 
                 case SAMPLEOUTTAKE:
-                    if(!rbg.flag[rbg.sampleouttakeready])
-                    {
+                    if(!rbg.flag[rbg.sampleouttakeready]) {
                         rbg.sampleouttake_ready();
                         break;
                     }
 
-                 if(gamepad1.right_bumper)
-                 {
+                 if(gamepad1.right_bumper) {
                      rbg.sampleouttake();
                      rbg.pre_idle();
 

@@ -591,6 +591,9 @@ public  class MecanumDrive {
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         Slide_bot.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         Slide_top.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        Slide_bot.setDirection(DcMotorSimple.Direction.REVERSE);
+        Slide_top.setDirection(DcMotorSimple.Direction.REVERSE);
         lazyImu = new LazyImu(hardwareMap, "imu", new RevHubOrientationOnRobot(
                 logoFacingDirection, usbFacingDirection));
         imu = hardwareMap.get(IMU.class, "imu");

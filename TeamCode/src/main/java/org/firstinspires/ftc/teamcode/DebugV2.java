@@ -3,16 +3,20 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
+
+
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.LED;
+import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
@@ -42,6 +46,18 @@ public class DebugV2 extends LinearOpMode {
 
     double angle;
 
+    public static double p = 0.0002, i = 0, d = 0;
+
+
+    //  public static double p = 0.0025, i = 0, d = 0.00008;
+    //  public static double p = 0.01, i = 0, d = 0.0008;
+
+    public static double f = -0.04;
+
+    // public static double f = -0.05;  //0.12 also good
+
+    public static double k = 0.0003;// the peak power is about 0.7 without p .
+
 
 
     public  DcMotorEx Arm_right, Arm_left, Slide_top,Slide_bot;
@@ -49,9 +65,13 @@ public class DebugV2 extends LinearOpMode {
     public DigitalChannel Arm_touch;
     public VoltageSensor voltageSensor;
 
+    public PIDController controller;
+
     public DistanceSensor bar_dist;
     public DistanceSensor basket_dist;
     public AnalogInput Arm_encoder;
+
+
 
 
 //regional
@@ -225,26 +245,35 @@ public class DebugV2 extends LinearOpMode {
             }
             if (gamepad2.square) {
             }
-            if(gamepad1.dpad_up) {
-                if (clawpos <= 0.98){
-                    clawpos+=0.02;
-                    Claw.setPosition(clawpos);
-                    sleep(300);
-                }
-//                tar=tar+100;
-//                linearslide(tar,2700);
+//            if(gamepad1.dpad_up) {
+//                if (clawpos <= 0.98){
+//                    clawpos+=0.02;
+//                    Claw.setPosition(clawpos);
+//                    sleep(300);
+//                }
+////                tar=tar+100;
+////                linearslide(tar,2700);
+//
+//            }
+//            if(gamepad1.dpad_down)
+//            {
+//                if (clawpos >= 0.02){
+//                    clawpos-=0.02;
+//                    Claw.setPosition(clawpos);
+//                    sleep(300);
+//                }
+//
+////                tar=tar-100;
+////                rbg.linearslide(tar,2700);
+//
+//            }
+
+
+            if (gamepad1.dpad_up){
 
             }
-            if(gamepad1.dpad_down)
-            {
-                if (clawpos >= 0.02){
-                    clawpos-=0.02;
-                    Claw.setPosition(clawpos);
-                    sleep(300);
-                }
 
-//                tar=tar-100;
-//                rbg.linearslide(tar,2700);
+            if (gamepad1.dpad_down){
 
             }
 

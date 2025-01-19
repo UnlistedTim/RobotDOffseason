@@ -44,7 +44,7 @@ public class PIDF_Arm extends OpMode{
    // public static double f = -0.05;  //0.12 also good
 
     public static double k = 0.0003;// the peak power is about 0.7 without p .
-    public static int target = 600;
+    public static int target = 0;
 
     public static int targetslide = 1000;
 
@@ -123,6 +123,18 @@ public class PIDF_Arm extends OpMode{
             Slide_bot.setVelocity(700);
             Slide_top.setVelocity(700);
 
+        }
+
+        if (gamepad1.dpad_up){
+            target = 750;
+            p =0.0004;
+//            d = 0.00001;
+        }
+
+        if (gamepad1.dpad_down){
+            target = 0;
+            p =0.0003;
+//            d = 0.00001;
         }
 
 
