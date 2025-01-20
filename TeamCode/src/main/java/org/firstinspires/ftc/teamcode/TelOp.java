@@ -55,7 +55,6 @@ public class TelOp extends LinearOpMode {
                case IDLE:
                    if(!rbg.flag[rbg.idleready])
                    {
-
                        rbg.idle_ready();
                        if(speed_factor<1)speed_factor=rbg.speed_index;// ater sample outtake
                        break;
@@ -74,6 +73,7 @@ public class TelOp extends LinearOpMode {
                        break;
 
                    };
+                   break;
 
 
 
@@ -170,7 +170,7 @@ public class TelOp extends LinearOpMode {
                    break;
 
                 case SAMPLELIFT:
-                   if(!rbg.flag[rbg.sampleouttakeready]) {
+                   if(!rbg.flag[rbg.sampleliftready]) {
                       if(!rbg.flag[rbg.lift] && gamepad1.right_bumper)  rbg.flag[rbg.lift]=true;
                       rbg.samplelift_ready();
                        break;
@@ -187,7 +187,6 @@ public class TelOp extends LinearOpMode {
                     break;
                     };
 
-
                break;
 
                 case SAMPLEOUTTAKE:
@@ -200,7 +199,6 @@ public class TelOp extends LinearOpMode {
                      rbg.sampleouttake();
                      rbg.pidf_index=rbg.pidf_sampleout_idle;
                      rbg.pre_idle();
-
                      state = State.IDLE;
                      break;
                  }
@@ -224,9 +222,6 @@ public class TelOp extends LinearOpMode {
 
 
                    break;
-
-
-
 
 
 
@@ -266,10 +261,19 @@ public class TelOp extends LinearOpMode {
 
              telemetry.addData("armlinerslide top", rbg.Slide_top.getCurrentPosition());
             telemetry.addData("armlinerslide bot", rbg.Slide_bot.getCurrentPosition());
-            telemetry.addData("armrotate position", -rbg.Arm_right.getCurrentPosition());
+
+            telemetry.addData("Arm angle", rbg.arm_angle);
+
+            telemetry.addData("Arm right power", rbg.power);
+
+            telemetry.addData("Speed factor", speed_factor);
+
+            telemetry.addData("Preidle",rbg.flag[rbg.preidle]);
+            telemetry.addData("Idleready",rbg.flag[rbg.idleready]);
+//            telemetry.addData("armrotate position", -rbg.Arm_right.getCurrentPosition());
 
 
-            telemetry.addData("LEFT power", rbg.Arm_left.getPower());
+//            telemetry.addData("LEFT power", rbg.Arm_left.getPower());
 
 
 
@@ -277,6 +281,10 @@ public class TelOp extends LinearOpMode {
 //            telemetry.addData("Intake HANDLE", rbg.  Intake_handle.getPosition());
 //            telemetry.addData("Intake rot", rbg.Intake_rot.getPosition());
            telemetry.addData("gerbox", rbg.Gearbox.getPosition());
+            telemetry.addData("K value", rbg.k);
+
+
+
             telemetry.addData("intake_lvel", rbg.intake_level);
             telemetry.addData("Right arm motor current", rbg.Arm_right.getCurrent(CurrentUnit.AMPS));
             telemetry.addData("Left arm motor current", rbg.Arm_left.getCurrent(CurrentUnit.AMPS));
