@@ -24,14 +24,9 @@ public class TelOp extends LinearOpMode {
         SAMPLEOUTTAKE,
         SPECOUTTAKE,
 
-
     }
 
     State state = State.IDLE;
-
-
-
-
     @Override
     public void runOpMode() {
         Pose2d p1 = new Pose2d(0, 0, 0);
