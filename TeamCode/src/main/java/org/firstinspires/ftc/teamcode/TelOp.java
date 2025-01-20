@@ -46,6 +46,7 @@ public class TelOp extends LinearOpMode {
         telemetry.addLine("Press Start Now!:");
         telemetry.update();
         waitForStart();
+        rbg.pidf_index=rbg.pidf_idle;
         rbg.pre_idle();
      //   rbg.rotation_reset();
 
@@ -54,17 +55,20 @@ public class TelOp extends LinearOpMode {
                case IDLE:
                    if(!rbg.flag[rbg.idleready])
                    {
+
                        rbg.idle_ready();
                        if(speed_factor<1)speed_factor=rbg.speed_index;// ater sample outtake
                        break;
                    }
                    if(gamepad2.right_bumper) {
+                       rbg.pidf_index=rbg.pidf_sampleintake;
                        rbg.pre_sampleintake();
                        state = State.SAMPLEINTAKE;
                        break;
 
                    };
                    if(gamepad2.left_bumper) {
+                       rbg.pidf_index=rbg.pidf_idle_specin;
                        rbg.pre_specintake(false);
                        state = State.SPECINTAKE;
                        break;
@@ -77,11 +81,13 @@ public class TelOp extends LinearOpMode {
                    if(!rbg.flag[rbg.sampleintakeready])
                    {
                        speed_factor=0.3;
+                       rbg.pidf_index=rbg.pidf_sampleintake;
                        rbg.sampleintake_ready(gamepad2.right_bumper);
                        break;
                    }
 
                    if(gamepad2.right_bumper) {
+                       rbg.pidf_index=rbg.pidf_sampleintake;
                        rbg.sampleintake();
                        speed_factor=1;
                        state = State.INTAKEIDLE;
@@ -89,13 +95,13 @@ public class TelOp extends LinearOpMode {
                    }
 
                    if(gamepad2.left_bumper) {
+
+
                        rbg.pre_specintake(false);
+                       rbg.pidf_index=rbg.pidf_idle_specin;
                        speed_factor=1;
                        state = State.SPECINTAKE;
                        break;
-
-
-
                    }
 
                   rbg.intake_smooth_shift(gamepad2.right_stick_y);
@@ -106,6 +112,7 @@ public class TelOp extends LinearOpMode {
                 case INTAKEIDLE:
                     if(!rbg.flag[rbg.intakeidleready])
                     {
+
                         rbg.intakeidle_ready();
                         break;
                     }
@@ -116,6 +123,7 @@ public class TelOp extends LinearOpMode {
                     };
 
                     if(gamepad2.left_bumper) {
+                        rbg.pidf_index=rbg.pidf_idle_specin;
                         rbg.pre_specintake(false);
                       state = State.SPECINTAKE;
                         break;
@@ -138,6 +146,7 @@ public class TelOp extends LinearOpMode {
                    }
                    if(gamepad2.right_bumper) {
                        rbg.linearslide(rbg.slide_idle,rbg.slidev2 );
+                       rbg.pidf_index=rbg.pidf_specin_sampleout;
                        rbg.pre_samplelift(false);
                        state = State.SAMPLELIFT;
                        break;
@@ -172,6 +181,7 @@ public class TelOp extends LinearOpMode {
                    state = State.SAMPLEOUTTAKE;
                 }
                 if(gamepad2.left_bumper) {
+                    rbg.pidf_index=rbg.pidf_sampleout_specin;
                     rbg.pre_specintake(false);
                     state = State.SPECINTAKE;
                     break;
@@ -188,6 +198,7 @@ public class TelOp extends LinearOpMode {
 
                  if(gamepad1.right_bumper) {
                      rbg.sampleouttake();
+                     rbg.pidf_index=rbg.pidf_sampleout_idle;
                      rbg.pre_idle();
 
                      state = State.IDLE;
