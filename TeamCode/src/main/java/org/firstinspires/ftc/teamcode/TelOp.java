@@ -66,7 +66,7 @@ public class TelOp extends LinearOpMode {
                case SAMPLEINTAKE:
                    if(!rbg.flag[rbg.sampleintakeready])
                    {
-                       speed_factor=0.3;
+                       speed_factor=0.4;
                        rbg.pidf_index=rbg.pidf_sampleintake;
                        rbg.sampleintake_ready(gamepad2.right_bumper);
                        break;

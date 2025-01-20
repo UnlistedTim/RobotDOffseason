@@ -40,11 +40,11 @@ public class BaseClass extends MecanumDrive {
     double arm_angle_target,arm_pose,arm_pose_target;
     double arm_angle_idle=-6,arm_angle_preintake=5,arm_arngle_intake=0,arm_angle_sampleouttake=107,arm_angle_specintake=197,arm_angle_specouttake=40;
     double lefthandle_idle=0.5,lefthandle_intake=0.19,lefthandle_left45=0.12,lefthandle_left90=0.04,lefthandle_right45=0.24,lefthandle_right90=0.32;
-    double lefthandle_sampleouttake=0.62,lefthandle_specintake=0.68,lefthandle_specouttake=0.66,lefthandle_start=0;
+    double lefthandle_sampleouttake=0.64,lefthandle_specintake=0.68,lefthandle_specouttake=0.66,lefthandle_start=0;
     int intake_rotate_index=0;
 
     double righthandle_idle=0.5,righthandle_intake=0.81,righthandle_left45=0.76,righthandle_left90=0.68,righthandle_right45=0.88,righthandle_right90=0.96;
-    double righthandle_sampleouttake=0.38,righthandle_specintake=0.88,righthandle_specouttake=0.34,righthandle_start=1;
+    double righthandle_sampleouttake=0.36,righthandle_specintake=0.88,righthandle_specouttake=0.34,righthandle_start=1;
 
     int slide_idle=200,slide_preintake=400,slide_sampleouttake=1800,slide_specintake=0,slide_specouttake=720,slide_intakemax=1250;
 
@@ -954,13 +954,13 @@ public class BaseClass extends MecanumDrive {
 
 
            pidftable[pidf_idle_sampleout][pp]=0.0003;  pidftable[pidf_idle_sampleout][ii]=0;  pidftable[pidf_idle_sampleout][dd]=0;//
-           pidftable[pidf_sampleout_idle][pp]=0.00018;  pidftable[pidf_sampleout_idle][ii]=0;  pidftable[pidf_sampleout_idle][dd]=0;//
-           pidftable[pidf_idle_specin][pp]=0.00018;  pidftable[pidf_idle_specin][ii]=0;  pidftable[pidf_idle_specin][dd]=0;//
+           pidftable[pidf_sampleout_idle][pp]=0.00024;  pidftable[pidf_sampleout_idle][ii]=0;  pidftable[pidf_sampleout_idle][dd]=0.00001;//
+           pidftable[pidf_idle_specin][pp]=0.0002;  pidftable[pidf_idle_specin][ii]=0;  pidftable[pidf_idle_specin][dd]=0;//
            pidftable[pidf_specin_idle][pp]=0.00016;  pidftable[pidf_specin_idle][ii]=0;  pidftable[pidf_specin_idle][dd]=0;//
            pidftable[pidf_specin_specout][pp]=0.0001;  pidftable[pidf_specin_specout][ii]=0;  pidftable[pidf_specin_specout][dd]=0;//
            pidftable[pidf_sampleout_specin][pp]=0.00022;  pidftable[pidf_sampleout_specin][ii]=0;  pidftable[pidf_sampleout_specin][dd]=0;//
            pidftable[pidf_specin_sampleout][pp]=0.00025;  pidftable[pidf_specin_sampleout][ii]=0;  pidftable[pidf_specin_sampleout][dd]=0;//
-           pidftable[ pidf_specout_idle][pp]=0.00001;  pidftable[pidf_specin_sampleout][ii]=0;  pidftable[pidf_specin_sampleout][dd]=0;//
+           pidftable[ pidf_specout_idle][pp]=0.00001;  pidftable[pidf_specin_sampleout][ii]=0;  pidftable[pidf_specin_sampleout][dd]=0.0000;//
 
 
            pidftable[pidf_sampleintake][pp]=0.002;  pidftable[pidf_outtake_spec][ii]=0;  pidftable[pidf_outtake_spec][dd]=0.00001;
