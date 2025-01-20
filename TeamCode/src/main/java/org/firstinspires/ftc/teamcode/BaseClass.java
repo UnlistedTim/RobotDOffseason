@@ -167,7 +167,7 @@ public class BaseClass extends MecanumDrive {
         linearslideTq(4600,0.98);
         pidfsetting(52); // Hit arm with low rung //1500
 
-        while ((arm_angle_update()<48 && Op.opModeIsActive())
+        while (arm_angle_update()<48 && Op.opModeIsActive())
         {delay(25);}
        delay(100);
 
