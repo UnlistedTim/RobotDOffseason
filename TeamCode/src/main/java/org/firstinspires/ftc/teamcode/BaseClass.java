@@ -46,7 +46,7 @@ public class BaseClass extends MecanumDrive {
     double righthandle_idle=0.42,righthandle_intake=0.72,righthandle_left45=0.68,righthandle_left90=0.58,righthandle_right45=0.78,righthandle_right90=0.88;
     double righthandle_sampleouttake=0.34,righthandle_specintake=0.52,righthandle_specouttake=0.64,righthandle_start=1;
 
-    int slide_idle=200,slide_preintake=400,slide_sampleouttake=1750,slide_specintake=0,slide_specouttake=720,slide_intakemax=1250;
+    int slide_idle=200,slide_preintake=400,slide_sampleouttake=1800,slide_specintake=0,slide_specouttake=720,slide_intakemax=1250;
 
     int  slide_rotate=450,lslo=-5,lshi=1850;
 
@@ -788,7 +788,7 @@ public class BaseClass extends MecanumDrive {
         Left_handle.setPosition(lefthandle_sampleouttake);
         Right_handle.setPosition(righthandle_sampleouttake);
         flag[presampleouttake]=true;
-        flag[sampleliftready]=false;
+        flag[sampleouttakeready]=false;
         speed_index=0.3;
         flag[lift]=false;
 
@@ -798,9 +798,7 @@ public class BaseClass extends MecanumDrive {
     public void sampleouttake_ready()
 
     {
-
-        if(Slide_top.getCurrentPosition() >(slide_sampleouttake-15)){  //slide roataiton target
-
+        if(Slide_top.getCurrentPosition() >(slide_sampleouttake-20)){
             flag[presampleintake]=false;
             flag[sampleouttakeready]=true;
         }

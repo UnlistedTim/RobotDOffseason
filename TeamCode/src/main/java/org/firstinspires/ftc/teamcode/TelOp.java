@@ -179,6 +179,7 @@ public class TelOp extends LinearOpMode {
                    rbg.pre_sampleouttake();
                    speed_factor=0.3;
                    state = State.SAMPLEOUTTAKE;
+                   break;
                 }
                 if(gamepad2.left_bumper) {
                     rbg.pidf_index=rbg.pidf_sampleout_specin;
@@ -200,7 +201,6 @@ public class TelOp extends LinearOpMode {
                      rbg.sampleouttake();
                      rbg.pidf_index=rbg.pidf_sampleout_idle;
                      rbg.pre_idle();
-
                      state = State.IDLE;
                      break;
                  }
