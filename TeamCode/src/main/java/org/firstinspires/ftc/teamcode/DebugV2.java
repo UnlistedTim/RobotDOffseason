@@ -152,7 +152,7 @@ public class DebugV2 extends LinearOpMode {
         telemetry.addLine("Press Start Now!:");
         telemetry.update();
 
-        Gearbox.setPosition(0); // 0.05
+        Gearbox.setPosition(0.95); // 0.05
 //        init(2);
 
         //    rotatetargetPIDF(rotateStart);
