@@ -38,7 +38,7 @@ public class BaseClass extends MecanumDrive {
     double arm_angle=0;
     double claw_close=0.93,claw_open=0.72;
     double arm_angle_target,arm_pose,arm_pose_target;
-    double arm_angle_idle=-3,arm_angle_preintake=12,arm_arngle_intake=7,arm_angle_sampleouttake=107,arm_angle_specintake=197,arm_angle_specouttake=40;
+    double arm_angle_idle=-6,arm_angle_preintake=12,arm_arngle_intake=7,arm_angle_sampleouttake=107,arm_angle_specintake=197,arm_angle_specouttake=40;
     double lefthandle_idle=0.46,lefthandle_intake=0.18,lefthandle_left45=0.14,lefthandle_left90=0.08,lefthandle_right45=0.22,lefthandle_right90=0.28;
     double lefthandle_sampleouttake=0.64,lefthandle_specintake=0.24,lefthandle_specouttake=0.66,lefthandle_start=0;
     int intake_rotate_index=0;
@@ -82,7 +82,7 @@ public class BaseClass extends MecanumDrive {
     int slidev0=1000,slidev1=1500,slidev2=2700; //2700
 
     boolean[] flag = new boolean[]{false,false,false,false, false,false,false,false,false, false, false, false,false,false,false,false, false,false, false,false,false, false, false,false,false, false,false, false, false, false,false,false,false, false, false,false, false, false, false, false, false,false, false};
-    double[] stoptime = new double[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0};
+    double[] stoptime = new double[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0,0};
     int[] step = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0,0,0,0,0,0,0};
     final int start = 0, spec_check = 1, intake = 2, lift = 3, outtake = 4, intake_shift = 5, button_flip = 6;
     final int intake_rotate= 7, intake_slide= 8, last = 9, drive = 10, intake_ready = 11, hang = 12, specimen = 13,smooth_adj=14;
@@ -349,12 +349,11 @@ public class BaseClass extends MecanumDrive {
     public boolean drop()
 
     {
-
       Left_handle.setPosition(lefthandle_idle);
       Right_handle.setPosition(righthandle_idle);
       Claw.setPosition(claw_open);
      delay(300);
-     if(timer(5000,intake))  {
+     if(timer(4000,intake))  {
          pidf_index=pidf_sampleout_idle;
          pre_idle();
          return true;
@@ -388,9 +387,11 @@ public class BaseClass extends MecanumDrive {
             return;
         }
 
-       if (Math.abs(arm_angle-arm_angle_idle)<15)
+       if (Math.abs(arm_angle-arm_angle_idle)<20)
        {
            flag[idleready]=true;
+           pidf_index=pidf_idle;
+           pidfsetting(arm_angle_idle);
        }
 
     }
@@ -882,13 +883,13 @@ public class BaseClass extends MecanumDrive {
 
 
            pidftable[pidf_idle_sampleout][pp]=0.0003;  pidftable[pidf_idle_sampleout][ii]=0;  pidftable[pidf_idle_sampleout][dd]=0;//
-           pidftable[pidf_sampleout_idle][pp]=0.00024;  pidftable[pidf_sampleout_idle][ii]=0;  pidftable[pidf_sampleout_idle][dd]=0.00001;//
+           pidftable[pidf_sampleout_idle][pp]=0.00027;  pidftable[pidf_sampleout_idle][ii]=0.00001;  pidftable[pidf_sampleout_idle][dd]=0;//0.00024
            pidftable[pidf_idle_specin][pp]=0.0002;  pidftable[pidf_idle_specin][ii]=0;  pidftable[pidf_idle_specin][dd]=0;//
            pidftable[pidf_specin_idle][pp]=0.00016;  pidftable[pidf_specin_idle][ii]=0;  pidftable[pidf_specin_idle][dd]=0;//
            pidftable[pidf_specin_specout][pp]=0.0001;  pidftable[pidf_specin_specout][ii]=0;  pidftable[pidf_specin_specout][dd]=0;//
            pidftable[pidf_sampleout_specin][pp]=0.00022;  pidftable[pidf_sampleout_specin][ii]=0;  pidftable[pidf_sampleout_specin][dd]=0;//
            pidftable[pidf_specin_sampleout][pp]=0.00025;  pidftable[pidf_specin_sampleout][ii]=0;  pidftable[pidf_specin_sampleout][dd]=0;//
-           pidftable[ pidf_specout_idle][pp]=0.00001;  pidftable[pidf_specin_sampleout][ii]=0;  pidftable[pidf_specin_sampleout][dd]=0.0000;//
+           pidftable[ pidf_specout_idle][pp]=0.00016;  pidftable[pidf_specout_idle][ii]=0;  pidftable[pidf_specout_idle][dd]=0.0000;//
 
 
            pidftable[pidf_sampleintake][pp]=0.002;  pidftable[pidf_outtake_spec][ii]=0;  pidftable[pidf_outtake_spec][dd]=0.00001;
