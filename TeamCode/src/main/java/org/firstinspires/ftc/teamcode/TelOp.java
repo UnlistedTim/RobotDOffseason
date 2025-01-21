@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @TeleOp(name = "TelopState A", group = "AA")
 public class TelOp extends LinearOpMode {
@@ -135,6 +136,7 @@ public class TelOp extends LinearOpMode {
                    if(!rbg.flag[rbg.specintakeready])
                    {
                        rbg.specintake_ready();
+                       speed_factor = 0.4;
                        break;
                    }
                    if(gamepad2.right_bumper) {
@@ -251,7 +253,7 @@ public class TelOp extends LinearOpMode {
 
             telemetry.addData("Top slide motor current", rbg.Slide_top.getCurrent(CurrentUnit.AMPS));
             telemetry.addData("Bot slide motor current", rbg.Slide_bot.getCurrent(CurrentUnit.AMPS));
-
+            telemetry.addData("Bar dist", rbg.bar_dist.getDistance(DistanceUnit.MM));
             telemetry.update();
             }
         }
