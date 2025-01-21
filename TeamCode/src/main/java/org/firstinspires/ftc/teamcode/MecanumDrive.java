@@ -44,6 +44,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.LED;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
@@ -133,13 +134,11 @@ public  class MecanumDrive {
 
 
 
-    public LED front_led_red;
-    public LED front_led_green;
-
-    public LED rear_led_red;
-    public LED rear_led_green;
+    public ServoImplEx Front_led;
+    public ServoImplEx Back_led;
 
     public IMU imu;
+
 
 
     public LazyImu lazyImu;
@@ -557,12 +556,18 @@ public  class MecanumDrive {
 
         //Make the encoder value be postive
 
+        Back_led = hardwareMap.get(ServoImplEx.class,"Back_led");
+        Front_led = hardwareMap.get(ServoImplEx.class,"Front_led");
 
 
-        front_led_green = hardwareMap.get(LED.class, "front_led_green");
-        front_led_red = hardwareMap.get(LED.class, "front_led_red");
-        rear_led_green = hardwareMap.get(LED.class, "rear_led_green");
-        rear_led_red = hardwareMap.get(LED.class, "rear_led_red");
+
+
+
+
+//        front_led_green = hardwareMap.get(LED.class, "front_led_green");
+//        front_led_red = hardwareMap.get(LED.class, "front_led_red");
+//        rear_led_green = hardwareMap.get(LED.class, "rear_led_green");
+//        rear_led_red = hardwareMap.get(LED.class, "rear_led_red");
         Right_handle = hardwareMap.get(Servo.class, "Right_handle");
         Claw = hardwareMap.get(Servo.class, "Claw");
         Left_handle = hardwareMap.get(Servo.class, "Left_handle");
@@ -591,6 +596,8 @@ public  class MecanumDrive {
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         Slide_bot.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         Slide_top.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+//        Back_led.setPwmRange(500,250);
 
         Slide_bot.setDirection(DcMotorSimple.Direction.REVERSE);
         Slide_top.setDirection(DcMotorSimple.Direction.REVERSE);

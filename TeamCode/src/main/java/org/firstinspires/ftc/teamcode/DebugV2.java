@@ -152,14 +152,14 @@ public class DebugV2 extends LinearOpMode {
         telemetry.addLine("Press Start Now!:");
         telemetry.update();
 
-        Gearbox.setPosition(0.95); // 0.05
+        Gearbox.setPosition(0); // 0.05
 //        init(2);
 
         //    rotatetargetPIDF(rotateStart);
         waitForStart();
 
-//        Left_handle.setPosition(lefthandlepos);
-//        Right_handle.setPosition(righthandlepos);
+        Left_handle.setPosition(lefthandlepos);
+        Right_handle.setPosition(righthandlepos);
         Claw.setPosition(clawpos);
         Arm_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         Arm_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

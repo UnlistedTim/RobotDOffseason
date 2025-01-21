@@ -38,13 +38,13 @@ public class BaseClass extends MecanumDrive {
     double arm_angle=0;
     double claw_close=0.93,claw_open=0.72;
     double arm_angle_target,arm_pose,arm_pose_target;
-    double arm_angle_idle=-6,arm_angle_preintake=5,arm_arngle_intake=0,arm_angle_sampleouttake=107,arm_angle_specintake=197,arm_angle_specouttake=40;
-    double lefthandle_idle=0.5,lefthandle_intake=0.19,lefthandle_left45=0.12,lefthandle_left90=0.04,lefthandle_right45=0.24,lefthandle_right90=0.32;
-    double lefthandle_sampleouttake=0.64,lefthandle_specintake=0.68,lefthandle_specouttake=0.66,lefthandle_start=0;
+    double arm_angle_idle=-3,arm_angle_preintake=12,arm_arngle_intake=7,arm_angle_sampleouttake=107,arm_angle_specintake=197,arm_angle_specouttake=40;
+    double lefthandle_idle=0.46,lefthandle_intake=0.18,lefthandle_left45=0.14,lefthandle_left90=0.08,lefthandle_right45=0.22,lefthandle_right90=0.28;
+    double lefthandle_sampleouttake=0.64,lefthandle_specintake=0.24,lefthandle_specouttake=0.66,lefthandle_start=0;
     int intake_rotate_index=0;
 
-    double righthandle_idle=0.5,righthandle_intake=0.81,righthandle_left45=0.76,righthandle_left90=0.68,righthandle_right45=0.88,righthandle_right90=0.96;
-    double righthandle_sampleouttake=0.36,righthandle_specintake=0.88,righthandle_specouttake=0.34,righthandle_start=1;
+    double righthandle_idle=0.54,righthandle_intake=0.82,righthandle_left45=0.78,righthandle_left90=0.72,righthandle_right45=0.86,righthandle_right90=0.92;
+    double righthandle_sampleouttake=0.36,righthandle_specintake=0.36,righthandle_specouttake=0.34,righthandle_start=1;
 
     int slide_idle=200,slide_preintake=400,slide_sampleouttake=1800,slide_specintake=0,slide_specouttake=720,slide_intakemax=1250;
 
@@ -52,6 +52,8 @@ public class BaseClass extends MecanumDrive {
 
 
     PIDController controller;
+
+    boolean hangflag = false;
 
     int slidePos;
     double pid ,power, ff;
@@ -181,8 +183,6 @@ public class BaseClass extends MecanumDrive {
         while(Op.opModeIsActive()&&Slide_top.getCurrentPosition() > -250) {delay(25);}
 
 
-
-
         pidfsetting(85);
         delay(50);
         linearslideTq(4800,0.98);
@@ -190,13 +190,20 @@ public class BaseClass extends MecanumDrive {
         pidf_index=pidf_hang1;
         pidfsetting(140); // 2700
         delay(800);
-        linearslideTq(4350,0.98);
+        linearslideTq(-600,0.98);
+        while (Op.opModeIsActive() && Slide_top.getCurrentPosition() > 4350){delay(25);}
+        delay(50);
+        pidfsetting(60);
+        linearslideTq(-600,1);
 
-        delay(500); // 2000
-        pidfsetting(90);
-        linearslideTq(-700,1);
 
-        while(Op.opModeIsActive() && Slide_top.getCurrentPosition() > -620){
+
+        while(Op.opModeIsActive() && Slide_top.getCurrentPosition() > -550){
+
+            if (Slide_top.getCurrentPosition() < 700 && !hangflag){
+                pidfsetting(90);
+                hangflag = true;
+            }
             delay(25);
         }
         delay(1000);
@@ -347,7 +354,11 @@ public class BaseClass extends MecanumDrive {
       Right_handle.setPosition(righthandle_idle);
       Claw.setPosition(claw_open);
      delay(300);
-     if(timer(5000,intake))  {pidf_index=pidf_sampleout_idle;pre_idle(); return true;}
+     if(timer(5000,intake))  {
+         pidf_index=pidf_sampleout_idle;
+         pre_idle();
+         return true;
+     }
      pidf_index=pidf_sampleintake;
      pre_sampleintake();
      return false;
@@ -881,7 +892,7 @@ public class BaseClass extends MecanumDrive {
 
 
            pidftable[pidf_sampleintake][pp]=0.002;  pidftable[pidf_outtake_spec][ii]=0;  pidftable[pidf_outtake_spec][dd]=0.00001;
-           pidftable[pidf_spinintake][pp]=0.0016;  pidftable[pidf_spinintake][ii]=0;  pidftable[pidf_spinintake][dd]=0.000;
+           pidftable[pidf_specintake][pp]=0.0016;  pidftable[pidf_specintake][ii]=0;  pidftable[pidf_specintake][dd]=0.000;
            pidftable[pidf_specouttake][pp]=0.0007;  pidftable[pidf_specouttake][ii]=0;  pidftable[pidf_specouttake][dd]=0.000;
            pidftable[pidf_sampleouttake][pp]=0.0008;  pidftable[pidf_sampleouttake][ii]=0;  pidftable[pidf_sampleouttake][dd]=0.000;
            pidftable[pidf_idle][pp]=0.0008;  pidftable[pidf_idle][ii]=0;  pidftable[pidf_idle][dd]=0.000;

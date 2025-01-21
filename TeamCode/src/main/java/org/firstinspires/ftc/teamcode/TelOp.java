@@ -38,6 +38,9 @@ public class TelOp extends LinearOpMode {
         telemetry.addLine("Press Start Now!:");
         telemetry.update();
         rbg.pidf_index=rbg.pidf_idle;
+
+        rbg.Front_led.setPosition(0.5);
+        rbg.Back_led.setPosition(0.5);
         waitForStart();
         rbg.pre_idle();
         while (opModeIsActive()) {
@@ -151,6 +154,8 @@ public class TelOp extends LinearOpMode {
                        rbg.specintake();
                        rbg.pre_specouttake();
                        speed_factor=1;
+                       state = State.SPECOUTTAKE;
+                       break;
                    }
 
                    break;
