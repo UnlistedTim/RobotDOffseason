@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
@@ -17,6 +18,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 @Config
 public class PIDF_Arm extends OpMode{
     private PIDController controller;
+
+    double handleleft = 0.24;
+    double handleright = 0.36;
+
 
     double offset = -200 +360;
 
@@ -58,6 +63,9 @@ public class PIDF_Arm extends OpMode{
     private DcMotorEx Slide_bot;
     private DcMotorEx Slide_top;
 
+    private Servo Left_handle;
+    private Servo Right_handle;
+
     public AnalogInput Arm_encoder;
 
 
@@ -83,6 +91,9 @@ public class PIDF_Arm extends OpMode{
 
         Arm_encoder= hardwareMap.get(AnalogInput.class, "Arm_encoder");
 
+        Left_handle = hardwareMap.get(Servo.class,"Left_handle");
+        Right_handle = hardwareMap.get(Servo.class,"Right_handle");
+
 
         Arm_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         Arm_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -101,16 +112,22 @@ public class PIDF_Arm extends OpMode{
         Slide_bot.setVelocity(0);
 
         Slide_top.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        Slide_bot.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         Slide_top.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         Slide_top.setTargetPosition(0);
         Slide_top.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         Slide_top.setVelocity(0);
 
+        Left_handle.setPosition(handleleft);
+        Right_handle.setPosition(handleright);
+
 
 
         Arm_right.setPower(0);
         Arm_left.setPower(0);
+
+
 
     }
     @Override
@@ -123,19 +140,20 @@ public class PIDF_Arm extends OpMode{
             Slide_bot.setVelocity(700);
             Slide_top.setVelocity(700);
 
-        }
 
-        if (gamepad1.dpad_up){
-            target = 750;
-            p =0.0004;
-//            d = 0.00001;
         }
-
-        if (gamepad1.dpad_down){
-            target = 0;
-            p =0.0003;
-//            d = 0.00001;
-        }
+//
+//        if (gamepad1.dpad_up){
+//            target = 750;
+//            p =0.0004;
+////            d = 0.00001;
+//        }
+//
+//        if (gamepad1.dpad_down){
+//            target = 0;
+//            p =0.0003;
+////            d = 0.00001;
+//        }
 
 
 
