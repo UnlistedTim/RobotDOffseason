@@ -125,8 +125,7 @@ public class TelOp extends LinearOpMode {
 
 
                     if(gamepad1.right_bumper) {
-                        rbg.pre_samplelift(true);
-                        state = State.SAMPLELIFT;
+                        if(rbg.pre_samplelift(true))  state = State.SAMPLELIFT;
                         break;
                     }
 
@@ -139,7 +138,7 @@ public class TelOp extends LinearOpMode {
                        speed_factor = 0.4;
                        break;
                    }
-                   if(gamepad2.right_bumper) {
+                   if(gamepad2.right_bumper&&rbg.flag[rbg.claw_lock]) {
                        rbg.linearslide(rbg.slide_idle,rbg.slidev2 );
                        rbg.pidf_index=rbg.pidf_specin_sampleout;
                        rbg.pre_samplelift(false);

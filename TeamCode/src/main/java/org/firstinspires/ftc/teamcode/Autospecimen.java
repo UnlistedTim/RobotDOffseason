@@ -5,7 +5,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name = "AutoSpecimen", group = "A")
+@Autonomous(name = "AutoSpec", group = "A")
 //@Disabled
 @Config
 public class Autospecimen extends LinearOpMode {
@@ -22,47 +22,32 @@ public class Autospecimen extends LinearOpMode {
     @Override
     public void runOpMode() {
         rbg = new BaseClass(this, pp);
-        rbg.init(0);
-        rbg.baserest=true;
-
+        telemetry.addLine("Make sure linearslide was fully in befroe start and do not move the robot anymore;");
         telemetry.update();
+        rbg.init(0);
         sleep(500);
-        rbg.init(2);//rest the roatioan 0 positon
+        telemetry.addLine("Preload the specimen intot the claw and press Driver right bumper;");
+        telemetry.update();
+        while(!isStopRequested())
+        {
+            sleep(20);
+            if(gamepad1.right_bumper){
+             rbg.Claw.setPosition(rbg.claw_close);
+             break;
+            }
+        }
+
         sleep(500);
         rbg.updatePoseEstimate();
         telemetry.addData("x",rbg.pose.position.x);
         telemetry.addData("y",rbg.pose.position.y);
-        telemetry.addLine("Make sure the arm was already placed  on the right location before initialization");
-        telemetry.addLine("Now Push the linear slide all the way down , turn the arm to the target position and load the specimen.");
-        telemetry.addLine("Aftr that, hold the arm and press gunner gamepad right bumper.");
-        telemetry.update();
-        while(!isStopRequested())
-        {
-        sleep(20);
-        if(gamepad1.right_bumper) break;
-
-       // if (gamepad1.triangle){rbg.field = 1;}
-
-        }
-        rbg.init(3);
         telemetry.addData(">", "Press Play to start op mode ");
-        rbg.updatePoseEstimate();
-        telemetry.addData("x",rbg.pose.position.x);
-        telemetry.addData("y",rbg.pose.position.x);
         telemetry.update();
-        while(!isStarted())
-        {
-            rbg.delay(25);
-        }
         waitForStart();
-
         while (opModeIsActive()) {
             rbg.afirst_spec_outake();
             rbg.afmove(0,true);//strafe samples
-         //   rbg.aspec_intake();;
 
-
-           // rbg.delay(1000000);
             rbg.afmove(1,false);// forward for sampels
 
 

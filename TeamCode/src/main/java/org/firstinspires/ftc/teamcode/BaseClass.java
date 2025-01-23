@@ -69,7 +69,9 @@ public class BaseClass extends MecanumDrive {
     double[][] pidftable= new double[30][3];
     int pidf_intake_up=20,pidf_sampleintake=1,pidf_sampleouttake=2, pidf_spinintake=3,pidf_specouttake=4, pidf_idle=5,pidf_outtake_down=1,pidf_outtake_up=3, pidf_intake_idle = 4,
             pidf_hang_up = 5,  pidf_hang3 = 7, pidf_outtake_spec = 8,
-            pidf_outtake_spec_down = 9, pidf_outtake_spec1 = 10 , pidf_outtake_up2 = 11, pidf_hang0=11,pidf_hang1=12,pidf_hang2=13,
+            pidf_outtake_spec_down = 9, pidf_outtake_spec1 = 10 ,
+            pidf_afspinouttake=11,
+            pidf_outtake_up2 = 11, pidf_hang0=11,pidf_hang1=12,pidf_hang2=13,
             pidf_intake_spec = 12, pidf_intake_spec2 = 13,pidf_intake_aspec=14,pidf_aspec_outtake=15,pidf_outtake_aspec_down=16,pidf_aintake_down=17, pidf_hang4 = 18,pidf_specintake=20;
      int  pidf_idle_sampleout=21,pidf_sampleout_idle=22,pidf_idle_specin=23,pidf_specin_idle=24,pidf_specin_specout=25,pidf_specout_specin=26,pidf_specin_sampleout=27,pidf_sampleout_specin=28,pidf_specout_idle=29;
 
@@ -84,7 +86,7 @@ public class BaseClass extends MecanumDrive {
     boolean[] flag = new boolean[]{false,false,false,false, false,false,false,false,false, false, false, false,false,false,false,false, false,false, false,false,false, false, false,false,false, false,false, false, false, false,false,false,false, false, false,false, false, false, false, false, false,false, false};
     double[] stoptime = new double[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0,0};
     int[] step = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0,0,0,0,0,0,0};
-    final int start = 0, spec_check = 1, intake = 2, lift = 3, outtake = 4, intake_shift = 5, button_flip = 6;
+    final int start = 0, claw_lock=1, intake = 2, lift = 3, outtake = 4, intake_shift = 5, button_flip = 6;
     final int intake_rotate= 7, intake_slide= 8, last = 9, drive = 10, intake_ready = 11, hang = 12, specimen = 13,smooth_adj=14;
     final int force = 15,color_check=16, hang0 = 17,idle_ready=18,spec_ready=19,preidle=20,idleready=21, spec = 22,pre_spec=23, pre_samp = 24,presampleintake=25,sampleintakeready=26;
     final int preintakeidle=27,intakeidleready=28,presampleouttake=29,sampleouttakeready=30,presamplelift=31,sampleliftready=32,prespecintake=33,specintakeready=34,placement=35,prespecouttake=36,specouttakeready=37;
@@ -353,6 +355,7 @@ public class BaseClass extends MecanumDrive {
       Right_handle.setPosition(righthandle_idle);
       Claw.setPosition(claw_open);
      delay(300);
+     flag[claw_lock]=false;
      if(timer(4000,intake))  {
          pidf_index=pidf_sampleout_idle;
          pre_idle();
@@ -369,6 +372,7 @@ public class BaseClass extends MecanumDrive {
     {
 
         Claw.setPosition(claw_open);
+        flag
         Left_handle.setPosition(lefthandle_idle);
         Right_handle.setPosition(righthandle_idle);
         k=0.0001;
@@ -422,6 +426,7 @@ public class BaseClass extends MecanumDrive {
         if (Math.abs(arm_angle-arm_angle_preintake)<15)
         {
             Claw.setPosition(claw_open);
+            flag[claw_lock]=false;
             Left_handle.setPosition(lefthandle_intake);
             Right_handle.setPosition(righthandle_intake);
            if(flag[button_flip]) flag[sampleintakeready]=true;
@@ -467,7 +472,7 @@ public class BaseClass extends MecanumDrive {
     public void specplacment(){
         stop_drive();
        pidf_index=pidf_specintake;
-        if(Claw.getPosition()> claw_open+0.1) {
+        if( flag[claw_lock]) {
             Claw.setPosition(claw_open);
             delay(100);
         }
@@ -481,6 +486,7 @@ public class BaseClass extends MecanumDrive {
             stop_drive();
             Claw.setPosition(claw_close);
             delay(250);
+        flag[claw_lock]=true;
 
 
         }
@@ -525,11 +531,12 @@ public class BaseClass extends MecanumDrive {
     }
     public void specouttake() {
 
-        boolean handleflag = false;
+      //  boolean handleflag = false;
 
         double dist = bar_dist.getDistance(DistanceUnit.MM);
 
-        Claw.setPosition(claw_close);
+      //  Claw.setPosition(claw_close);
+
 
         move(1.0);
         while(Op.opModeIsActive() && dist>190) {
@@ -544,7 +551,9 @@ public class BaseClass extends MecanumDrive {
         }
         stop_drive();
         Claw.setPosition(claw_open);
+
         delay(150);
+        flag[claw_lock]=false;
         move(-0.9);
         delay(300);
      pidf_index=pidf_specout_idle;
@@ -576,15 +585,17 @@ public class BaseClass extends MecanumDrive {
 
     }
 
-    public void pre_samplelift(boolean driver)
+    public boolean pre_samplelift(boolean driver)
 
     {
+        if(!flag[claw_lock]) return false;
         flag[lift]=false;
        pidf_index=pidf_idle_sampleout;
       pidfsetting(arm_angle_sampleouttake-10);
         flag[presamplelift]=true;
         flag[sampleliftready]=false;
         if(driver) flag[lift]=true;
+        return true;
 
 
     }
@@ -636,6 +647,7 @@ public class BaseClass extends MecanumDrive {
             stop_drive();
             Claw.setPosition(claw_open);
             delay(200);
+            flag[claw_lock]=false;
             Left_handle.setPosition(lefthandle_idle);
             Right_handle.setPosition(righthandle_idle);
             delay(150);
@@ -677,6 +689,7 @@ public class BaseClass extends MecanumDrive {
        delay(300); // 500;
         Claw.setPosition(claw_close);
         delay(350);
+        flag[claw_lock]=true;
        Left_handle.setPosition(lefthandle_idle);
        Right_handle.setPosition(righthandle_idle);
        delay(100);
@@ -912,6 +925,8 @@ public class BaseClass extends MecanumDrive {
            pidftable[pidf_specouttake][pp]=0.00095;  pidftable[pidf_specouttake][ii]=0.00002;  pidftable[pidf_specouttake][dd]=0.000;
            pidftable[pidf_sampleouttake][pp]=0.0008;  pidftable[pidf_sampleouttake][ii]=0;  pidftable[pidf_sampleouttake][dd]=0.000;
            pidftable[pidf_idle][pp]=0.00075;  pidftable[pidf_idle][ii]=0;  pidftable[pidf_idle][dd]=0.00013;
+           pidftable[pidf_afspinouttake][pp]=0.0003;  pidftable[pidf_afspinouttake][ii]=0;  pidftable[pidf_afspinouttake][dd]=0.;
+
 
 
            pidftable[pidf_hang0][pp]=0.0015;  pidftable[pidf_hang0][ii]=0;  pidftable[pidf_hang0][dd]=0.000;
@@ -1187,12 +1202,6 @@ public class BaseClass extends MecanumDrive {
            asconfig[9] [ydis]=4;
            asconfig[9] [adis]=0;
            asconfig[9] [time]=1500;
-           return;
-
-       }
-
-       if(tstep==1) {//for telop
-
 
            Arm_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
            Arm_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -1200,30 +1209,23 @@ public class BaseClass extends MecanumDrive {
            Arm_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
            Arm_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
            Arm_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
            Slide_bot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
            Slide_bot.setTargetPosition(0);
            Slide_bot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
            Slide_bot.setVelocity(0);
-
            Slide_top.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
            Slide_top.setTargetPosition(0);
            Slide_top.setMode(DcMotor.RunMode.RUN_TO_POSITION);
            Slide_top.setVelocity(0);
 
-
-
-           // Slide_bot.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+           return;
 
        }
-        if(tstep==2) {// auto rest the roate 0 position.
-            Arm_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            Arm_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            Arm_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-           Arm_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-           return;
-        }
 
-        if(tstep==3) {// for auto size limitation
+
+
+        if(tstep==1) {// for auto size limitation
 
 
             Slide_bot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -1537,49 +1539,38 @@ public class BaseClass extends MecanumDrive {
 
         {//first outake
             double dis=500;
-            move(0.25);
+            move(0.4);
             delay(100);
 //            Intake_handle.setPosition(0.13);
 //            Intake_rot.setPosition(handlerot_intake);
-            pidfsetting(rotate_spec_first);
-            delay(400);
-            pidfsetting(rotate_spec_first);
-            delay(200);
-            linearslide(580,slidev2);// first outtake
 
-            while(Op.opModeIsActive()&& dis>215)
+            pidf_index=   pidf_afspinouttake;
+            pidfsetting(arm_angle_specouttake);
+            delay(300);
+            linearslide(slide_specouttake,slidev1);// first outtake
+            Left_handle.setPosition(lefthandle_specouttake-0.05);
+            Right_handle.setPosition(righthandle_specouttake+0.05);
+
+            while(Op.opModeIsActive()&& dis>200)
             {
-                movestraight(0.26);
+                movestraight(0.5);
                 armrotatePIDF();
                 dis=bar_dist.getDistance(DistanceUnit.MM);
-//                if(!flag[specimen]&& dis <360)
-//                {Intake.setPower(0.9);flag[specimen]=true;}
             }
-            flag[specimen]=false;
-//            Intake.setPower(0.9);
+
             stop_drive();
-            delay(500);
-         //  delay(100000000);
-           //// Intake.setPower(0.8);
-//            Intake_handle.setPosition(0.20);
-            pidfsetting(rotate_spec_first-400);
-          //  pidfsetting(rotate_spec_first-400,pidf_outtake_spec_down);
-            delay(300); //250
-         //   pidfsetting(rotate_spec_first-300,pidf_outtake_spec_down);
-//            Intake.setPower(-0.9);
-            pidfsetting(rotate_spec_first-500);
-            delay(50); //150
-//            Intake.setPower(0);
-            move(-0.4);
+            Claw.setPosition(claw_open);
             delay(100);
-            linearslide(slide_idle, slidev2);
-            delay(250);
-//            Intake_handle.setPosition(handle_idle); // change later
-          //  Intake_rot.setPosition(handlerot_intake);
-            pidfsetting(rotate_spec_in);
+            flag[claw_lock]=false;
+            move(-0.9);
+            delay(100);
+            linearslide(0,slidev1);
+            pidf_index=pidf_specout_specin;
+            pidfsetting(arm_angle_specintake-10);
+            delay(600); //250
+            pidf_index=pidf_specintake;
+            pidfsetting(arm_angle_specintake);
             stop_drive();
-            delay(100);
-            flag[specimen]=false;
 
         }
 
