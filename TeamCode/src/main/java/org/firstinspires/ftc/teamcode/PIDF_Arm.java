@@ -14,18 +14,22 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
+//183
+
+
 @TeleOp
 @Config
 public class PIDF_Arm extends OpMode{
     private PIDController controller;
 
-    double handleleft = 0.24;
-    double handleright = 0.36;
+    double handleleft = 0.61;
+    double handleright = 0.77;
 
 
-    double offset = -200 +360;
+    double offset = 38;// -200+360
 
     double angle;
+    double raw_angle;
 
     // Arm Up constants
 
@@ -119,6 +123,9 @@ public class PIDF_Arm extends OpMode{
         Slide_top.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         Slide_top.setVelocity(0);
 
+        // 0.615
+        //0.775
+
         Left_handle.setPosition(handleleft);
         Right_handle.setPosition(handleright);
 
@@ -159,8 +166,10 @@ public class PIDF_Arm extends OpMode{
 
         controller.setPID(p,i,d);
 
+        raw_angle = Arm_encoder.getVoltage()/3.2 * 360;
+
         angle = 360 - ((Arm_encoder.getVoltage() / 3.2 * 360 + offset) % 360);
-        if (angle < 360 && angle > 300) angle-=360;
+        if (angle < 360 && angle > 330) angle-=360;
 
         int armPos = (int) (angle * 8192.0/360);// negative to change the vaule for easy understanding;
 //        int slidePos = -Slide_bot.getCurrentPosition();
@@ -176,6 +185,7 @@ public class PIDF_Arm extends OpMode{
         telemetry.addData("pos", armPos);
         telemetry.addData("target", target);
         telemetry.addData("Current Angle", angle);
+        telemetry.addData("Raw Angle", raw_angle);
         telemetry.addData("FF power", ff);
         telemetry.addData("PID power", pid);
         telemetry.addData("Total Power", power);

@@ -40,8 +40,8 @@ public class TelOp extends LinearOpMode {
         telemetry.update();
         rbg.pidf_index=rbg.pidf_idle;
 
-        rbg.Front_led.setPosition(0.5);
-        rbg.Back_led.setPosition(0.5);
+//        rbg.Front_led.setPosition(0.5);
+//        rbg.Back_led.setPosition(0.5);
         waitForStart();
         rbg.pre_idle();
         while (opModeIsActive()) {

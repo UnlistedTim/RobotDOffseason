@@ -32,12 +32,12 @@ public class DebugV2 extends LinearOpMode {
     double lefthandlepos = 0;
     double righthandlepos = 1.0;
 
-    double clawpos = 0.7;
+    double clawpos = 0.48;
 
-    double clawopen = 0.72;
-    double clawclose = 0.93;
+    double clawopen = 0.04;
+    double clawclose = 0.48;
 
-    double offset = -200 +360;
+    double offset = 38;
 
 
     public DcMotorEx leftFront, leftBack, rightBack, rightFront;
@@ -174,7 +174,7 @@ public class DebugV2 extends LinearOpMode {
 
         while (opModeIsActive()) {
             angle = 360 - ((Arm_encoder.getVoltage() / 3.2 * 360 + offset) % 360);
-            if ( angle > 300) angle-=360;
+            if (angle < 360 && angle > 330) angle-=360;
            // Intake_rot.setPosition(0);
 
 
@@ -245,28 +245,28 @@ public class DebugV2 extends LinearOpMode {
             }
             if (gamepad2.square) {
             }
-//            if(gamepad1.dpad_up) {
-//                if (clawpos <= 0.98){
-//                    clawpos+=0.02;
-//                    Claw.setPosition(clawpos);
-//                    sleep(300);
-//                }
-////                tar=tar+100;
-////                linearslide(tar,2700);
-//
-//            }
-//            if(gamepad1.dpad_down)
-//            {
-//                if (clawpos >= 0.02){
-//                    clawpos-=0.02;
-//                    Claw.setPosition(clawpos);
-//                    sleep(300);
-//                }
-//
-////                tar=tar-100;
-////                rbg.linearslide(tar,2700);
-//
-//            }
+            if(gamepad1.dpad_up) {
+                if (clawpos <= 0.98){
+                    clawpos+=0.02;
+                    Claw.setPosition(clawpos);
+                    sleep(300);
+                }
+//                tar=tar+100;
+//                linearslide(tar,2700);
+
+            }
+            if(gamepad1.dpad_down)
+            {
+                if (clawpos >= 0.02){
+                    clawpos-=0.02;
+                    Claw.setPosition(clawpos);
+                    sleep(300);
+                }
+
+//                tar=tar-100;
+//                rbg.linearslide(tar,2700);
+
+            }
 
 
             if (gamepad1.dpad_up){
