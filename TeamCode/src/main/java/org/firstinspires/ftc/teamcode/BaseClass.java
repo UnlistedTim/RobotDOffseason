@@ -38,7 +38,7 @@ public class BaseClass extends MecanumDrive {
     double arm_angle=0;
     double claw_close=0.46,claw_open=0.04;
     double arm_angle_target,arm_pose,arm_pose_target;
-    double arm_angle_idle=-8,arm_angle_preintake=10,arm_arngle_intake=5,arm_angle_sampleouttake=105,arm_angle_specintake=207,arm_angle_specouttake=32;
+    double arm_angle_idle=-8,arm_angle_preintake=10,arm_arngle_intake=5,arm_angle_sampleouttake=105,arm_angle_specintake=207,arm_angle_specouttake=31;
     double lefthandle_idle=0.46,lefthandle_intake=0.18,lefthandle_left45=0.14,lefthandle_left90=0.08,lefthandle_right45=0.22,lefthandle_right90=0.28;
     double lefthandle_sampleouttake=0.64,lefthandle_specintake=0.61,lefthandle_specouttake=0.64,lefthandle_start=0;
     int intake_rotate_index=0;
@@ -87,7 +87,7 @@ public class BaseClass extends MecanumDrive {
     double[] stoptime = new double[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0,0};
     int[] step = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0,0,0,0,0,0,0};
     final int start = 0, claw_lock=1, intake = 2, lift = 3, outtake = 4, intake_shift = 5, button_flip = 6;
-    final int intake_rotate= 7, intake_slide= 8, last = 9, drive = 10, intake_ready = 11, hang = 12, specimen = 13,smooth_adj=14;
+    final int intake_rotate= 7, hang_timer= 8, last = 9, drive = 10, intake_ready = 11, hang = 12, specimen = 13,smooth_adj=14;
     final int force = 15,color_check=16, hang0 = 17,idle_ready=18,spec_ready=19,preidle=20,idleready=21, spec = 22,pre_spec=23, pre_samp = 24,presampleintake=25,sampleintakeready=26;
     final int preintakeidle=27,intakeidleready=28,presampleouttake=29,sampleouttakeready=30,presamplelift=31,sampleliftready=32,prespecintake=33,specintakeready=34,placement=35,prespecouttake=36,specouttakeready=37;
     final  double arm_angle_offset=38;
@@ -257,10 +257,12 @@ public class BaseClass extends MecanumDrive {
 
             flag[hang] = true;
             step[hang]=0;
+
+            timer(0,hang_timer);
             return;
         }
-        if ( step[hang]==0&& Slide_top.getCurrentPosition() < 10 ){
-            delay(200);
+        if ( (step[hang]==0&& Slide_top.getCurrentPosition() < 15) || timer(2000,hang_timer) ){
+            delay(100);
             linearslideTq(0,0);
             Gearbox.setPosition(0.95);
             pidf_index=pidf_hang0;
@@ -372,7 +374,6 @@ public class BaseClass extends MecanumDrive {
     {
 
         Claw.setPosition(claw_open);
-        flag
         Left_handle.setPosition(lefthandle_idle);
         Right_handle.setPosition(righthandle_idle);
         k=0.0001;
@@ -410,6 +411,9 @@ public class BaseClass extends MecanumDrive {
         flag[button_flip]=false;
         flag[presampleintake]=true;
         flag[sampleintakeready]=false;
+        intake_rotate_index=0;
+
+
 
     }
 
@@ -496,6 +500,7 @@ public class BaseClass extends MecanumDrive {
 
 
        pidf_index=pidf_specin_specout;
+
         pidfsetting(arm_angle_specouttake);
         delay(150);
         move(0.25);
@@ -510,12 +515,12 @@ public class BaseClass extends MecanumDrive {
     public void specouttake_ready()
 
     {
-
+        Left_handle.setPosition(lefthandle_specouttake-0.05);
+        Right_handle.setPosition(righthandle_specouttake+0.05);
         if(flag[prespecouttake]&& (Math.abs(arm_angle_update()-arm_angle_specouttake)<20)) {
             k=0.0003;
            linearslide(slide_specouttake,slidev2);
-            Left_handle.setPosition(lefthandle_specouttake-0.05);
-            Right_handle.setPosition(righthandle_specouttake+0.05);
+
             flag[prespecouttake]=false;
             return;
         }
@@ -591,7 +596,7 @@ public class BaseClass extends MecanumDrive {
         if(!flag[claw_lock]) return false;
         flag[lift]=false;
        pidf_index=pidf_idle_sampleout;
-      pidfsetting(arm_angle_sampleouttake-10);
+      pidfsetting(arm_angle_sampleouttake);
         flag[presamplelift]=true;
         flag[sampleliftready]=false;
         if(driver) flag[lift]=true;
@@ -1237,9 +1242,9 @@ public class BaseClass extends MecanumDrive {
             Slide_top.setTargetPosition(0);
             Slide_top.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             Slide_top.setVelocity(0);
-            pause(600);
-            pidfsetting(-Arm_right.getCurrentPosition());
-            delay(500);
+//            pause(600);
+//            pidfsetting(-Arm_right.getCurrentPosition());
+//            delay(500);
             return;
 
         }

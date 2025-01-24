@@ -233,20 +233,20 @@ public class TelOp extends LinearOpMode {
             rbg.robot_centric(gamepad1.right_stick_y, gamepad1.right_stick_x, gamepad1.left_stick_x, speed_factor);
              telemetry.addData("armlinerslide top", rbg.Slide_top.getCurrentPosition());
             telemetry.addData("armlinerslide bot", rbg.Slide_bot.getCurrentPosition());
-
-            telemetry.addData("Arm angle", rbg.arm_angle);
-
-            telemetry.addData("Arm right power", rbg.power);
-
-            telemetry.addData("Speed factor", speed_factor);
-
-            telemetry.addData("Preidle",rbg.flag[rbg.preidle]);
-            telemetry.addData("Idleready",rbg.flag[rbg.idleready]);
 //
-           telemetry.addData("gerbox", rbg.Gearbox.getPosition());
-            telemetry.addData("K value", rbg.k);
+//            telemetry.addData("Arm angle", rbg.arm_angle);
+//
+//            telemetry.addData("Arm right power", rbg.power);
+//
+//            telemetry.addData("Speed factor", speed_factor);
 
-            telemetry.addData("intake_lvel", rbg.intake_level);
+//            telemetry.addData("Preidle",rbg.flag[rbg.preidle]);
+//            telemetry.addData("Idleready",rbg.flag[rbg.idleready]);
+////
+//           telemetry.addData("gerbox", rbg.Gearbox.getPosition());
+//            telemetry.addData("K value", rbg.k);
+//
+//            telemetry.addData("intake_lvel", rbg.intake_level);
             telemetry.addData("Right arm motor current", rbg.Arm_right.getCurrent(CurrentUnit.AMPS));
             telemetry.addData("Left arm motor current", rbg.Arm_left.getCurrent(CurrentUnit.AMPS));
 
