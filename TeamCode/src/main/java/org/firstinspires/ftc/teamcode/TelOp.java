@@ -43,6 +43,7 @@ public class TelOp extends LinearOpMode {
 //        rbg.Front_led.setPosition(0.5);
 //        rbg.Back_led.setPosition(0.5);
         waitForStart();
+        rbg.timer(0,rbg.start);
         rbg.pre_idle();
         while (opModeIsActive()) {
             switch (state) {
