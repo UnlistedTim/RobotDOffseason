@@ -44,51 +44,55 @@ public class Autospecimen extends LinearOpMode {
         waitForStart();
         while (opModeIsActive()) {
 
-            rbg.delay(4000);
+//            rbg.delay(4000);
 
             rbg.aspec_outtake();
-            rbg.afmove(0,true);//strafe samples
+            rbg.afmove(0,true,true);//strafe samples
 
-            rbg.afmove(1,false);// forward for sampels
-
-
-            rbg.afmove(2,true);//strafe for first samples
-            rbg.afmove(3,false);//push the first sample
-
-            rbg.afmove(4,false);//forward for second sample
-            rbg.afmove(5,true);//strafe for second sampl
-            rbg.afmove(6,false);//push the seond samples and intake
-            rbg.afmove(20,false);// forward for 3rd
-            rbg.afmove(21,true);//strafe  for 3rd
-
-            rbg.pidf_index=rbg.pidf_specintake;
-            rbg.pidfsetting(rbg.arm_angle_specintake);
+            rbg.afmove(1,false,false);// forward for sampels
 
 
-            rbg.afmove(22,false);// push for 3 rd
+            rbg.afmove(2,true,false);//strafe for first samples
+            rbg.afmove(3,false,false);//push the first sample
+
+            rbg.afmove(4,false,false);//forward for second sample
+            rbg.afmove(5,true,false);//strafe for second sampl
+            rbg.afmove(6,false,false);//push the seond samples and intake
+            rbg.afmove(20,false,false);// forward for 3rd
+            rbg.afmove(21,true,false);//strafe  for 3rd
+//
+//            rbg.pidf_index=rbg.pidf_specintake;
+//            rbg.pidfsetting(rbg.arm_angle_specintake);
+
+
+            rbg.afmove(22,false,false);// push for 3 rd
             rbg.stop_drive();
 //            rbg.delay(10000000);
             rbg.aspec_intake();
-            rbg.afmove(7,true);//strafe for outtake
+            rbg.afmove(7,true,true);//strafe for outtake
 
 //            rbg.delay(100000);
             rbg.aspec_outtake();;
-            rbg.afmove(8,true);//strafe for intake
+            rbg.afmove(8,true,true);//strafe for intake
             rbg.aspec_intake();;
-            rbg.afmove(9,true);//strafe for outtake
+            rbg.afmove(9,true,true);//strafe for outtake
             rbg.aspec_outtake();;
-            rbg.afmove(10,true);//strafe for i ntake;
+            rbg.afmove(10,true,true);//strafe for i ntake;
             rbg.aspec_intake();
-            rbg.afmove(11,true);//strafe for outtake;
+            rbg.afmove(11,true,true);//strafe for outtake;
+
+            rbg.aspec_outtake();
+            rbg.afmove(12,true,false);//strafe for park;
+            rbg.aspec_intake();
+            rbg.afmove(13,true,false);//strafe for park;
             rbg.flag[rbg.last]=true;
             rbg.aspec_outtake();
-            rbg.afmove(12,true);//strafe for park;
 
             rbg.stop_drive();;//strafe for park;
 //            rbg.armRotateLeft.setPower(0);
 //            rbg.armRotate.setPower(0);
             //  rbg.armRotateLeft.setPower((0));
-            sleep(50000);
+            rbg.delay(50000);
 
 
         }
