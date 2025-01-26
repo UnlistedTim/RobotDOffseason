@@ -44,6 +44,8 @@ public class Autospecimen extends LinearOpMode {
         waitForStart();
         while (opModeIsActive()) {
 
+            rbg.delay(4000);
+
             rbg.aspec_outtake();
             rbg.afmove(0,true);//strafe samples
 
@@ -58,21 +60,28 @@ public class Autospecimen extends LinearOpMode {
             rbg.afmove(6,false);//push the seond samples and intake
             rbg.afmove(20,false);// forward for 3rd
             rbg.afmove(21,true);//strafe  for 3rd
+
+            rbg.pidf_index=rbg.pidf_specintake;
+            rbg.pidfsetting(rbg.arm_angle_specintake);
+
+
             rbg.afmove(22,false);// push for 3 rd
             rbg.stop_drive();
-            rbg.delay(10000000);
+//            rbg.delay(10000000);
             rbg.aspec_intake();
             rbg.afmove(7,true);//strafe for outtake
+
+//            rbg.delay(100000);
             rbg.aspec_outtake();;
             rbg.afmove(8,true);//strafe for intake
             rbg.aspec_intake();;
             rbg.afmove(9,true);//strafe for outtake
             rbg.aspec_outtake();;
-            rbg.afmove(10,true);//strafe for intake;
-            rbg.aspec_intake();;
+            rbg.afmove(10,true);//strafe for i ntake;
+            rbg.aspec_intake();
             rbg.afmove(11,true);//strafe for outtake;
             rbg.flag[rbg.last]=true;
-            rbg.aspec_outtake();;
+            rbg.aspec_outtake();
             rbg.afmove(12,true);//strafe for park;
 
             rbg.stop_drive();;//strafe for park;

@@ -127,7 +127,7 @@ public  class MecanumDrive {
     public DigitalChannel Arm_touch;
     //public CRServo Intake;
     public  VoltageSensor voltageSensor;
-    public ColorSensor Intake_color;
+    public ColorSensor Claw_color;
 
     public DistanceSensor bar_dist;
     public DistanceSensor basket_dist;
@@ -577,6 +577,8 @@ public  class MecanumDrive {
       //  Intake = hardwareMap.get(CRServo.class, "Intake");
       //  Intake_handle = hardwareMap.get(Servo.class, "Intake_handle");
         Gearbox = hardwareMap.get(Servo.class, "Gearbox");
+
+        Claw_color=hardwareMap.get(ColorSensor.class, "Claw_color");
 
 //        Intake_color = hardwareMap.get(ColorSensor.class, "Intake_color");
         Arm_encoder= hardwareMap.get(AnalogInput.class, "Arm_encoder");

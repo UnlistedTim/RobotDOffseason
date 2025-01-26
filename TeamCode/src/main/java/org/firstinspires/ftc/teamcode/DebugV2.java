@@ -71,6 +71,8 @@ public class DebugV2 extends LinearOpMode {
     public DistanceSensor basket_dist;
     public AnalogInput Arm_encoder;
 
+    public ColorSensor Claw_color;
+
 
 
 
@@ -83,6 +85,9 @@ public class DebugV2 extends LinearOpMode {
         leftBack = hardwareMap.get(DcMotorEx.class, "leftBack");
         rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+        Claw_color=hardwareMap.get(ColorSensor.class, "Claw_color");
+
+
 
 
 
@@ -291,7 +296,10 @@ public class DebugV2 extends LinearOpMode {
 
 //
            telemetry.addData("gerbox", Gearbox.getPosition());
-       ;
+
+           telemetry.addData("Color sensor red", Claw_color.red());
+            telemetry.addData("Color sensor green", Claw_color.red());
+            telemetry.addData("Color sensor blue", Claw_color.blue());
             telemetry.addLine("gamepad2  dapad down/up handle        dpad left/right hadle ort");
             telemetry.addLine("gamepad2  triangle clawcolse        cross claw open");
             telemetry.addLine("gamepad1  dapd up  +        dpad downn-");
