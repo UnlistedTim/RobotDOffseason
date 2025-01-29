@@ -60,35 +60,31 @@ public class Autospecimen extends LinearOpMode {
             rbg.afmove(6,false,false);//push the seond samples and intake
             rbg.afmove(20,false,false);// forward for 3rd
             rbg.afmove(21,true,false);//strafe  for 3rd
-//
-//            rbg.pidf_index=rbg.pidf_specintake;
-//            rbg.pidfsetting(rbg.arm_angle_specintake);
-
-
             rbg.afmove(22,false,false);// push for 3 rd
             rbg.stop_drive();
-//            rbg.delay(10000000);
+          //  rbg.delay(10000000);
             rbg.aspec_intake();
             rbg.afmove(7,true,true);//strafe for outtake
 
 //            rbg.delay(100000);
             rbg.aspec_outtake();;
             rbg.afmove(8,true,true);//strafe for intake
+//            rbg.delay(200000000);
             rbg.aspec_intake();;
             rbg.afmove(9,true,true);//strafe for outtake
             rbg.aspec_outtake();;
             rbg.afmove(10,true,true);//strafe for i ntake;
             rbg.aspec_intake();
+
             rbg.afmove(11,true,true);//strafe for outtake;
 
             rbg.aspec_outtake();
-            rbg.afmove(12,true,false);//strafe for park;
+            rbg.afmove(12,true,true);//strafe for park;
             rbg.aspec_intake();
-            rbg.afmove(13,true,false);//strafe for park;
+            rbg.afmove(13,true,true);//strafe for park;
             rbg.flag[rbg.last]=true;
             rbg.aspec_outtake();
-
-            rbg.stop_drive();;//strafe for park;
+            rbg.afmove(14,true,false);//strafe for park;
 //            rbg.armRotateLeft.setPower(0);
 //            rbg.armRotate.setPower(0);
             //  rbg.armRotateLeft.setPower((0));
