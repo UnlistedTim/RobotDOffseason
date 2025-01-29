@@ -142,7 +142,7 @@ public class TelOp extends LinearOpMode {
                    if(!rbg.flag[rbg.specintakeready])
                    {
                        rbg.specintake_ready();
-                       speed_factor = 0.4;
+                     // speed_factor = 0.4;
                        break;
                    }
                    if(gamepad2.right_bumper&&rbg.flag[rbg.claw_lock]) {
@@ -160,20 +160,29 @@ public class TelOp extends LinearOpMode {
                    if(gamepad1.right_bumper)
                    {
                        rbg.specintake();
+                       if(gamepad1.right_bumper)
+                       {
+
+                           rbg.specmove();
+                           state = State.SPECOUTTAKE;
+                           speed_factor=1;
+                           break;
+                       }
+
                        rbg.pre_specouttake();
                        speed_factor=1;
                        state = State.SPECOUTTAKE;
                        break;
                    }
 
-                   if(gamepad1.right_trigger>0.8)
-                   {
-                       rbg.specintake();
-                       rbg.specmove();
-                       state = State.SPECOUTTAKE;
-                        break;
-
-                   }
+//                   if(gamepad1.right_trigger>0.8)
+//                   {
+//                       rbg.specintake();
+//                       rbg.specmove();
+//                       state = State.SPECOUTTAKE;
+//                        break;
+//
+//                   }
 
                    break;
 
