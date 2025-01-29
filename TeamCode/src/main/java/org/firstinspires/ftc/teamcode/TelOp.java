@@ -98,6 +98,12 @@ public class TelOp extends LinearOpMode {
                   break;
 
                 case INTAKEIDLE:
+                    if(!rbg.timer(3000,rbg.intake)&&gamepad2.right_bumper){
+                       rbg.resampleintake();
+                        state = State.SAMPLEINTAKE;
+                        break;
+                    }
+
                     if(!rbg.flag[rbg.intakeidleready])
                     {
                         rbg.intakeidle_ready();
@@ -154,12 +160,19 @@ public class TelOp extends LinearOpMode {
                    if(gamepad1.right_bumper)
                    {
                        rbg.specintake();
-
-                       rbg.specmove()
                        rbg.pre_specouttake();
                        speed_factor=1;
                        state = State.SPECOUTTAKE;
                        break;
+                   }
+
+                   if(gamepad1.right_trigger>0.8)
+                   {
+                       rbg.specintake();
+                       rbg.specmove();
+                       state = State.SPECOUTTAKE;
+                        break;
+
                    }
 
                    break;
@@ -219,23 +232,31 @@ public class TelOp extends LinearOpMode {
             rbg.armrotatePIDF();
             if(gamepad1.left_bumper) {
                if (rbg.drop())  state = State.IDLE;
-               else state = State.SAMPLEINTAKE;
+             //  else state = State.SAMPLEINTAKE;
             }
 
             if (rbg.timer(88000, rbg.start) || rbg.flag[rbg.force]) {
+
                 if (gamepad2.share || rbg.flag[rbg.hang]) {
                     rbg.pre_hang();
                 }
                 if (gamepad1.share) {
                    rbg.hang();
                 }
+                if(!rbg.flag[rbg.vb]&&!rbg.flag[rbg.hang]&&rbg.timer(rbg.start,10000)){
+                    gamepad2.rumble(0.5,0.5,300);
+                    gamepad1.rumble(0.5,0.5,300);
+
+                    rbg.flag[rbg.vb]=true;
+                }
+
 
             }
 
             if (gamepad2.ps) rbg.flag[rbg.force] = true;
             rbg.robot_centric(gamepad1.right_stick_y, gamepad1.right_stick_x, gamepad1.left_stick_x, speed_factor);
-             telemetry.addData("armlinerslide top", rbg.Slide_top.getCurrentPosition());
-            telemetry.addData("armlinerslide bot", rbg.Slide_bot.getCurrentPosition());
+         //    telemetry.addData("armlinerslide top", rbg.Slide_top.getCurrentPosition());
+        //    telemetry.addData("armlinerslide bot", rbg.Slide_bot.getCurrentPosition());
 //
 //            telemetry.addData("Arm angle", rbg.arm_angle);
 //
@@ -250,13 +271,13 @@ public class TelOp extends LinearOpMode {
 //            telemetry.addData("K value", rbg.k);
 //
 //            telemetry.addData("intake_lvel", rbg.intake_level);
-            telemetry.addData("Right arm motor current", rbg.Arm_right.getCurrent(CurrentUnit.AMPS));
-            telemetry.addData("Left arm motor current", rbg.Arm_left.getCurrent(CurrentUnit.AMPS));
-
-            telemetry.addData("Top slide motor current", rbg.Slide_top.getCurrent(CurrentUnit.AMPS));
-            telemetry.addData("Bot slide motor current", rbg.Slide_bot.getCurrent(CurrentUnit.AMPS));
-            telemetry.addData("Bar dist", rbg.bar_dist.getDistance(DistanceUnit.MM));
-            telemetry.update();
+//            telemetry.addData("Right arm motor current", rbg.Arm_right.getCurrent(CurrentUnit.AMPS));
+//            telemetry.addData("Left arm motor current", rbg.Arm_left.getCurrent(CurrentUnit.AMPS));
+//
+//            telemetry.addData("Top slide motor current", rbg.Slide_top.getCurrent(CurrentUnit.AMPS));
+//            telemetry.addData("Bot slide motor current", rbg.Slide_bot.getCurrent(CurrentUnit.AMPS));
+//            telemetry.addData("Bar dist", rbg.bar_dist.getDistance(DistanceUnit.MM));
+//            telemetry.update();
             }
         }
     }

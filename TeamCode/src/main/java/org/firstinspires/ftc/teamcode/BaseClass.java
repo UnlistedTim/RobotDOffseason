@@ -41,6 +41,7 @@ public class BaseClass extends MecanumDrive {
     int slide_idle=200,slide_preintake=400,slide_sampleouttake=1800,slide_specintake=0,slide_specouttake=700,slide_intakemax=1250;
 
     int  slide_rotate=450,lslo=0,lshi=1900;
+    Pose2d pp0=new Pose2d(0, 0, 0);
 
 
 
@@ -79,8 +80,8 @@ public class BaseClass extends MecanumDrive {
     boolean[] flag = new boolean[]{false,false,false,false, false,false,false,false,false, false, false, false,false,false,false,false, false,false, false,false,false, false, false,false,false, false,false, false, false, false,false,false,false, false, false,false, false, false, false, false, false,false, false};
     double[] stoptime = new double[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0,0};
     int[] step = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0,0,0,0,0,0,0};
-    final int start = 0, claw_lock=1, intake = 2, lift = 3, outtake = 4, intake_shift = 5, button_flip = 6;
-    final int intake_rotate= 7, hang_timer= 8, last = 9, drive = 10, intake_ready = 11, hang = 12, specimen = 13,smooth_adj=14;
+    final int start = 0, claw_lock=1, intake = 2, lift = 3, resampleintake = 4, intake_shift = 5, button_flip = 6;
+    final int intake_rotate= 7, hang_timer= 8, last = 9, drive = 10, intake_ready = 11, hang = 12, vb = 13,smooth_adj=14;
     final int force = 15,first=16, hang0 = 17,idle_ready=18,arot=19,preidle=20,idleready=21, spec = 22,pre_spec=23, pre_samp = 24,presampleintake=25,sampleintakeready=26;
     final int preintakeidle=27,intakeidleready=28,presampleouttake=29,sampleouttakeready=30,presamplelift=31,sampleliftready=32,prespecintake=33,specintakeready=34,placement=35,prespecouttake=36,specouttakeready=37;
     final  double arm_angle_offset=38;
@@ -313,8 +314,8 @@ public class BaseClass extends MecanumDrive {
         }
         if(flag[smooth_adj]) {
             linearslide( slidePos-10,slidev0-200);
-            if(slidePos>1100) pidfsetting(arm_angle_preintake-3);
-            else if(slidePos>700) pidfsetting(arm_angle_preintake-2);
+            if(slidePos>1100) pidfsetting(arm_angle_preintake-2);
+            else if(slidePos>700) pidfsetting(arm_angle_preintake-1);
                     else  pidfsetting(arm_angle_preintake);
             flag[smooth_adj]=false;}
     }
@@ -354,14 +355,14 @@ public class BaseClass extends MecanumDrive {
       Claw.setPosition(claw_open);
      delay(300);
      flag[claw_lock]=false;
-     if(timer(4000,intake))  {
+//     if(timer(4000,intake))  {
          pidf_index=pidf_sampleout_idle;
          pre_idle();
          return true;
-     }
-     pidf_index=pidf_sampleintake;
-     pre_sampleintake();
-     return false;
+//     }
+//     pidf_index=pidf_sampleintake;
+//     pre_sampleintake();
+//     return false;
     }
 
 
@@ -414,13 +415,22 @@ public class BaseClass extends MecanumDrive {
     }
 
 
+    public void resampleintake()
+
+    {
+        flag[resampleintake]=true;
+        flag[sampleintakeready]=false;
+
+    }
+
     public void sampleintake_ready(boolean pad2rbumperpress)
 
     {
         if(!flag[button_flip] && !pad2rbumperpress) flag[button_flip]=true;
-        if(flag[presampleintake]&& slidePos <slide_rotate){  //slide roataiton target
+        if((flag[presampleintake]&& slidePos <slide_rotate)||flag[resampleintake]){  //slide roataiton target
             pidfsetting(arm_angle_preintake);
             flag[presampleintake]=false;
+            flag[resampleintake]=false;
         }
 
         if (Math.abs(arm_angle-arm_angle_preintake)<15)
@@ -475,6 +485,7 @@ public class BaseClass extends MecanumDrive {
         if( flag[claw_lock]) {
             Claw.setPosition(claw_open);
             delay(100);
+            flag[claw_lock]=false;
         }
         flag[placement]=false;
     }
@@ -486,7 +497,7 @@ public class BaseClass extends MecanumDrive {
             stop_drive();
             Claw.setPosition(claw_close);
             delay(250);
-        flag[claw_lock]=true;
+            flag[claw_lock]=true;
 
 
         }
@@ -495,8 +506,7 @@ public class BaseClass extends MecanumDrive {
     public void pre_specouttake() {
 
 
-       pidf_index=pidf_specin_specout;
-
+        pidf_index=pidf_specin_specout;
         pidfsetting(arm_angle_specouttake);
         delay(150);
         move(0.25);
@@ -686,7 +696,7 @@ public class BaseClass extends MecanumDrive {
     public void sampleintake() {
        stop_drive();
        pidfsetting(arm_arngle_intake);
-       delay(300); // 500;
+       delay(180); // 500;
         Claw.setPosition(claw_close);
         delay(350);
         flag[claw_lock]=true;
@@ -1463,40 +1473,38 @@ public class BaseClass extends MecanumDrive {
 
     }
 
-    public void specmove( int step, boolean str, boolean rot) {
+    public void specmove( ) {
+        imu.resetYaw();
+        pose=pp0;
+        updatePoseEstimate();
+        double x0=pose.position.x,y0=pose.position.y,a0=imu.getRobotYawPitchRollAngles().getYaw((AngleUnit.DEGREES));
+        double xtar=x0+5,ytar=y0+30;
+        double atar=a0,yrange,xrange,x1,y1,a1;
+        double yaw;//,gap;
+
+
+        double ygap=0,agap=0,xgap=0;
+        double SPEED_GAIN = 0.02; // 0.02  //  Forward Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
+        double STRAFE_GAIN = 0.2; //0.03  //  Strafe Speed Control "Gain".  eg: Ramp up to 25% power at a 25 degree Yaw error.   (0.25 / 25.0)
+        double TURN_GAIN = 0.015;  //0.015  //  Turn Control "Gain".  eg: Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
+
+        double MAX_AUTO_SPEED = 0.6;   //  Clip the approach speed to this max value (adjust for your robot)
+        double MAX_AUTO_STRAFE = 0.8;;   //  Clip the approach speed to this max value (adjust for your robot)
+        double MAX_AUTO_TURN =0.2;;
 
         pidf_index=pidf_specin_specout;
-
         pidfsetting(arm_angle_specouttake);
-        delay(150);
-        move(0.25);
-        delay(100);
-        stop_drive();
+        delay(50);
+        move(0.5);
+        delay(50);
         flag[prespecouttake] = true;
         flag[specouttakeready] = false;
-
         Left_handle.setPosition(lefthandle_specouttake-0.05);
         Right_handle.setPosition(righthandle_specouttake+0.05);
 
 
-        double yaw,atar;//,gap;
-        boolean rot_flag = rot;
-        double x1,xtar,ytar,yrange,xrange,y1,a1;
-        double ygap=0,agap=0,xgap=0;
-        double SPEED_GAIN = afmoveconfig[step][speedg]; // 0.02  //  Forward Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
-        double STRAFE_GAIN = afmoveconfig[step][strafeg]; //0.03  //  Strafe Speed Control "Gain".  eg: Ramp up to 25% power at a 25 degree Yaw error.   (0.25 / 25.0)
-        double TURN_GAIN = afmoveconfig[step][turng];  //0.015  //  Turn Control "Gain".  eg: Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
-
-        double MAX_AUTO_SPEED = afmoveconfig[step][speedmax];;   //  Clip the approach speed to this max value (adjust for your robot)
-        double MAX_AUTO_STRAFE = afmoveconfig[step][strafemax];;   //  Clip the approach speed to this max value (adjust for your robot)
-        double MAX_AUTO_TURN =afmoveconfig[step][turnmax];;
-        xtar=afmoveconfig[step][xdis];
-        ytar=afmoveconfig[step][ydis];
-        atar=afmoveconfig[step][adis];
-
-
         timer(0,6);
-        while (Op.opModeIsActive()&&!timer(afmoveconfig[step][time],6)) {// todo &&!timer3(1200)
+        while (Op.opModeIsActive()&&!timer(2000,6)) {// todo &&!timer3(1200)
             armrotatePIDF();
             updatePoseEstimate();
 
@@ -1507,7 +1515,7 @@ public class BaseClass extends MecanumDrive {
                 return;
             }
 
-            if (Math.abs( slidePos-slide_specouttake)<15)
+            if (!flag[specouttakeready]&&Math.abs( slidePos-slide_specouttake)<15)
             {
                 pidf_index=pidf_specouttake;
                 pidfsetting(arm_angle_specouttake);
@@ -1520,17 +1528,10 @@ public class BaseClass extends MecanumDrive {
             xgap=xtar-x1;
             ygap=ytar-y1;
             agap=atar-a1;
-            if(str){
-                if (rot_flag && timer(600,arot)){
-                    // pidf_index=pidf_specintake;
-                    pidfsetting(arot_angle);
-                    linearslide(aslide,slidev1+150);
-                    rot_flag = false;
-                }
 
-                if (Math.abs(ygap)<2) break;
-            }
-            else {if(Math.abs(xgap)<2) break;}
+            if (Math.abs(ygap)<2) break;
+
+
             xrange= Range.clip(xgap * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
             yaw = Range.clip(agap * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
             yrange= Range.clip(ygap * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
