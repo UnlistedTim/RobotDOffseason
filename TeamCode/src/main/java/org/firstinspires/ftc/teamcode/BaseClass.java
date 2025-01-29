@@ -705,7 +705,7 @@ public class BaseClass extends MecanumDrive {
 
     public void aspec_intake() {
 
-            move(-0.25);
+            move(-0.22);
             updatePoseEstimate();
 
             while(pose.position.x>9)
@@ -782,7 +782,7 @@ public class BaseClass extends MecanumDrive {
         Left_handle.setPosition(lefthandle_idle);
         Right_handle.setPosition(righthandle_idle);
 
-        delay(150);
+        delay(200);
       //  linearslide(0,slidev2);
 
         pidf_index=pidf_specout_specin;
@@ -1460,6 +1460,83 @@ public class BaseClass extends MecanumDrive {
         // delay(2000000);
 
 
+
+    }
+
+    public void specmove( int step, boolean str, boolean rot) {
+
+        pidf_index=pidf_specin_specout;
+
+        pidfsetting(arm_angle_specouttake);
+        delay(150);
+        move(0.25);
+        delay(100);
+        stop_drive();
+        flag[prespecouttake] = true;
+        flag[specouttakeready] = false;
+
+        Left_handle.setPosition(lefthandle_specouttake-0.05);
+        Right_handle.setPosition(righthandle_specouttake+0.05);
+
+
+        double yaw,atar;//,gap;
+        boolean rot_flag = rot;
+        double x1,xtar,ytar,yrange,xrange,y1,a1;
+        double ygap=0,agap=0,xgap=0;
+        double SPEED_GAIN = afmoveconfig[step][speedg]; // 0.02  //  Forward Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
+        double STRAFE_GAIN = afmoveconfig[step][strafeg]; //0.03  //  Strafe Speed Control "Gain".  eg: Ramp up to 25% power at a 25 degree Yaw error.   (0.25 / 25.0)
+        double TURN_GAIN = afmoveconfig[step][turng];  //0.015  //  Turn Control "Gain".  eg: Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
+
+        double MAX_AUTO_SPEED = afmoveconfig[step][speedmax];;   //  Clip the approach speed to this max value (adjust for your robot)
+        double MAX_AUTO_STRAFE = afmoveconfig[step][strafemax];;   //  Clip the approach speed to this max value (adjust for your robot)
+        double MAX_AUTO_TURN =afmoveconfig[step][turnmax];;
+        xtar=afmoveconfig[step][xdis];
+        ytar=afmoveconfig[step][ydis];
+        atar=afmoveconfig[step][adis];
+
+
+        timer(0,6);
+        while (Op.opModeIsActive()&&!timer(afmoveconfig[step][time],6)) {// todo &&!timer3(1200)
+            armrotatePIDF();
+            updatePoseEstimate();
+
+            if(flag[prespecouttake]&& (Math.abs(arm_angle_update()-arm_angle_specouttake)<20)) {
+                k=0.0003;
+                linearslide(slide_specouttake,slidev1);
+                flag[prespecouttake]=false;
+                return;
+            }
+
+            if (Math.abs( slidePos-slide_specouttake)<15)
+            {
+                pidf_index=pidf_specouttake;
+                pidfsetting(arm_angle_specouttake);
+                flag[specouttakeready]=true;
+            }
+            
+            x1=pose.position.x;
+            y1=pose.position.y;
+            a1=imu.getRobotYawPitchRollAngles().getYaw((AngleUnit.DEGREES));
+            xgap=xtar-x1;
+            ygap=ytar-y1;
+            agap=atar-a1;
+            if(str){
+                if (rot_flag && timer(600,arot)){
+                    // pidf_index=pidf_specintake;
+                    pidfsetting(arot_angle);
+                    linearslide(aslide,slidev1+150);
+                    rot_flag = false;
+                }
+
+                if (Math.abs(ygap)<2) break;
+            }
+            else {if(Math.abs(xgap)<2) break;}
+            xrange= Range.clip(xgap * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
+            yaw = Range.clip(agap * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
+            yrange= Range.clip(ygap * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
+            moveRobot(xrange, yrange , yaw);
+        }
+        stop_drive();
 
     }
 

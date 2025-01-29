@@ -154,6 +154,8 @@ public class TelOp extends LinearOpMode {
                    if(gamepad1.right_bumper)
                    {
                        rbg.specintake();
+
+                       rbg.specmove()
                        rbg.pre_specouttake();
                        speed_factor=1;
                        state = State.SPECOUTTAKE;

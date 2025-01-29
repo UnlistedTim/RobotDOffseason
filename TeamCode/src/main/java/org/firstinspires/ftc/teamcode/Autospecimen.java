@@ -84,7 +84,7 @@ public class Autospecimen extends LinearOpMode {
             rbg.afmove(13,true,true);//strafe for park;
             rbg.flag[rbg.last]=true;
             rbg.aspec_outtake();
-            rbg.afmove(14,true,false);//strafe for park;
+            rbg.afmove(14,true,true);//strafe for park;
 //            rbg.armRotateLeft.setPower(0);
 //            rbg.armRotate.setPower(0);
             //  rbg.armRotateLeft.setPower((0));
