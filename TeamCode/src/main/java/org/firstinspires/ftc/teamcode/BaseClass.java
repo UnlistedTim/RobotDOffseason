@@ -799,18 +799,20 @@ public class BaseClass extends MecanumDrive {
 
         k = 0.0001;
 
+
+
+
         if (flag[last]){
             pidf_index=pidf_sampleout_idle;
-            pidfsetting(arm_angle_idle+10);
+            // pidfsetting(arm_angle_idle+10);
+            arot_angle =arm_angle_idle+10;
             Left_handle.setPosition(lefthandle_idle);
             Right_handle.setPosition(righthandle_idle);
+            return;
 
         }
-
         Left_handle.setPosition(lefthandle_specintake);
         Right_handle.setPosition(righthandle_specintake);
-
-
     }
 
 
