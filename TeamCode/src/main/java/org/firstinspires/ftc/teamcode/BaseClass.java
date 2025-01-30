@@ -82,7 +82,7 @@ public class BaseClass extends MecanumDrive {
     int[] step = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0,0,0,0,0,0,0};
     final int start = 0, claw_lock=1, intake = 2, lift = 3, resampleintake = 4, intake_shift = 5, button_flip = 6;
     final int intake_rotate= 7, hang_timer= 8, last = 9, drive = 10, stateready = 11, hang = 12, vb = 13,smooth_adj=14;
-    final int force = 15,first=16, hang0 = 17,idle_ready=18,arot=19,preidle=20,idleready=21, spec = 22,pre_spec=23, pre_samp = 24,presampleintake=25,sampleintakeready=26;
+    final int force = 15,first=16, hang0 = 17,idle_ready=18,arot=19,preidle=20,idleready=21, spec = 22,specouttaketime=23, pre_samp = 24,presampleintake=25,sampleintakeready=26;
     final int preintakeidle=27,intakeidleready=28,presampleouttake=29,sampleouttakeready=30,presamplelift=31,sampleliftready=32,prespecintake=33,specintakeready=34,placement=35,prespecouttake=36,specouttakeready=37;
     final  double arm_angle_offset=38;
     int color_det = 0;
@@ -975,7 +975,7 @@ public class BaseClass extends MecanumDrive {
            pidftable[pidf_specintake][pp]=0.002;  pidftable[pidf_specintake][ii]=0.00015;  pidftable[pidf_specintake][dd]=0.00008;
            pidftable[pidf_specouttake][pp]=0.00095;  pidftable[pidf_specouttake][ii]=0.00002;  pidftable[pidf_specouttake][dd]=0.000;
            pidftable[pidf_sampleouttake][pp]=0.0008;  pidftable[pidf_sampleouttake][ii]=0;  pidftable[pidf_sampleouttake][dd]=0.000;
-           pidftable[pidf_idle][pp]=0.00075;  pidftable[pidf_idle][ii]=0;  pidftable[pidf_idle][dd]=0.00013;
+           pidftable[pidf_idle][pp]=0.00075;  pidftable[pidf_idle][ii]=0;  pidftable[pidf_idle][dd]=0.0001;
           // pidftable[pidf_afspinouttake][pp]=0.0003;  pidftable[pidf_afspinouttake][ii]=0;  pidftable[pidf_afspinouttake][dd]=0.;
 
 
@@ -1488,11 +1488,11 @@ public class BaseClass extends MecanumDrive {
         double TURN_GAIN = 0.015;  //0.015  //  Turn Control "Gain".  eg: Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
 
         double MAX_AUTO_SPEED = 0.6;   //  Clip the approach speed to this max value (adjust for your robot)
-        double MAX_AUTO_STRAFE = 0.8;;   //  Clip the approach speed to this max value (adjust for your robot)
+        double MAX_AUTO_STRAFE = 0.99;;   //  Clip the approach speed to this max value (adjust for your robot)
         double MAX_AUTO_TURN =0.2;;
 
         pidf_index=pidf_specin_specout;
-        pidfsetting(arm_angle_specouttake);
+        pidfsetting(arm_angle_specouttake+10);
         delay(50);
         move(0.5);
         delay(50);
@@ -1503,20 +1503,18 @@ public class BaseClass extends MecanumDrive {
 
 
         timer(0,6);
+
+        timer(0,specouttaketime);
         while (Op.opModeIsActive()&&!timer(2000,6)) {// todo &&!timer3(1200)
             armrotatePIDF();
             updatePoseEstimate();
 
-            if(flag[prespecouttake]&& (Math.abs(arm_angle_update()-arm_angle_specouttake)<20)) {
+            if(flag[prespecouttake]&& timer(600,specouttaketime)) {
                 k=0.0003;
-                linearslide(slide_specouttake,slidev1);
-                flag[prespecouttake]=false;
-            }
-
-            if (!flag[specouttakeready]&&Math.abs( slidePos-slide_specouttake)<15)
-            {
                 pidf_index=pidf_specouttake;
-                pidfsetting(arm_angle_specouttake);
+                pidfsetting(arm_angle_specouttake+2);
+                linearslide(slide_specouttake,slidev1+150);
+                flag[prespecouttake]=false;
                 flag[specouttakeready]=true;
             }
             
