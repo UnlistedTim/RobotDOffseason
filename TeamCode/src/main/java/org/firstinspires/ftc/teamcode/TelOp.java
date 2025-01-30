@@ -98,7 +98,7 @@ public class TelOp extends LinearOpMode {
                   break;
 
                 case INTAKEIDLE:
-                    if(!rbg.timer(3000,rbg.intake)&&gamepad2.right_bumper){
+                    if(!rbg.timer(1000,rbg.intake)&&gamepad2.right_bumper){
                        rbg.resampleintake();
                         state = State.SAMPLEINTAKE;
                         break;
@@ -252,9 +252,10 @@ public class TelOp extends LinearOpMode {
                 if (gamepad1.share) {
                    rbg.hang();
                 }
-                if(!rbg.flag[rbg.vb]&&!rbg.flag[rbg.hang]&&rbg.timer(rbg.start,10000)){
-                    gamepad2.rumble(0.5,0.5,300);
-                    gamepad1.rumble(0.5,0.5,300);
+
+                if(!rbg.flag[rbg.vb]&&!rbg.flag[rbg.hang]&&rbg.timer(100000,rbg.start)){
+                    gamepad2.rumble(0.7,0.7,500);
+                    gamepad1.rumble(0.7,0.7,500);
 
                     rbg.flag[rbg.vb]=true;
                 }

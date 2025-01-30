@@ -420,6 +420,7 @@ public class BaseClass extends MecanumDrive {
     {
         flag[resampleintake]=true;
         flag[sampleintakeready]=false;
+        flag[button_flip] = false;
 
     }
 
@@ -1478,14 +1479,14 @@ public class BaseClass extends MecanumDrive {
         pose=pp0;
         updatePoseEstimate();
         double x0=pose.position.x,y0=pose.position.y,a0=imu.getRobotYawPitchRollAngles().getYaw((AngleUnit.DEGREES));
-        double xtar=x0+5,ytar=y0+30;
+        double xtar=x0+8,ytar=y0+35;
         double atar=a0,yrange,xrange,x1,y1,a1;
         double yaw;//,gap;
 
 
         double ygap=0,agap=0,xgap=0;
-        double SPEED_GAIN = 0.02; // 0.02  //  Forward Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
-        double STRAFE_GAIN = 0.2; //0.03  //  Strafe Speed Control "Gain".  eg: Ramp up to 25% power at a 25 degree Yaw error.   (0.25 / 25.0)
+        double SPEED_GAIN = 0.03; // 0.02  //  Forward Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
+        double STRAFE_GAIN = 0.3; //0.03  //  Strafe Speed Control "Gain".  eg: Ramp up to 25% power at a 25 degree Yaw error.   (0.25 / 25.0)
         double TURN_GAIN = 0.015;  //0.015  //  Turn Control "Gain".  eg: Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
 
         double MAX_AUTO_SPEED = 0.6;   //  Clip the approach speed to this max value (adjust for your robot)
@@ -1512,7 +1513,6 @@ public class BaseClass extends MecanumDrive {
                 k=0.0003;
                 linearslide(slide_specouttake,slidev1);
                 flag[prespecouttake]=false;
-                return;
             }
 
             if (!flag[specouttakeready]&&Math.abs( slidePos-slide_specouttake)<15)
