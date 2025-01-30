@@ -81,7 +81,7 @@ public class BaseClass extends MecanumDrive {
     double[] stoptime = new double[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0,0};
     int[] step = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0,0,0,0,0,0,0};
     final int start = 0, claw_lock=1, intake = 2, lift = 3, resampleintake = 4, intake_shift = 5, button_flip = 6;
-    final int intake_rotate= 7, hang_timer= 8, last = 9, drive = 10, intake_ready = 11, hang = 12, vb = 13,smooth_adj=14;
+    final int intake_rotate= 7, hang_timer= 8, last = 9, drive = 10, stateready = 11, hang = 12, vb = 13,smooth_adj=14;
     final int force = 15,first=16, hang0 = 17,idle_ready=18,arot=19,preidle=20,idleready=21, spec = 22,pre_spec=23, pre_samp = 24,presampleintake=25,sampleintakeready=26;
     final int preintakeidle=27,intakeidleready=28,presampleouttake=29,sampleouttakeready=30,presamplelift=31,sampleliftready=32,prespecintake=33,specintakeready=34,placement=35,prespecouttake=36,specouttakeready=37;
     final  double arm_angle_offset=38;
@@ -388,11 +388,13 @@ public class BaseClass extends MecanumDrive {
             if ( slidePos < slide_rotate) {
                 pidfsetting(arm_angle_idle);
                 flag[preidle] = false;
+                timer(0,stateready);
+
             }
             return;
         }
 
-       if (Math.abs(arm_angle-arm_angle_idle)<30)
+       if (Math.abs(arm_angle-arm_angle_idle)<30|| timer(1500,stateready))
        {
            flag[idleready]=true;
            pidf_index=pidf_idle;
@@ -421,6 +423,7 @@ public class BaseClass extends MecanumDrive {
         flag[resampleintake]=true;
         flag[sampleintakeready]=false;
         flag[button_flip] = false;
+        flag[presampleintake]=true;
 
     }
 
@@ -428,13 +431,21 @@ public class BaseClass extends MecanumDrive {
 
     {
         if(!flag[button_flip] && !pad2rbumperpress) flag[button_flip]=true;
-        if((flag[presampleintake]&& slidePos <slide_rotate)||flag[resampleintake]){  //slide roataiton target
+
+
+        if(flag[presampleintake]) {
+             if (slidePos < slide_rotate || flag[resampleintake]) {  //slide roataiton target
             pidfsetting(arm_angle_preintake);
-            flag[presampleintake]=false;
-            flag[resampleintake]=false;
+            flag[presampleintake] = false;
+            flag[resampleintake] = false;
+            timer(0,stateready);
+
+            }
+             return;
+
         }
 
-        if (Math.abs(arm_angle-arm_angle_preintake)<15)
+        if (Math.abs(arm_angle-arm_angle_preintake)<15 || timer(1500,stateready))
         {
             Claw.setPosition(claw_open);
             flag[claw_lock]=false;
@@ -460,12 +471,18 @@ public class BaseClass extends MecanumDrive {
     public void specintake_ready()
 
     {
-        if(flag[prespecintake]&& slidePos <slide_rotate){  //slide roataiton target
-            pidfsetting(arm_angle_specintake);
-            flag[prespecintake]=false;
+        if(flag[prespecintake]) {
+
+            if (slidePos < slide_rotate) {  //slide roataiton target
+                pidfsetting(arm_angle_specintake);
+                flag[prespecintake] = false;
+                timer(0,stateready);
+
+            }
+            return;
         }
 
-        if (Math.abs(arm_angle-arm_angle_specintake)<20)
+        if (Math.abs(arm_angle-arm_angle_specintake)<20||timer(1500,stateready))
         {
 
             Left_handle.setPosition(lefthandle_specintake);
@@ -512,9 +529,12 @@ public class BaseClass extends MecanumDrive {
         delay(150);
         move(0.25);
         delay(100);
+        Left_handle.setPosition(lefthandle_specouttake-0.05);
+        Right_handle.setPosition(righthandle_specouttake+0.05);
         stop_drive();
         flag[prespecouttake] = true;
         flag[specouttakeready] = false;
+        timer(0,stateready);
 
 
     }
@@ -522,16 +542,17 @@ public class BaseClass extends MecanumDrive {
     public void specouttake_ready()
 
     {
-        Left_handle.setPosition(lefthandle_specouttake-0.05);
-        Right_handle.setPosition(righthandle_specouttake+0.05);
-        if(flag[prespecouttake]&& (Math.abs(arm_angle_update()-arm_angle_specouttake)<20)) {
-            k=0.0003;
-           linearslide(slide_specouttake,slidev1);
-            flag[prespecouttake]=false;
+
+        if(flag[prespecouttake]){
+                if (Math.abs(arm_angle_update()-arm_angle_specouttake)<20||timer(1500,stateready) ){
+                k = 0.0003;
+                linearslide(slide_specouttake, slidev1+150);
+                flag[prespecouttake] = false;
+            }
             return;
         }
 
-        if (Math.abs( slidePos-slide_specouttake)<15)
+        if (Math.abs( slidePos-slide_specouttake)<100)
         {
              pidf_index=pidf_specouttake;
             pidfsetting(arm_angle_specouttake);
@@ -573,16 +594,6 @@ public class BaseClass extends MecanumDrive {
     }
 
 
-    public void pre_intakeidle()
-
-    {
-
-//        Intake_handle.setPosition(handle_idle);
-        //Intake_rot.setPosition(handlerot_idle);
-        //set claw;
-        linearslide(slide_idle, slidev1);
-        flag[preidle]=true;
-    }
 
 
     public void  intakeidle_ready()
@@ -606,8 +617,9 @@ public class BaseClass extends MecanumDrive {
         flag[presamplelift]=true;
         flag[sampleliftready]=false;
         if(driver) flag[lift]=true;
-        return true;
+        timer(0,stateready);
 
+        return true;
 
     }
 
@@ -616,7 +628,7 @@ public class BaseClass extends MecanumDrive {
 
     {
 
-        if(flag[presamplelift]&&(Math.abs(arm_angle-arm_angle_sampleouttake)<20)){
+        if(flag[presamplelift]&&(Math.abs(arm_angle-arm_angle_sampleouttake)<20)||  timer(1500,stateready)){
 
             flag[presamplelift]=false;
             flag[sampleliftready]=true;
@@ -677,21 +689,7 @@ public class BaseClass extends MecanumDrive {
 
 
 
-    public void directdle()
 
-    {
-
-//            Intake_handle.setPosition(handle_idle);
-//            Intake_rot.setPosition(handlerot_intake);
-            pidfsetting(rotate_idle);
-            linearslide(slide_idle, slidev1);
-            flag[idle_ready] = false;
-            flag[intake_ready]=false;
-            flag[pre_samp] = false;
-            flag[pre_spec]=false;
-            flag[spec] = false;
-
-    }
 
 
     public void sampleintake() {

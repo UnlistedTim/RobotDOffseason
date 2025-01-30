@@ -205,12 +205,13 @@ public class TelOp extends LinearOpMode {
                     break;
                     }
                break;
+
+
                 case SAMPLEOUTTAKE:
                     if(!rbg.flag[rbg.sampleouttakeready]) {
                         rbg.sampleouttake_ready();
                         break;
                     }
-
                  if(gamepad1.right_bumper) {
                      rbg.sampleouttake();
                      rbg.pidf_index=rbg.pidf_sampleout_idle;
@@ -220,6 +221,7 @@ public class TelOp extends LinearOpMode {
                  }
 
                  break;
+
 
                case SPECOUTTAKE:
                    if(!rbg.flag[rbg.specouttakeready])
