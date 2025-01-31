@@ -355,14 +355,14 @@ public class BaseClass extends MecanumDrive {
       Claw.setPosition(claw_open);
      delay(300);
      flag[claw_lock]=false;
-//     if(timer(4000,intake))  {
+    if(timer(2000,intake))  {
          pidf_index=pidf_sampleout_idle;
          pre_idle();
          return true;
-//     }
-//     pidf_index=pidf_sampleintake;
-//     pre_sampleintake();
-//     return false;
+     }
+     pidf_index=pidf_sampleintake;
+     pre_sampleintake();
+     return false;
     }
 
 
@@ -412,8 +412,6 @@ public class BaseClass extends MecanumDrive {
         flag[sampleintakeready]=false;
         intake_rotate_index=0;
 
-
-
     }
 
 
@@ -434,10 +432,11 @@ public class BaseClass extends MecanumDrive {
 
 
         if(flag[presampleintake]) {
-             if (slidePos < slide_rotate || flag[resampleintake]) {  //slide roataiton target
+           //  if (slidePos < slide_rotate || flag[resampleintake]) {  //slide roataiton target
+            if (slidePos < slide_rotate) {
             pidfsetting(arm_angle_preintake);
             flag[presampleintake] = false;
-            flag[resampleintake] = false;
+           // flag[resampleintake] = false;
             timer(0,stateready);
 
             }

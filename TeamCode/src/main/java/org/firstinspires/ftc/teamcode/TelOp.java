@@ -98,18 +98,18 @@ public class TelOp extends LinearOpMode {
                   break;
 
                 case INTAKEIDLE:
-                    if(!rbg.timer(1000,rbg.intake)&&gamepad2.right_bumper){
-                       rbg.resampleintake();
-                        state = State.SAMPLEINTAKE;
-                        break;
-                    }
+//                    if(!rbg.timer(1000,rbg.intake)&&gamepad2.right_bumper){
+//                       rbg.resampleintake();
+//                        state = State.SAMPLEINTAKE;
+//                        break;
+//                    }
 
                     if(!rbg.flag[rbg.intakeidleready])
                     {
                         rbg.intakeidle_ready();
                         break;
                     }
-                    if(gamepad2.right_bumper) {
+                    if(gamepad2.right_bumper&&rbg.timer(1000, rbg.intake)) {
                         rbg.pre_samplelift(false);
                         state = State.SAMPLELIFT;
                         break;
@@ -243,7 +243,7 @@ public class TelOp extends LinearOpMode {
             rbg.armrotatePIDF();
             if(gamepad1.left_bumper) {
                if (rbg.drop())  state = State.IDLE;
-             //  else state = State.SAMPLEINTAKE;
+             else state = State.SAMPLEINTAKE;
             }
 
             if (rbg.timer(88000, rbg.start) || rbg.flag[rbg.force]) {
