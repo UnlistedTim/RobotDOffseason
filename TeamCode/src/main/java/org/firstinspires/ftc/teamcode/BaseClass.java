@@ -524,7 +524,7 @@ public class BaseClass extends MecanumDrive {
 
 
         pidf_index=pidf_specin_specout;
-        pidfsetting(arm_angle_specouttake);
+        pidfsetting(arm_angle_specouttake+1);
         delay(150);
         move(0.25);
         delay(100);
@@ -554,7 +554,7 @@ public class BaseClass extends MecanumDrive {
         if (Math.abs( slidePos-slide_specouttake)<100)
         {
              pidf_index=pidf_specouttake;
-            pidfsetting(arm_angle_specouttake);
+            pidfsetting(arm_angle_specouttake+1);
             flag[specouttakeready]=true;
         }
 
@@ -570,7 +570,7 @@ public class BaseClass extends MecanumDrive {
 
 
         move(1.0);
-        while(Op.opModeIsActive() && dist>190) {
+        while(Op.opModeIsActive() && dist>215) {
             dist = bar_dist.getDistance(DistanceUnit.MM);
 //            if (!handleflag && dist<400){
 //                Left_handle.setPosition(lefthandle_specouttake);

@@ -5,6 +5,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
@@ -43,6 +44,7 @@ public class TelOp extends LinearOpMode {
 //        rbg.Front_led.setPosition(0.5);
 //        rbg.Back_led.setPosition(0.5);
         waitForStart();
+        rbg.pp0=new Pose2d(0, 0, 0);
         rbg.timer(0,rbg.start);
         rbg.pre_idle();
         while (opModeIsActive()) {
@@ -271,6 +273,12 @@ public class TelOp extends LinearOpMode {
         //    telemetry.addData("armlinerslide bot", rbg.Slide_bot.getCurrentPosition());
 //
             telemetry.addData("Arm angle", rbg.arm_angle);
+
+            rbg.updatePoseEstimate();
+
+            telemetry.addData("Pos x" , rbg.pose.position.x);
+            telemetry.addData("Pos x" , rbg.pose.position.y);
+            telemetry.addData("Robot angle",rbg.imu.getRobotYawPitchRollAngles().getYaw((AngleUnit.DEGREES)));
 //
 //            telemetry.addData("Arm right power", rbg.power);
 //
