@@ -33,7 +33,7 @@ public class BaseClass extends MecanumDrive {
     double arm_angle=0;
     double claw_close=0.46,claw_open=0.04;
     double arm_angle_target,arm_pose,arm_pose_target;
-    double arm_angle_idle=-8,arm_angle_preintake=10,arm_arngle_intake=5,arm_angle_sampleouttake=105,arm_angle_specintake=208,arm_angle_specouttake=32;
+    double arm_angle_idle=-8,arm_angle_preintake=10,arm_arngle_intake=5,arm_angle_sampleouttake=105,arm_angle_specintake=208,arm_angle_specouttake=31;
     double arot_angle = 0;
     int aslide = 0;
     double lefthandle_idle=0.46,lefthandle_intake=0.18,lefthandle_left45=0.14,lefthandle_left90=0.08,lefthandle_right45=0.22,lefthandle_right90=0.28;
@@ -964,7 +964,7 @@ public class BaseClass extends MecanumDrive {
            RHandle_correction.add(197,0.73);
            RHandle_correction.add(198,0.74);
            RHandle_correction.add(200,0.755);
-           LHandle_correction.add(202,0.77);
+           RHandle_correction.add(202,0.77);
            RHandle_correction.add(206,0.79);
            RHandle_correction.add(209,0.81);
 
@@ -1450,9 +1450,9 @@ public class BaseClass extends MecanumDrive {
     public void spec_handleadj(double sticky){
         if (Math.abs(sticky) < 0.5 || !timer(400,spec_adj)) return;
 
-        if (sticky < -0.5 && curleft_handle < lefthandle_specintake + 0.028){
-            curleft_handle+=0.01;
-            curright_handle-=0.01;
+        if (sticky < -0.5 && curleft_handle > lefthandle_specintake - 0.043){
+            curleft_handle-=0.015;
+            curright_handle+=0.015;
 
             Left_handle.setPosition(curleft_handle);
             Right_handle.setPosition(curright_handle);
@@ -1462,9 +1462,9 @@ public class BaseClass extends MecanumDrive {
 
         }
 
-        if (sticky > 0.5  && curleft_handle > lefthandle_specintake - 0.028) {
-            curleft_handle -= 0.01;
-            curright_handle += 0.01;
+        if (sticky > 0.5  && curleft_handle < lefthandle_specintake + 0.043) {
+            curleft_handle += 0.015;
+            curright_handle -= 0.015;
 
             Left_handle.setPosition(curleft_handle);
             Right_handle.setPosition(curright_handle);
