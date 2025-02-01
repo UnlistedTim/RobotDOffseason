@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.arcrobotics.ftclib.util.InterpLUT;
 
 @Autonomous(name = "AutoSpec", group = "A")
 //@Disabled

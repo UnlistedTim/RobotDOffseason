@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode;
+
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -9,6 +10,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import java.lang.Math;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import com.arcrobotics.ftclib.util.InterpLUT;
+
 
 
 public class BaseClass extends MecanumDrive {
@@ -18,6 +21,8 @@ public class BaseClass extends MecanumDrive {
 
     public ElapsedTime runtime = new ElapsedTime();
     public LinearOpMode Op;
+    public InterpLUT LHandle_correction = new InterpLUT();
+    public InterpLUT RHandle_correction = new InterpLUT();
 
    // double intakerotpose=0,gearboxpose=0;
 
@@ -40,6 +45,10 @@ public class BaseClass extends MecanumDrive {
 
     int slide_idle=200,slide_preintake=400,slide_sampleouttake=1800,slide_specintake=0,slide_specouttake=700,slide_intakemax=1250;
 
+    double curleft_handle = 0; double curright_handle = 0;
+
+    // SPEC Intake Iterpolated Look up table for angle correction using handle servos to correct for arm angle error
+
     int  slide_rotate=450,lslo=0,lshi=1900;
     Pose2d pp0=new Pose2d(0, 0, 0);
 
@@ -54,6 +63,8 @@ public class BaseClass extends MecanumDrive {
     double pid ,power, ff;
     double p = 0.00004, i = 0, d = 0.0001 ,f = 0.12,k = 0.0001; //0.000035
     double handlePos = 0.05, handleStep = 0.05;
+
+
 
     public static boolean baseblue = false, baseright = true,baserest;
 
@@ -100,6 +111,7 @@ public class BaseClass extends MecanumDrive {
         rightFront.setPower(-power);
         leftBack.setPower(-power);
         rightBack.setPower(power);
+
     }
 
 
@@ -484,6 +496,10 @@ public class BaseClass extends MecanumDrive {
         {
             Left_handle.setPosition(lefthandle_specintake);
             Right_handle.setPosition(righthandle_specintake);
+
+            curleft_handle = lefthandle_specintake;
+
+            curright_handle = righthandle_specintake;
            pidf_index=pidf_specintake;
             pidfsetting(arm_angle_specintake);
             flag[specintakeready]=true;
@@ -933,6 +949,21 @@ public class BaseClass extends MecanumDrive {
            Slide_top.setTargetPosition(0);
            Slide_top.setMode(DcMotor.RunMode.RUN_TO_POSITION);
            Slide_top.setVelocity(0);
+
+           LHandle_correction.add(197,0.65);
+           LHandle_correction.add(198,0.64);
+           LHandle_correction.add(200,0.625);
+           LHandle_correction.add(206,0.59);
+           LHandle_correction.add(209,0.57);
+
+           RHandle_correction.add(197,0.73);
+           RHandle_correction.add(198,0.74);
+           RHandle_correction.add(200,0.755);
+           RHandle_correction.add(206,0.79);
+           RHandle_correction.add(209,0.81);
+
+           LHandle_correction.createLUT();
+           RHandle_correction.createLUT();
 
            pidftable[pidf_intake_up][pp]=0.0024;  pidftable[pidf_intake_up][ii]=0;  pidftable[pidf_intake_up][dd]=0.0001;
            pidftable[pidf_intake_idle][pp]=0.003;  pidftable[pidf_intake_idle][ii]=0;  pidftable[pidf_intake_idle][dd]=0.00008;
@@ -1407,6 +1438,29 @@ public class BaseClass extends MecanumDrive {
         }
         stop_drive();
 
+    }
+
+
+    public void spec_handleadj(double sticky){
+        if (Math.abs(sticky) < 0.5) return;
+
+        if (sticky < -0.5){
+            curleft_handle+=0.01;
+            curright_handle-=0.01;
+
+            Left_handle.setPosition(curleft_handle);
+            Right_handle.setPosition(curright_handle);
+
+        }
+
+        if (sticky > 0.5){
+            curleft_handle-=0.01;
+            curright_handle+=0.01;
+
+            Left_handle.setPosition(curleft_handle);
+            Right_handle.setPosition(curright_handle);
+
+        }
     }
 
     public void asample_outtake() {

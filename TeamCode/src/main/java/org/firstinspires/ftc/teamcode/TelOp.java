@@ -3,6 +3,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.arcrobotics.ftclib.util.InterpLUT;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -40,6 +41,7 @@ public class TelOp extends LinearOpMode {
         telemetry.addLine("Press Start Now!:");
         telemetry.update();
         rbg.pidf_index=rbg.pidf_idle;
+
 
 //        rbg.Front_led.setPosition(0.5);
 //        rbg.Back_led.setPosition(0.5);
@@ -156,6 +158,12 @@ public class TelOp extends LinearOpMode {
                        rbg.pre_samplelift(false);
                        state = State.SAMPLELIFT;
                        break;
+                   }
+
+                   rbg.spec_handleadj(gamepad2.right_stick_y);
+
+                   if (Math.abs(gamepad2.right_stick_y) > 0.5){
+
                    }
 
                    if(gamepad1.touchpad||rbg.flag[rbg.placement]){
