@@ -189,9 +189,9 @@ public class DebugV2 extends LinearOpMode {
 //            if (gamepad2.square) {rbg.armrotatePos-= ; rbg.timer(0,0);}
 //            if (gamepad2.circle) {rbg.armrotatePos += rbg.armrotateStep;; rbg.timer(0,0);}
             if (gamepad2.dpad_up) {
-                if (lefthandlepos <= 0.98 && righthandlepos >=0.02){
-                    lefthandlepos+=0.02;
-                    righthandlepos-=0.02;
+                if (lefthandlepos <= 0.996 && righthandlepos >=0.004){
+                    lefthandlepos+=0.005;
+                    righthandlepos-=0.005;
                     Left_handle.setPosition(lefthandlepos);
                     Right_handle.setPosition(righthandlepos);
                     sleep(300);
@@ -201,9 +201,9 @@ public class DebugV2 extends LinearOpMode {
 
             }
             if (gamepad2.dpad_down) {
-                if (lefthandlepos >= 0.02 && righthandlepos <=0.98) {
-                    lefthandlepos-=0.02;
-                    righthandlepos+=0.02;
+                if (lefthandlepos >= 0.004 && righthandlepos <=0.996) {
+                    lefthandlepos-=0.005;
+                    righthandlepos+=0.005;
                     Left_handle.setPosition(lefthandlepos);
                     Right_handle.setPosition(righthandlepos);
                     sleep(300);
@@ -212,9 +212,9 @@ public class DebugV2 extends LinearOpMode {
 
             }
             if (gamepad2.dpad_left) {
-                if (righthandlepos >= 0.02 && lefthandlepos >=0.02){
-                    lefthandlepos-=0.02;
-                    righthandlepos-=0.02;
+                if (righthandlepos >= 0.004 && lefthandlepos >=0.004){
+                    lefthandlepos-=0.005;
+                    righthandlepos-=0.005;
                     Left_handle.setPosition(lefthandlepos);
                     Right_handle.setPosition(righthandlepos);
 
@@ -223,9 +223,9 @@ public class DebugV2 extends LinearOpMode {
 
             }
             if (gamepad2.dpad_right) {
-                if (righthandlepos <= 0.98 && lefthandlepos <=0.98){
-                    lefthandlepos+=0.02;
-                    righthandlepos+=0.02;
+                if (righthandlepos <= 0.996 && lefthandlepos <=0.996){
+                    lefthandlepos+=0.005;
+                    righthandlepos+=0.005;
                     Left_handle.setPosition(lefthandlepos);
                     Right_handle.setPosition(righthandlepos);
                     sleep(300);

@@ -28,7 +28,7 @@ public class BaseClass extends MecanumDrive {
     double arm_angle=0;
     double claw_close=0.46,claw_open=0.04;
     double arm_angle_target,arm_pose,arm_pose_target;
-    double arm_angle_idle=-8,arm_angle_preintake=10,arm_arngle_intake=5,arm_angle_sampleouttake=105,arm_angle_specintake=207,arm_angle_specouttake=31;
+    double arm_angle_idle=-8,arm_angle_preintake=10,arm_arngle_intake=5,arm_angle_sampleouttake=105,arm_angle_specintake=208,arm_angle_specouttake=32;
     double arot_angle = 0;
     int aslide = 0;
     double lefthandle_idle=0.46,lefthandle_intake=0.18,lefthandle_left45=0.14,lefthandle_left90=0.08,lefthandle_right45=0.22,lefthandle_right90=0.28;
@@ -584,9 +584,11 @@ public class BaseClass extends MecanumDrive {
         stop_drive();
         Claw.setPosition(claw_open);
 
-        delay(150);
+        delay(50); //150
+        Left_handle.setPosition(lefthandle_idle);
+        Right_handle.setPosition(righthandle_idle);
         flag[claw_lock]=false;
-        move(-0.9);
+        move(-1.0);
         delay(300);
      pidf_index=pidf_specout_idle;
         stop_drive();
@@ -1475,18 +1477,18 @@ public class BaseClass extends MecanumDrive {
 
          updatePoseEstimate();
         double x0=pose.position.x,y0=pose.position.y;
-        double xtar=x0+8,ytar=y0+35,atar= imu.getRobotYawPitchRollAngles().getYaw((AngleUnit.DEGREES));
+        double xtar=x0+5.5,ytar=y0+35,atar= imu.getRobotYawPitchRollAngles().getYaw((AngleUnit.DEGREES));
         double yrange,xrange;
         double yaw;//,gap;
 
 
         double ygap,agap,xgap;
-        double SPEED_GAIN = 0.02; // 0.02  //  Forward Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
+        double SPEED_GAIN = 0.01; // 0.015  //  Forward Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
         double STRAFE_GAIN = 0.3; //0.03  //  Strafe Speed Control "Gain".  eg: Ramp up to 25% power at a 25 degree Yaw error.   (0.25 / 25.0)
         double TURN_GAIN = 0.015;  //0.015  //  Turn Control "Gain".  eg: Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
 
-        double MAX_AUTO_SPEED = 0.6;   //  Clip the approach speed to this max value (adjust for your robot)
-        double MAX_AUTO_STRAFE = 0.8;;   //  Clip the approach speed to this max value (adjust for your robot)
+        double MAX_AUTO_SPEED = 0.2;   //  Clip the approach speed to this max value (adjust for your robot) 0.45
+        double MAX_AUTO_STRAFE = 0.85;   //  Clip the approach speed to this max value (adjust for your robot)
         double MAX_AUTO_TURN =0.2;;
 
         pidf_index=pidf_specin_specout;
