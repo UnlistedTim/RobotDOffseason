@@ -476,14 +476,12 @@ public class BaseClass extends MecanumDrive {
                 pidfsetting(arm_angle_specintake);
                 flag[prespecintake] = false;
                 timer(0,stateready);
-
             }
             return;
         }
 
         if (Math.abs(arm_angle-arm_angle_specintake)<20||timer(1500,stateready))
         {
-
             Left_handle.setPosition(lefthandle_specintake);
             Right_handle.setPosition(righthandle_specintake);
            pidf_index=pidf_specintake;
@@ -513,8 +511,11 @@ public class BaseClass extends MecanumDrive {
             delay(250);
             stop_drive();
             Claw.setPosition(claw_close);
-            delay(250);
+            delay(150);
             flag[claw_lock]=true;
+            pose=new Pose2d(0, 0, 0);//for auto
+             imu.resetYaw();
+             delay(100);
 
 
         }
@@ -716,7 +717,7 @@ public class BaseClass extends MecanumDrive {
             move(-0.22);
             updatePoseEstimate();
 
-            while(pose.position.x>9)
+            while(pose.position.x>9.5)
             {
                 armrotatePIDF();
                 updatePoseEstimate();
@@ -1112,8 +1113,8 @@ public class BaseClass extends MecanumDrive {
            afmoveconfig[7] [speedmax]=0.6;
            afmoveconfig[7] [strafemax]=0.9;
            afmoveconfig[7] [turnmax]=0.25;
-           afmoveconfig[7] [xdis]=13;
-           afmoveconfig[7] [ydis]=-6;
+           afmoveconfig[7] [xdis]=15;
+           afmoveconfig[7] [ydis]=-6.5;
            afmoveconfig[7] [adis]=0;
            afmoveconfig[7] [time]=2000;
 
@@ -1125,7 +1126,7 @@ public class BaseClass extends MecanumDrive {
            afmoveconfig[8] [strafemax]=0.9;
            afmoveconfig[8] [turnmax]=0.25;
            afmoveconfig[8] [xdis]=13;
-           afmoveconfig[8] [ydis]=-37;
+           afmoveconfig[8] [ydis]=-38;
            afmoveconfig[8] [adis]=0;
            afmoveconfig[8] [time]=2000;
            //strafe for outtake
@@ -1136,7 +1137,7 @@ public class BaseClass extends MecanumDrive {
            afmoveconfig[9] [strafemax]=0.9;
            afmoveconfig[9] [turnmax]=0.25;
            afmoveconfig[9] [xdis]=15;
-           afmoveconfig[9] [ydis]=-8;
+           afmoveconfig[9] [ydis]=-9;
            afmoveconfig[9] [adis]=0;
            afmoveconfig[9] [time]=2000;
 
@@ -1148,7 +1149,7 @@ public class BaseClass extends MecanumDrive {
            afmoveconfig[10] [strafemax]=0.9;
            afmoveconfig[10] [turnmax]=0.2;
            afmoveconfig[10] [xdis]=13;
-           afmoveconfig[10] [ydis]=-37;
+           afmoveconfig[10] [ydis]=-38;
            afmoveconfig[10] [adis]=0;
            afmoveconfig[10] [time]=2000;
            //strafe for outtake
@@ -1159,7 +1160,7 @@ public class BaseClass extends MecanumDrive {
            afmoveconfig[11] [strafemax]=0.9;
            afmoveconfig[11] [turnmax]=0.25;
            afmoveconfig[11] [xdis]=15;
-           afmoveconfig[11] [ydis]=-10; //2
+           afmoveconfig[11] [ydis]=-11.5; //2
            afmoveconfig[11] [adis]=0;
            afmoveconfig[11] [time]=2000;
 
@@ -1170,7 +1171,7 @@ public class BaseClass extends MecanumDrive {
            afmoveconfig[12] [strafemax]=0.9;
            afmoveconfig[12] [turnmax]=0.2;
            afmoveconfig[12] [xdis]=13;
-           afmoveconfig[12] [ydis]=-37;
+           afmoveconfig[12] [ydis]=-38;
            afmoveconfig[12] [adis]=0;
            afmoveconfig[12] [time]=2000;
            //strafe for outtake
@@ -1181,7 +1182,7 @@ public class BaseClass extends MecanumDrive {
            afmoveconfig[13] [strafemax]=0.9;
            afmoveconfig[13] [turnmax]=0.25;
            afmoveconfig[13] [xdis]=15;
-           afmoveconfig[13] [ydis]=-12; //2
+           afmoveconfig[13] [ydis]=-14; //2
            afmoveconfig[13] [adis]=0;
            afmoveconfig[13] [time]=2000;
            //strafe for parking
@@ -1365,7 +1366,7 @@ public class BaseClass extends MecanumDrive {
         double yaw,atar;//,gap;
         boolean rot_flag = rot;
         double x1,xtar,ytar,yrange,xrange,y1,a1;
-        double ygap=0,agap=0,xgap=0;
+        double ygap,agap,xgap;
         double SPEED_GAIN = afmoveconfig[step][speedg]; // 0.02  //  Forward Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
         double STRAFE_GAIN = afmoveconfig[step][strafeg]; //0.03  //  Strafe Speed Control "Gain".  eg: Ramp up to 25% power at a 25 degree Yaw error.   (0.25 / 25.0)
         double TURN_GAIN = afmoveconfig[step][turng];  //0.015  //  Turn Control "Gain".  eg: Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
@@ -1376,8 +1377,6 @@ public class BaseClass extends MecanumDrive {
         xtar=afmoveconfig[step][xdis];
         ytar=afmoveconfig[step][ydis];
         atar=afmoveconfig[step][adis];
-
-
         timer(0,6);
         while (Op.opModeIsActive()&&!timer(afmoveconfig[step][time],6)) {// todo &&!timer3(1200)
             armrotatePIDF();
@@ -1472,26 +1471,26 @@ public class BaseClass extends MecanumDrive {
     }
 
     public void specmove( ) {
-        imu.resetYaw();
-        pose=pp0;
-        updatePoseEstimate();
-        double x0=pose.position.x,y0=pose.position.y,a0=imu.getRobotYawPitchRollAngles().getYaw((AngleUnit.DEGREES));
-        double xtar=x0+8,ytar=y0+35;
-        double atar=a0,yrange,xrange,x1,y1,a1;
+
+
+         updatePoseEstimate();
+        double x0=pose.position.x,y0=pose.position.y;
+        double xtar=x0+8,ytar=y0+35,atar= imu.getRobotYawPitchRollAngles().getYaw((AngleUnit.DEGREES));
+        double yrange,xrange;
         double yaw;//,gap;
 
 
-        double ygap=0,agap=0,xgap=0;
-        double SPEED_GAIN = 0.03; // 0.02  //  Forward Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
+        double ygap,agap,xgap;
+        double SPEED_GAIN = 0.02; // 0.02  //  Forward Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
         double STRAFE_GAIN = 0.3; //0.03  //  Strafe Speed Control "Gain".  eg: Ramp up to 25% power at a 25 degree Yaw error.   (0.25 / 25.0)
         double TURN_GAIN = 0.015;  //0.015  //  Turn Control "Gain".  eg: Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
 
         double MAX_AUTO_SPEED = 0.6;   //  Clip the approach speed to this max value (adjust for your robot)
-        double MAX_AUTO_STRAFE = 0.99;;   //  Clip the approach speed to this max value (adjust for your robot)
+        double MAX_AUTO_STRAFE = 0.8;;   //  Clip the approach speed to this max value (adjust for your robot)
         double MAX_AUTO_TURN =0.2;;
 
         pidf_index=pidf_specin_specout;
-        pidfsetting(arm_angle_specouttake+10);
+        pidfsetting(arm_angle_specouttake+20);//10
         delay(50);
         move(0.5);
         delay(50);
@@ -1499,30 +1498,21 @@ public class BaseClass extends MecanumDrive {
         flag[specouttakeready] = false;
         Left_handle.setPosition(lefthandle_specouttake-0.05);
         Right_handle.setPosition(righthandle_specouttake+0.05);
-
-
-        timer(0,6);
-
         timer(0,specouttaketime);
-        while (Op.opModeIsActive()&&!timer(2000,6)) {// todo &&!timer3(1200)
+        while (Op.opModeIsActive()&&!timer(2000,specouttaketime)) {// todo &&!timer3(1200)
             armrotatePIDF();
-            updatePoseEstimate();
-
-            if(flag[prespecouttake]&& timer(600,specouttaketime)) {
+            if(flag[prespecouttake]&& timer(700,specouttaketime)) {
                 k=0.0003;
                 pidf_index=pidf_specouttake;
                 pidfsetting(arm_angle_specouttake+2);
-                linearslide(slide_specouttake,slidev1+150);
+                linearslide(slide_specouttake,slidev1+100);
                 flag[prespecouttake]=false;
                 flag[specouttakeready]=true;
             }
-            
-            x1=pose.position.x;
-            y1=pose.position.y;
-            a1=imu.getRobotYawPitchRollAngles().getYaw((AngleUnit.DEGREES));
-            xgap=xtar-x1;
-            ygap=ytar-y1;
-            agap=atar-a1;
+            updatePoseEstimate();
+            xgap=xtar-pose.position.x;
+            ygap=ytar-pose.position.y;
+            agap=atar-imu.getRobotYawPitchRollAngles().getYaw((AngleUnit.DEGREES));
 
             if (Math.abs(ygap)<2) break;
 

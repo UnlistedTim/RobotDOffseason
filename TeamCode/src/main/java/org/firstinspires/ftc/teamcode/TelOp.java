@@ -44,7 +44,7 @@ public class TelOp extends LinearOpMode {
 //        rbg.Front_led.setPosition(0.5);
 //        rbg.Back_led.setPosition(0.5);
         waitForStart();
-        rbg.pp0=new Pose2d(0, 0, 0);
+      //  rbg.pp0=new Pose2d(0, 0, 0);
         rbg.timer(0,rbg.start);
         rbg.pre_idle();
         while (opModeIsActive()) {
@@ -95,6 +95,9 @@ public class TelOp extends LinearOpMode {
                        state = State.SPECINTAKE;
                        break;
                    }
+
+               
+
                   rbg.intake_smooth_shift(gamepad2.right_stick_y);
                   rbg.intake_claw_rotate(gamepad2.left_stick_x);
                   break;
@@ -144,7 +147,7 @@ public class TelOp extends LinearOpMode {
                    if(!rbg.flag[rbg.specintakeready])
                    {
                        rbg.specintake_ready();
-                     // speed_factor = 0.4;
+                     speed_factor = 0.4;
                        break;
                    }
                    if(gamepad2.right_bumper&&rbg.flag[rbg.claw_lock]) {
@@ -277,8 +280,8 @@ public class TelOp extends LinearOpMode {
             rbg.updatePoseEstimate();
 
             telemetry.addData("Pos x" , rbg.pose.position.x);
-            telemetry.addData("Pos x" , rbg.pose.position.y);
-            telemetry.addData("Robot angle",rbg.imu.getRobotYawPitchRollAngles().getYaw((AngleUnit.DEGREES)));
+            telemetry.addData("Pos y" , rbg.pose.position.y);
+            telemetry.addData("imu",rbg.imu.getRobotYawPitchRollAngles().getYaw((AngleUnit.DEGREES)));
 //
 //            telemetry.addData("Arm right power", rbg.power);
 //

@@ -482,6 +482,7 @@ public  class MecanumDrive {
         Twist2dDual<Time> twist = localizer.update();
         pose = pose.plus(twist.value());
 
+
         poseHistory.add(pose);
         while (poseHistory.size() > 100) {
             poseHistory.removeFirst();
