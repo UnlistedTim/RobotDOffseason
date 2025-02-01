@@ -91,7 +91,7 @@ public class BaseClass extends MecanumDrive {
     boolean[] flag = new boolean[]{false,false,false,false, false,false,false,false,false, false, false, false,false,false,false,false, false,false, false,false,false, false, false,false,false, false,false, false, false, false,false,false,false, false, false,false, false, false, false, false, false,false, false};
     double[] stoptime = new double[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0,0};
     int[] step = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0,0,0,0,0,0,0};
-    final int start = 0, claw_lock=1, intake = 2, lift = 3, resampleintake = 4, intake_shift = 5, button_flip = 6;
+    final int start = 0, claw_lock=1, intake = 2, lift = 3, resampleintake = 4, spec_adj = 5, button_flip = 6;
     final int intake_rotate= 7, hang_timer= 8, last = 9, drive = 10, stateready = 11, hang = 12, vb = 13,smooth_adj=14;
     final int force = 15,first=16, hang0 = 17,idle_ready=18,arot=19,preidle=20,idleready=21, spec = 22,specouttaketime=23, pre_samp = 24,presampleintake=25,sampleintakeready=26;
     final int preintakeidle=27,intakeidleready=28,presampleouttake=29,sampleouttakeready=30,presamplelift=31,sampleliftready=32,prespecintake=33,specintakeready=34,placement=35,prespecouttake=36,specouttakeready=37;
@@ -498,8 +498,8 @@ public class BaseClass extends MecanumDrive {
             Right_handle.setPosition(righthandle_specintake);
 
             curleft_handle = lefthandle_specintake;
-
             curright_handle = righthandle_specintake;
+            flag[spec_adj] = false;
            pidf_index=pidf_specintake;
             pidfsetting(arm_angle_specintake);
             flag[specintakeready]=true;
@@ -522,16 +522,20 @@ public class BaseClass extends MecanumDrive {
     }
     public void specintake() {
 
-            stop_drive();
-            move(-0.2);
-            delay(250);
-            stop_drive();
-            Claw.setPosition(claw_close);
-            delay(150);
-            flag[claw_lock]=true;
-            pose=new Pose2d(0, 0, 0);//for auto
-             imu.resetYaw();
-             delay(100);
+        if (!flag[spec_adj]){
+            Left_handle.setPosition(LHandle_correction.get(arm_angle));
+            Right_handle.setPosition(RHandle_correction.get(arm_angle));
+        }
+        stop_drive();
+        move(-0.2);
+        delay(250);
+        stop_drive();
+        Claw.setPosition(claw_close);
+        delay(150);
+        flag[claw_lock]=true;
+        pose=new Pose2d(0, 0, 0);//for auto
+        imu.resetYaw();
+        delay(100);
 
 
         }
@@ -953,12 +957,14 @@ public class BaseClass extends MecanumDrive {
            LHandle_correction.add(197,0.65);
            LHandle_correction.add(198,0.64);
            LHandle_correction.add(200,0.625);
+           LHandle_correction.add(202,0.61);
            LHandle_correction.add(206,0.59);
            LHandle_correction.add(209,0.57);
 
            RHandle_correction.add(197,0.73);
            RHandle_correction.add(198,0.74);
            RHandle_correction.add(200,0.755);
+           LHandle_correction.add(202,0.77);
            RHandle_correction.add(206,0.79);
            RHandle_correction.add(209,0.81);
 
@@ -1442,25 +1448,32 @@ public class BaseClass extends MecanumDrive {
 
 
     public void spec_handleadj(double sticky){
-        if (Math.abs(sticky) < 0.5) return;
+        if (Math.abs(sticky) < 0.5 || !timer(400,spec_adj)) return;
 
-        if (sticky < -0.5){
+        if (sticky < -0.5 && curleft_handle < lefthandle_specintake + 0.028){
             curleft_handle+=0.01;
             curright_handle-=0.01;
 
             Left_handle.setPosition(curleft_handle);
             Right_handle.setPosition(curright_handle);
+            timer(0,spec_adj);
+
+            flag[spec_adj] = true;
 
         }
 
-        if (sticky > 0.5){
-            curleft_handle-=0.01;
-            curright_handle+=0.01;
+        if (sticky > 0.5  && curleft_handle > lefthandle_specintake - 0.028) {
+            curleft_handle -= 0.01;
+            curright_handle += 0.01;
 
             Left_handle.setPosition(curleft_handle);
             Right_handle.setPosition(curright_handle);
+            timer(0,spec_adj);
+            flag[spec_adj] = true;
 
         }
+
+
     }
 
     public void asample_outtake() {

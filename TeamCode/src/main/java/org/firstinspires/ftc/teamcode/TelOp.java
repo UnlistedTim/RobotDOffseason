@@ -269,8 +269,8 @@ public class TelOp extends LinearOpMode {
                 }
 
                 if(!rbg.flag[rbg.vb]&&!rbg.flag[rbg.hang]&&rbg.timer(100000,rbg.start)){
-                    gamepad2.rumble(0.7,0.7,500);
-                    gamepad1.rumble(0.7,0.7,500);
+                    gamepad2.rumble(0.8,0.8,500);
+                    gamepad1.rumble(0.8,0.8,500);
 
                     rbg.flag[rbg.vb]=true;
                 }
