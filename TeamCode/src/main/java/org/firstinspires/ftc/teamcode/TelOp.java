@@ -243,6 +243,8 @@ public class TelOp extends LinearOpMode {
                        break;
                    }
 
+                   rbg.spec_handleadj(gamepad2.right_stick_y);
+
                    if(gamepad1.right_bumper) {
                        rbg.specouttake();
                        rbg.pre_idle();

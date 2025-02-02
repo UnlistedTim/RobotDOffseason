@@ -24,6 +24,9 @@ public class BaseClass extends MecanumDrive {
     public InterpLUT LHandle_correction = new InterpLUT();
     public InterpLUT RHandle_correction = new InterpLUT();
 
+    public InterpLUT LHandle_outcorrect = new InterpLUT();
+    public InterpLUT RHandle_outcorrect= new InterpLUT();
+
    // double intakerotpose=0,gearboxpose=0;
 
     // p 0.00012 down: spec outtake to intake idle (100) and sample outtake to intake idle (100)
@@ -549,6 +552,9 @@ public class BaseClass extends MecanumDrive {
         delay(150);
         move(0.25);
         delay(100);
+
+        curleft_handle = lefthandle_specintake-0.05;
+        curright_handle = righthandle_specintake+0.05;
         Left_handle.setPosition(lefthandle_specouttake-0.05);
         Right_handle.setPosition(righthandle_specouttake+0.05);
         stop_drive();
@@ -586,6 +592,9 @@ public class BaseClass extends MecanumDrive {
       //  boolean handleflag = false;
 
         double dist = bar_dist.getDistance(DistanceUnit.MM);
+
+//        Left_handle.setPosition(LHandle_outcorrect.get(arm_angle));
+//        Right_handle.setPosition(RHandle_outcorrect.get(arm_angle));
 
       //  Claw.setPosition(claw_close);
 
@@ -736,54 +745,58 @@ public class BaseClass extends MecanumDrive {
 
     public void aspec_intake() {
 
-        boolean correct = false;
+        double last_x = 0;
 
-            move(-0.2);
+        double current_x = 15;
+        double x_delta = -1;
+
+        move(-0.2);
+        updatePoseEstimate();
+
+        while(Op.opModeIsActive() && current_x>11) {
+            current_x = pose.position.x;
+            armrotatePIDF();
             updatePoseEstimate();
+        }
+        Left_handle.setPosition(LHandle_correction.get(arm_angle));
+        Right_handle.setPosition(RHandle_correction.get(arm_angle));
+        move(-0.18);
 
-            timer(0,aintake);
-
-
-            while(pose.position.x>10 && !timer(400,aintake))
-            {
-
-                if (!correct) timer(0,aintake);
-                armrotatePIDF();
-                if (pose.position.x < 11 && !correct){
-                    Left_handle.setPosition(LHandle_correction.get(arm_angle));
-                    Right_handle.setPosition(RHandle_correction.get(arm_angle));
-                    correct = true;
-                }
-                updatePoseEstimate();
-            }
+        while (Op.opModeIsActive() && x_delta <-0.02){
+            delay(25);
+            updatePoseEstimate();
+            x_delta = pose.position.x- last_x;
+            last_x=pose.position.x;
+        }
 
 
 
-            stop_drive();
 
-            Claw.setPosition(claw_close);
-            delay(200);
+        stop_drive();
 
-
-
-            pidf_index=pidf_specin_specout;
-            pidfsetting(arm_angle_specouttake+10);
-            delay(50);
-
-            pidf_index=pidf_specouttake;
-            arot_angle = arm_angle_specouttake+1;
-            aslide = slide_specouttake;
+        Claw.setPosition(claw_close);
+        delay(200);
 
 
-            move(0.8);
-            delay(50);
 
-            Left_handle.setPosition(lefthandle_specouttake-0.05);
-            Right_handle.setPosition(righthandle_specouttake+0.05);
+        pidf_index=pidf_specin_specout;
+        pidfsetting(arm_angle_specouttake+10);
+        delay(50);
 
-            k = 0.0003;
+        pidf_index=pidf_specouttake;
+        arot_angle = arm_angle_specouttake+1;
+        aslide = slide_specouttake;
 
-            timer(0,arot);
+
+        move(0.8);
+        delay(50);
+
+        Left_handle.setPosition(lefthandle_specouttake-0.05);
+        Right_handle.setPosition(righthandle_specouttake+0.05);
+
+        k = 0.0003;
+
+        timer(0,arot);
     }
 
 
@@ -946,8 +959,6 @@ public class BaseClass extends MecanumDrive {
     {
        if(tstep==0) { //for both
 
-           flag[drive] = true;
-
            imu.resetYaw();
            Gearbox.setPosition(0);
            controller = new PIDController(p, i, d);
@@ -969,13 +980,18 @@ public class BaseClass extends MecanumDrive {
            Slide_top.setMode(DcMotor.RunMode.RUN_TO_POSITION);
            Slide_top.setVelocity(0);
 
+           LHandle_correction.add(0,0.645);
            LHandle_correction.add(197,0.65);
            LHandle_correction.add(198,0.64);
            LHandle_correction.add(200,0.625);
            LHandle_correction.add(202,0.61);
            LHandle_correction.add(206,0.59);
            LHandle_correction.add(209,0.57);
+           LHandle_correction.add(350,0.575);
 
+
+
+           RHandle_correction.add(0,0.725);
            RHandle_correction.add(197,0.73);
            RHandle_correction.add(198,0.74);
            RHandle_correction.add(200,0.755);
@@ -983,8 +999,27 @@ public class BaseClass extends MecanumDrive {
            RHandle_correction.add(206,0.79);
            RHandle_correction.add(209,0.81);
 
+           RHandle_correction.add(350,0.815);
+
            LHandle_correction.createLUT();
            RHandle_correction.createLUT();
+
+//           LHandle_outcorrect.add(197,0.65);
+//           LHandle_outcorrect.add(198,0.64);
+//           LHandle_outcorrect.add(200,0.625);
+//           LHandle_outcorrect.add(202,0.61);
+//           LHandle_outcorrect.add(206,0.59);
+//           LHandle_outcorrect.add(209,0.57);
+//
+//           RHandle_outcorrect.add(197,0.73);
+//           RHandle_outcorrect.add(198,0.74);
+//           RHandle_outcorrect.add(200,0.755);
+//           RHandle_outcorrect.add(202,0.77);
+//           RHandle_outcorrect.add(206,0.79);
+//           RHandle_outcorrect.add(209,0.81);
+//
+//           LHandle_outcorrect.createLUT();
+//           RHandle_outcorrect.createLUT();
 
            pidftable[pidf_intake_up][pp]=0.0024;  pidftable[pidf_intake_up][ii]=0;  pidftable[pidf_intake_up][dd]=0.0001;
            pidftable[pidf_intake_idle][pp]=0.003;  pidftable[pidf_intake_idle][ii]=0;  pidftable[pidf_intake_idle][dd]=0.00008;
@@ -1047,14 +1082,14 @@ public class BaseClass extends MecanumDrive {
 
 
            // strafe for smaples
-           afmoveconfig[0] [speedg]=0.035;
+           afmoveconfig[0] [speedg]=0.02;
            afmoveconfig[0] [strafeg]=0.35;//0.4
            afmoveconfig[0] [turng]=0.018;
-           afmoveconfig[0] [speedmax]=0.7;
+           afmoveconfig[0] [speedmax]=0.6;
            afmoveconfig[0] [strafemax]=0.85;
            afmoveconfig[0] [turnmax]=0.2;
            afmoveconfig[0] [xdis]=14;
-           afmoveconfig[0] [ydis]=-35;
+           afmoveconfig[0] [ydis]=-34;
            afmoveconfig[0] [adis]=0;
            afmoveconfig[0] [time]=2000;
 
@@ -1120,7 +1155,7 @@ public class BaseClass extends MecanumDrive {
            afmoveconfig[6] [speedmax]=0.90;
            afmoveconfig[6] [strafemax]=0.5;
            afmoveconfig[6] [turnmax]=0.2;
-           afmoveconfig[6] [xdis]=19;//16
+           afmoveconfig[6] [xdis]=18;//16
            afmoveconfig[6] [ydis]=-62;
            afmoveconfig[6] [adis]=0;
            afmoveconfig[6] [time]=2000;
@@ -1137,24 +1172,24 @@ public class BaseClass extends MecanumDrive {
            afmoveconfig[20] [time]=2000;
            //strafe for third samples 8
            afmoveconfig[21] [speedg]=0.04;
-           afmoveconfig[21] [strafeg]=0.2;//0.2
+           afmoveconfig[21] [strafeg]=0.18;//0.2
            afmoveconfig[21] [turng]=0.025;
            afmoveconfig[21] [speedmax]=0.5;
            afmoveconfig[21] [strafemax]=0.5;
            afmoveconfig[21] [turnmax]=0.2;
            afmoveconfig[21] [xdis]=42;
-           afmoveconfig[21] [ydis]=-68;
+           afmoveconfig[21] [ydis]=-67.5;
            afmoveconfig[21] [adis]=0;
            afmoveconfig[21] [time]=2000;
            // push third sample
            afmoveconfig[22] [speedg]=0.04;
-           afmoveconfig[22] [strafeg]=0.2;
+           afmoveconfig[22] [strafeg]=0.18;
            afmoveconfig[22] [turng]=0.03;
            afmoveconfig[22] [speedmax]=0.6;
            afmoveconfig[22] [strafemax]=0.5;
            afmoveconfig[22] [turnmax]=0.2;
            afmoveconfig[22] [xdis]=21;//16
-           afmoveconfig[22] [ydis]=-68;
+           afmoveconfig[22] [ydis]=-67.5;
            afmoveconfig[22] [adis]=0;
            afmoveconfig[22] [time]=2000;
 
@@ -1164,10 +1199,10 @@ public class BaseClass extends MecanumDrive {
            afmoveconfig[7] [speedg]=0.02;
            afmoveconfig[7] [strafeg]=0.3;
            afmoveconfig[7] [turng]=0.02;
-           afmoveconfig[7] [speedmax]=0.6;
+           afmoveconfig[7] [speedmax]=0.5;
            afmoveconfig[7] [strafemax]=0.9;
            afmoveconfig[7] [turnmax]=0.25;
-           afmoveconfig[7] [xdis]=14;
+           afmoveconfig[7] [xdis]=13;
            afmoveconfig[7] [ydis]=-6.5;
            afmoveconfig[7] [adis]=0;
            afmoveconfig[7] [time]=2000;
@@ -1391,7 +1426,8 @@ public class BaseClass extends MecanumDrive {
 
         if(tstep==2) {//for teleop no turning of handle
 
-            flag[first]=true;
+            flag[drive]=true;
+           // flag[first]=true;
             return;
 
 
@@ -1483,6 +1519,35 @@ public class BaseClass extends MecanumDrive {
         if (sticky > 0.5  && curleft_handle < lefthandle_specintake + 0.043) {
             curleft_handle += 0.015;
             curright_handle -= 0.015;
+
+            Left_handle.setPosition(curleft_handle);
+            Right_handle.setPosition(curright_handle);
+            timer(0,spec_adj);
+            flag[spec_adj] = true;
+
+        }
+
+
+    }
+
+    public void outspec_handleadj(double sticky){
+        if (Math.abs(sticky) < 0.5 || !timer(400,spec_adj)) return;
+
+        if (sticky < -0.5 && curleft_handle < lefthandle_specintake + 0.043){
+            curleft_handle+=0.015;
+            curright_handle-=0.015;
+
+            Left_handle.setPosition(curleft_handle);
+            Right_handle.setPosition(curright_handle);
+            timer(0,spec_adj);
+
+            flag[spec_adj] = true;
+
+        }
+
+        if (sticky > 0.5  && curleft_handle > lefthandle_specintake - 0.043) {
+            curleft_handle -= 0.015;
+            curright_handle += 0.015;
 
             Left_handle.setPosition(curleft_handle);
             Right_handle.setPosition(curright_handle);
