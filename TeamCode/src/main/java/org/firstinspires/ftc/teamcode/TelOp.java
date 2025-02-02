@@ -36,7 +36,7 @@ public class TelOp extends LinearOpMode {
         telemetry.addLine("Do not press start  ");
         telemetry.update();
         rbg.init(0);
-        rbg.init(1);
+        rbg.init(2);
         sleep(500);
         telemetry.addLine("Press Start Now!:");
         telemetry.update();
@@ -116,7 +116,7 @@ public class TelOp extends LinearOpMode {
                         rbg.intakeidle_ready();
                         break;
                     }
-                    if(gamepad2.right_bumper&&rbg.timer(1000, rbg.intake)) {
+                    if(gamepad2.right_bumper&&rbg.timer(500, rbg.intake)) {
                         rbg.pre_samplelift(false);
                         state = State.SAMPLELIFT;
                         break;
@@ -133,6 +133,7 @@ public class TelOp extends LinearOpMode {
                     if(gamepad1.touchpad) {
                         rbg.pidf_index=rbg.pidf_idle_specin;
                         rbg.pre_specintake(true);
+                        speed_factor=0.4;
                         state = State.SPECINTAKE;
                         break;
                     }
@@ -149,7 +150,6 @@ public class TelOp extends LinearOpMode {
                    if(!rbg.flag[rbg.specintakeready])
                    {
                        rbg.specintake_ready();
-                     speed_factor = 0.4;
                        break;
                    }
                    if(gamepad2.right_bumper&&rbg.flag[rbg.claw_lock]) {
