@@ -21,11 +21,11 @@ public class BaseClass extends MecanumDrive {
 
     public ElapsedTime runtime = new ElapsedTime();
     public LinearOpMode Op;
-    public InterpLUT LHandle_correction = new InterpLUT();
-    public InterpLUT RHandle_correction = new InterpLUT();
+    public InterpLUT In_LHandle = new InterpLUT();
+    public InterpLUT In_RHandle = new InterpLUT();
 
-    public InterpLUT LHandle_outcorrect = new InterpLUT();
-    public InterpLUT RHandle_outcorrect= new InterpLUT();
+    public InterpLUT Out_LHandle = new InterpLUT();
+    public InterpLUT Out_RHandle= new InterpLUT();
 
    // double intakerotpose=0,gearboxpose=0;
 
@@ -526,8 +526,11 @@ public class BaseClass extends MecanumDrive {
     public void specintake() {
 
         if (!flag[spec_adj]){
-            Left_handle.setPosition(LHandle_correction.get(arm_angle));
-            Right_handle.setPosition(RHandle_correction.get(arm_angle));
+
+            if (arm_angle >= 197 && arm_angle <= 209){
+                Left_handle.setPosition(In_LHandle.get(arm_angle));
+                Right_handle.setPosition(In_RHandle.get(arm_angle));
+            }
         }
         stop_drive();
         move(-0.2);
@@ -758,8 +761,12 @@ public class BaseClass extends MecanumDrive {
             armrotatePIDF();
             updatePoseEstimate();
         }
-        Left_handle.setPosition(LHandle_correction.get(arm_angle));
-        Right_handle.setPosition(RHandle_correction.get(arm_angle));
+
+        if (arm_angle >= 197 && arm_angle <= 209){
+            Left_handle.setPosition(In_LHandle.get(arm_angle));
+            Right_handle.setPosition(In_RHandle.get(arm_angle));
+        }
+
         move(-0.15);
 
         while (Op.opModeIsActive() && x_delta <-0.09){
@@ -982,12 +989,12 @@ public class BaseClass extends MecanumDrive {
 
 
          //  LHandle_correction.add(0,0.655);
-           LHandle_correction.add(197,0.65);
-           LHandle_correction.add(198,0.64);
-           LHandle_correction.add(200,0.625);
-           LHandle_correction.add(202,0.61);
-           LHandle_correction.add(206,0.59);
-           LHandle_correction.add(209,0.57);
+           In_LHandle.add(197,0.65);
+           In_LHandle.add(198,0.64);
+           In_LHandle.add(200,0.625);
+           In_LHandle.add(202,0.61);
+           In_LHandle.add(206,0.59);
+           In_LHandle.add(209,0.57);
           // LHandle_correction.add(350,0.575);
         //   LHandle_correction.add(350,0.4);
 
@@ -995,45 +1002,45 @@ public class BaseClass extends MecanumDrive {
 
 
         //   RHandle_correction.add(0,0.725);
-           RHandle_correction.add(197,0.73);
-           RHandle_correction.add(198,0.74);
-           RHandle_correction.add(200,0.755);
-           RHandle_correction.add(202,0.77);
-           RHandle_correction.add(206,0.79);
-           RHandle_correction.add(209,0.81);
+           In_RHandle.add(197,0.73);
+           In_RHandle.add(198,0.74);
+           In_RHandle.add(200,0.755);
+           In_RHandle.add(202,0.77);
+           In_RHandle.add(206,0.79);
+           In_RHandle.add(209,0.81);
         //   RHandle_correction.add(350,0.815);
       //     RHandle_correction.add(350,0.99);
 
-           LHandle_correction.createLUT();
-           RHandle_correction.createLUT();
+           In_LHandle.createLUT();
+           In_RHandle.createLUT();
 
         //   LHandle_outcorrect.add(0,0.665);
-           LHandle_outcorrect.add(27,0.66);
-           LHandle_outcorrect.add(29,0.62);
-           LHandle_outcorrect.add(32,0.59);
-           LHandle_outcorrect.add(35,0.585);
-           LHandle_outcorrect.add(36,0.575);
-           LHandle_outcorrect.add(38,0.555);
-           LHandle_outcorrect.add(39,0.545);
+           Out_LHandle.add(27,0.66);
+           Out_LHandle.add(29,0.62);
+           Out_LHandle.add(32,0.59);
+           Out_LHandle.add(35,0.585);
+           Out_LHandle.add(36,0.575);
+           Out_LHandle.add(38,0.555);
+           Out_LHandle.add(39,0.545);
         //   LHandle_outcorrect.add(350,0.54);
 
 //
 //
 //
         //   RHandle_outcorrect.add(0,0.335);
-           RHandle_outcorrect.add(27,0.34);
-           RHandle_outcorrect.add(29,0.38);
-           RHandle_outcorrect.add(32,0.41);
-           RHandle_outcorrect.add(35,0.415);
-           RHandle_outcorrect.add(36,0.425);
-           RHandle_outcorrect.add(38,0.445);
-           RHandle_outcorrect.add(39,0.455);
+           Out_RHandle.add(27,0.34);
+           Out_RHandle.add(29,0.38);
+           Out_RHandle.add(32,0.41);
+           Out_RHandle.add(35,0.415);
+           Out_RHandle.add(36,0.425);
+           Out_RHandle.add(38,0.445);
+           Out_RHandle.add(39,0.455);
         //   RHandle_outcorrect.add(350,0.46);
 
 
 
-           LHandle_outcorrect.createLUT();
-           RHandle_outcorrect.createLUT();
+           Out_LHandle.createLUT();
+           Out_RHandle.createLUT();
 
            pidftable[pidf_intake_up][pp]=0.0024;  pidftable[pidf_intake_up][ii]=0;  pidftable[pidf_intake_up][dd]=0.0001;
            pidftable[pidf_intake_idle][pp]=0.003;  pidftable[pidf_intake_idle][ii]=0;  pidftable[pidf_intake_idle][dd]=0.00008;
