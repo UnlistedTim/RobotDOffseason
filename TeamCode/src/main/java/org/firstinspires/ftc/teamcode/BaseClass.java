@@ -980,28 +980,28 @@ public class BaseClass extends MecanumDrive {
            Slide_top.setMode(DcMotor.RunMode.RUN_TO_POSITION);
            Slide_top.setVelocity(0);
 
-           LHandle_correction.add(0,0.655);
-           LHandle_correction.add(197,0.65);
-           LHandle_correction.add(198,0.64);
-           LHandle_correction.add(200,0.625);
-           LHandle_correction.add(202,0.61);
-           LHandle_correction.add(206,0.59);
-           LHandle_correction.add(209,0.57);
-           LHandle_correction.add(350,0.575);
-
-
-
-           RHandle_correction.add(0,0.725);
-           RHandle_correction.add(197,0.73);
-           RHandle_correction.add(198,0.74);
-           RHandle_correction.add(200,0.755);
-           RHandle_correction.add(202,0.77);
-           RHandle_correction.add(206,0.79);
-           RHandle_correction.add(209,0.81);
-           RHandle_correction.add(350,0.815);
-
-           LHandle_correction.createLUT();
-           RHandle_correction.createLUT();
+//           LHandle_correction.add(0,0.655);
+//           LHandle_correction.add(197,0.65);
+//           LHandle_correction.add(198,0.64);
+//           LHandle_correction.add(200,0.625);
+//           LHandle_correction.add(202,0.61);
+//           LHandle_correction.add(206,0.59);
+//           LHandle_correction.add(209,0.57);
+//           LHandle_correction.add(350,0.575);
+//
+//
+//
+//           RHandle_correction.add(0,0.725);
+//           RHandle_correction.add(197,0.73);
+//           RHandle_correction.add(198,0.74);
+//           RHandle_correction.add(200,0.755);
+//           RHandle_correction.add(202,0.77);
+//           RHandle_correction.add(206,0.79);
+//           RHandle_correction.add(209,0.81);
+//           RHandle_correction.add(350,0.815);
+//
+//           LHandle_correction.createLUT();
+//           RHandle_correction.createLUT();
 
 //           LHandle_outcorrect.add(0,0.665);
 //           LHandle_outcorrect.add(27,0.66);
@@ -1588,11 +1588,11 @@ public class BaseClass extends MecanumDrive {
         linearslide(slide_sampleouttake, slidev2);
         Left_handle.setPosition(lefthandle_sampleouttake);
         Right_handle.setPosition(righthandle_sampleouttake);
-        delay(500);
+        delay(400);
         move(-0.2);//-0.18
        // delay(40);
         timer(0, 4);
-       while (basket_dist.getDistance(DistanceUnit.MM) > 230 && Op.opModeIsActive() && !timer(1300, 4)) {//target 340
+       while (basket_dist.getDistance(DistanceUnit.MM) > 200 && Op.opModeIsActive() && !timer(4000, 4)) {//target 340
 
                 armrotatePIDF();
         }
