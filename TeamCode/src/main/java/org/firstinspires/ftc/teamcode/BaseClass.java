@@ -980,7 +980,7 @@ public class BaseClass extends MecanumDrive {
            Slide_top.setMode(DcMotor.RunMode.RUN_TO_POSITION);
            Slide_top.setVelocity(0);
 
-           LHandle_correction.add(0,0.645);
+           LHandle_correction.add(0,0.655);
            LHandle_correction.add(197,0.65);
            LHandle_correction.add(198,0.64);
            LHandle_correction.add(200,0.625);
@@ -1004,24 +1004,33 @@ public class BaseClass extends MecanumDrive {
            LHandle_correction.createLUT();
            RHandle_correction.createLUT();
 
-//           LHandle_outcorrect.add(39,0.545);
-//           LHandle_outcorrect.add(38,0.555);
-//           LHandle_outcorrect.add(36,0.575);
-//           LHandle_outcorrect.add(35,0.585);
-//           LHandle_outcorrect.add(29,0.62);
-//           LHandle_outcorrect.add(27,0.66);
-//           LHandle_outcorrect.add(32,0.59);
+           LHandle_outcorrect.add(0,0.665);
+           LHandle_outcorrect.add(27,0.66);
+           LHandle_outcorrect.add(29,0.62);
+           LHandle_outcorrect.add(32,0.59);
+           LHandle_outcorrect.add(35,0.585);
+           LHandle_outcorrect.add(36,0.575);
+           LHandle_outcorrect.add(38,0.555);
+           LHandle_outcorrect.add(39,0.545);
+           LHandle_outcorrect.add(350,0.54);
+
 //
-//           RHandle_outcorrect.add(39,0.455);
-//           RHandle_outcorrect.add(38,0.0.555);
-//           RHandle_outcorrect.add(36,0.425);
-//           RHandle_outcorrect.add(35,0.415);
-//           RHandle_outcorrect.add(29,0.38);
-//           RHandle_outcorrect.add(27,0.34);
-           //RHandle_outcorrect.add(32,0.41);
 //
-//           LHandle_outcorrect.createLUT();
-//           RHandle_outcorrect.createLUT();
+//
+           RHandle_outcorrect.add(0,0.335);
+           RHandle_outcorrect.add(27,0.34);
+           RHandle_outcorrect.add(29,0.38);
+           RHandle_outcorrect.add(32,0.41);
+           RHandle_outcorrect.add(35,0.415);
+           RHandle_outcorrect.add(36,0.425);
+           RHandle_outcorrect.add(38,0.445);
+           RHandle_outcorrect.add(39,0.455);
+           RHandle_outcorrect.add(350,0.46);
+
+
+
+           LHandle_outcorrect.createLUT();
+           RHandle_outcorrect.createLUT();
 
            pidftable[pidf_intake_up][pp]=0.0024;  pidftable[pidf_intake_up][ii]=0;  pidftable[pidf_intake_up][dd]=0.0001;
            pidftable[pidf_intake_idle][pp]=0.003;  pidftable[pidf_intake_idle][ii]=0;  pidftable[pidf_intake_idle][dd]=0.00008;
