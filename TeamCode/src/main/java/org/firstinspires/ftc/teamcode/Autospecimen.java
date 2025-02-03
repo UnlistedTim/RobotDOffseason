@@ -50,6 +50,7 @@ public class Autospecimen extends LinearOpMode {
             rbg.aspec_outtake();
             rbg.afmove(0,true,true);//strafe samples
 
+
             rbg.afmove(1,false,false);// forward for sampels
 
 

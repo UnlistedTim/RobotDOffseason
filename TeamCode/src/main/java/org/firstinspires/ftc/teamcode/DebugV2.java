@@ -29,8 +29,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 @TeleOp(name = "DebugV2", group = "B")
 public class DebugV2 extends LinearOpMode {
 
-    double lefthandlepos = 0;
-    double righthandlepos = 1.0;
+    double lefthandlepos =  0.64-0.05; // 0.59
+    double righthandlepos = 0.36+0.05; //0.41
 
     double clawpos = 0.48;
 
