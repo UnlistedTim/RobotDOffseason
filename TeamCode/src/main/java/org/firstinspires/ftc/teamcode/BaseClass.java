@@ -1427,16 +1427,15 @@ public class BaseClass extends MecanumDrive {
 
 
 
-        if(tstep==1) {// for auto size limitation
+        if(tstep==1) {// for auto spec
             flag[first]=true;
             Left_handle.setPosition(lefthandle_intake);
             Right_handle.setPosition(righthandle_intake);
             return;
-
         }
 
 
-        if(tstep==2) {//for teleop no turning of handle
+        if(tstep==2) {//for teleop
 
             flag[drive]=true;
            // flag[first]=true;
@@ -1448,6 +1447,18 @@ public class BaseClass extends MecanumDrive {
         }
 
 
+        if(tstep==3) {//for auto sample
+
+     ;
+            // flag[first]=true;
+
+            pidf_index=pidf_idle;
+            flag[first]=true;
+            Left_handle.setPosition(lefthandle_intake);
+            Right_handle.setPosition(righthandle_intake);
+            return;
+
+        }
 
         if(tstep==5) {
 
@@ -1573,46 +1584,33 @@ public class BaseClass extends MecanumDrive {
 
     public void asample_outtake() {
 
-//        pidfsetting(rotate_outtake, pidf_outtake_up);
-//        Intake_handle.setPosition(handle_outtake);
-//        Intake_rot.setPosition(handlerot_intake);
-//        delay(300);
-
-       // pidfsetting(rotate_outtake+50, pidf_aouttake_up2);
-        linearslide(slide_sampleouttake-20, slidev2);
+        pidf_index=pidf_sampleouttake;
+        pidfsetting(arm_angle_sampleouttake);
+        linearslide(slide_sampleouttake, slidev2);
+        Left_handle.setPosition(lefthandle_sampleouttake);
+        Right_handle.setPosition(righthandle_sampleouttake);
         delay(500);
         move(-0.2);//-0.18
        // delay(40);
         timer(0, 4);
        while (basket_dist.getDistance(DistanceUnit.MM) > 230 && Op.opModeIsActive() && !timer(1300, 4)) {//target 340
-      //  while ( Op.opModeIsActive() && !timer(100, 4)) {//target 340
 
                 armrotatePIDF();
         }
         stop_drive();
-       // delay(2000000);
-//        Intake.setPower(-0.26);//-0.28
-        delay(300);
-//        Intake.setPower(0);
-       // delay(100);
-//        Intake_handle.setPosition(0.3);// lift the handle for a temp  higher locaiton.
-        delay(50);
-        move(0.25);
+        Claw.setPosition(claw_open);
+        delay(200);
+        move(0.3);
         delay(100);
         linearslide(400, slidev2);
         delay(200);
         stop_drive();
-//        Intake_handle.setPosition(handle_intake);
-        delay(200);
-        if(!flag[last]){
-        linearslide(400, slidev0);
-        delay(200);
-        pidfsetting(roatate_prein0 );}
-        else {
-            linearslide(-10, slidev1);
-            delay(200);
-            pidfsetting(roatate_prein0-250);
+
+        if(flag[last]){
+            linearslide(0, slidev2);
+
         }
+        arot_angle=arm_angle_preintake;
 
 
     }
@@ -1716,66 +1714,37 @@ public class BaseClass extends MecanumDrive {
 
     {
         move(0.4);
+        Left_handle.setPosition(lefthandle_idle);
+        Right_handle.setPosition(righthandle_idle);
+        pidfsetting(arm_angle_idle);
         delay(150);
-        pidfsetting(rotate_outtake);
-//        Intake_handle.setPosition(handle_outtake);
-//        Intake_rot.setPosition(handlerot_intake);
-//        Intake.setPower(1);
-        delay(200);
-//        Intake.setPower(0);
+        pidf_index=pidf_idle_sampleout;
+        pidfsetting(arm_angle_sampleouttake);
         linearslide(400,slidev1);
+        arot_angle=arm_angle_sampleouttake;
+        stop_drive();
     }
 
 
 
     public  void asample_intake() {
 
-        linearslide(800,slidev2);
-//        if(flag[last])  {linearslide(1200,slidev2);delay (250);Intake_rot.setPosition(handlerot_intake+0.15);delay(0);}
+        pidf_index=pidf_sampleintake;
+        pidfsetting(arm_arngle_intake);
+        delay(180); // 500;
+        Claw.setPosition(claw_close);
         delay(350);
-      //  delay(100000000);
-      //  Intake.setPower(1);
-      //  delay(25);
-        //delay(10000000);
-
-        pidfsetting(-40);
-        delay(20);
-//        Intake.setPower(1);
-        delay(400); // 500
-//        Intake_handle.setPosition(handle_outtake);
-        pidfsetting(250);
-        delay(100);
-//        Intake.setPower(0);
-        linearslide(400,slidev1);
-        delay(200);
-        if(flag[last]) delay(100);
-
-//       Intake_rot.setPosition(handlerot_intake);
-        pidfsetting(rotate_outtake);
-        delay(100);
-
-
-        // linearslide(armRotate, rotate, armrotateV2);
-//        flag[ain]=true;
-//        rotatetargetPIDF(rotate[ain1]);
-//        armrotatePIDF();
-//        delay(350);
-//        Claw.setPosition(clawClose);
-//        delay(300); // 300
-//        Handle.setPosition(handleOut1);
-//        rotatetargetPIDF(rotate[idle]);
-//        delay(50);
-//        //  amove(0);
-        // delay(2000000000);
-
-        //  linearslide(armRotate, armrotatePreout0, armrotateV1);
-
+        Left_handle.setPosition(lefthandle_idle);
+        Right_handle.setPosition(righthandle_idle);
+        delay(50);
+        linearslide(slide_idle,slidev2);
     }
 
     public void amove( int step) {
 
 
-        double yaw,atar,gap=1.5;
+        double yaw,atar,gap=1.0;
+        boolean rot_flag=true;
         double x1,xtar,ytar,xgap,yrange,xrange,y1,a1;
         double ygap,agap;
         double SPEED_GAIN = asconfig[step][speedg]; // 0.02  //  Forward Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
@@ -1805,14 +1774,26 @@ public class BaseClass extends MecanumDrive {
             agap=atar-a1;
 
 
-            if (Math.abs(xgap)<gap&&Math.abs(ygap)<gap&&  Math.abs(agap)<5){xo=x1;yo=y1;ao=a1;break;}
+            if (Math.abs(xgap)<gap&&Math.abs(ygap)<gap){//&&  Math.abs(agap)<5
+                xo=x1;
+                yo=y1;
+                ao=a1;
+                break;
+            }
             xrange= Range.clip(xgap * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
             yaw = Range.clip(agap * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
             yrange= Range.clip(ygap * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
             moveRobot(xrange, yrange , yaw);
+            if (rot_flag && timer(400,arot)) {
+
+                pidfsetting(arot_angle);
+                //linearslide(aslide, slidev1 + 150);
+                rot_flag = false;
+            }
 
         }
         stop_drive();
+
         //  delay(30);//100
     }
 

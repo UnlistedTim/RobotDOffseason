@@ -23,40 +23,44 @@ public class Autosample extends LinearOpMode {
     public void runOpMode() {
         rbg = new BaseClass(this, pp);
         rbg.init(0);
-        rbg.baserest=true;
 
+        telemetry.addLine("Make sure linearslide was fully in befroe start and do not move the robot anymore;");
         telemetry.update();
-        sleep(500);
-        rbg.init(2);//rest the roatioan 0 positon
-        sleep(500);
-        rbg.updatePoseEstimate();
-        telemetry.addData("x",rbg.pose.position.x);
-        telemetry.addData("y",rbg.pose.position.y);
-        telemetry.addLine("Make sure the arm was already placed  on the right location before initialization");
-        telemetry.addLine("Now Push the linear slide all the way down , turn the arm to the target position and load the specimen.");
-        telemetry.addLine("Aftr that, hold the arm and press gunner gamepad right bumper.");
+        rbg.init(0);
+        sleep(200);
+        rbg.init(3);
+        telemetry.addLine("Preload the specimen in the claw and press Driver right bumper;");
         telemetry.update();
         while(!isStopRequested())
         {
-        sleep(20);
-        if(gamepad1.right_bumper) break;
+            sleep(20);
+            if(gamepad1.right_bumper){
+                rbg.Claw.setPosition(rbg.claw_close);
+                break;
+            }
         }
-        rbg.init(3);
-        telemetry.addData(">", "Press Play to start op mode ");
+
+        sleep(200);
         rbg.updatePoseEstimate();
         telemetry.addData("x",rbg.pose.position.x);
         telemetry.addData("y",rbg.pose.position.y);
+        telemetry.addData(">", "Press Play to start op mode ");
         telemetry.update();
-        while(!isStarted())
-        {
-            rbg.delay(25);
-        }
         waitForStart();
 
-        rbg.timer(0,8);
+
+       // rbg.timer(0,8);
         while (opModeIsActive()) {
            rbg.asamplefirstmove();
             rbg.amove(0); //preload sample move to outake
+            telemetry.addData("x0",rbg.xo);
+            telemetry.addData("y0",rbg.yo);
+            telemetry.addData("a0",rbg.ao);
+            telemetry.addData("x",rbg.pose.position.x);
+            telemetry.addData("y",rbg.pose.position.y);
+            telemetry.addData("angle",rbg.imu.getRobotYawPitchRollAngles().getYaw((AngleUnit.DEGREES)));
+            telemetry.update();
+            rbg.delay(1000000000);
             rbg.asample_outtake();
             rbg.amove(1);// forward to 1st sample for intake;
             rbg.asample_intake();
