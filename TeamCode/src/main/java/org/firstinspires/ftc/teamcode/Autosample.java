@@ -53,6 +53,8 @@ public class Autosample extends LinearOpMode {
         while (opModeIsActive()) {
            rbg.asamplefirstmove();
             rbg.amove(0); //preload sample move to outake
+
+            rbg.amove(1);// forward to 1st sample for intake;
             rbg.asample_outtake();
             telemetry.addData("x0",rbg.xo);
             telemetry.addData("y0",rbg.yo);
@@ -62,7 +64,6 @@ public class Autosample extends LinearOpMode {
             telemetry.addData("angle",rbg.imu.getRobotYawPitchRollAngles().getYaw((AngleUnit.DEGREES)));
             telemetry.update();
             rbg.delay(1000000000);
-            rbg.amove(1);// forward to 1st sample for intake;
             rbg.asample_intake();
          //   rbg.delay(300);
 //            rbg.updatePoseEstimate();

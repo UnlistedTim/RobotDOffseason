@@ -1318,7 +1318,7 @@ public class BaseClass extends MecanumDrive {
            asconfig[0] [strafemax]=0.35;
            asconfig[0] [turnmax]=0.18;
            asconfig[0] [xdis]=10;
-           asconfig[0] [ydis]=3;
+           asconfig[0] [ydis]=2.5;//3
            asconfig[0] [adis]=-45;
            asconfig[0] [time]=1500;
 
@@ -1599,8 +1599,8 @@ public class BaseClass extends MecanumDrive {
         linearslide(slide_sampleouttake, slidev2);
         Left_handle.setPosition(lefthandle_sampleouttake);
         Right_handle.setPosition(righthandle_sampleouttake);
-        delay(400);
-        move(-0.2);//-0.18
+        delay(350);
+        move(-0.22);//-0.18
        // delay(40);
         timer(0, 4);
        while (basket_dist.getDistance(DistanceUnit.MM) > 200 && Op.opModeIsActive() && !timer(4000, 4)) {//target 340
