@@ -81,7 +81,7 @@ public class TelOp extends LinearOpMode {
                        break;
                    }
 
-                   if(gamepad2.right_bumper) {
+                   if(gamepad2.right_bumper&&(rbg.drivinginput<0.01)) {
                        rbg.pidf_index=rbg.pidf_sampleintake;
                        rbg.sampleintake();
                        speed_factor=1;
@@ -162,9 +162,9 @@ public class TelOp extends LinearOpMode {
 
                    rbg.spec_handleadj(gamepad2.right_stick_y);
 
-                   if (Math.abs(gamepad2.right_stick_y) > 0.5){
-
-                   }
+//                   if (Math.abs(gamepad2.right_stick_y) > 0.5){
+//
+//                   }
 
                    if(gamepad1.touchpad||rbg.flag[rbg.placement]){
                        rbg.specplacment();
@@ -285,6 +285,11 @@ public class TelOp extends LinearOpMode {
          //    telemetry.addData("armlinerslide top", rbg.Slide_top.getCurrentPosition());
         //    telemetry.addData("armlinerslide bot", rbg.Slide_bot.getCurrentPosition());
 //
+            telemetry.addData("red", rbg.Claw_color.red());
+            telemetry.addData("green", rbg.Claw_color.green());
+            telemetry.addData("blue", rbg.Claw_color.blue());
+            telemetry.addData("color", rbg.Claw_color.argb());
+
             telemetry.addData("Arm angle", rbg.arm_angle);
 
             rbg.updatePoseEstimate();

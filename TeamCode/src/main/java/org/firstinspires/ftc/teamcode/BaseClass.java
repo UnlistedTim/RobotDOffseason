@@ -33,6 +33,7 @@ public class BaseClass extends MecanumDrive {
 
     // p 0.0002 up: intake idle (100) to spec outtake and intake idle to sample outtake
     double speed_index=1;
+    double drivinginput;
     double arm_angle=0;
     double claw_close=0.46,claw_open=0.04;
     double arm_angle_target,arm_pose,arm_pose_target;
@@ -135,7 +136,8 @@ public class BaseClass extends MecanumDrive {
         double y = -iy;
         double x = ix * 1.1; // Counteract imperfect strafing
         double rx = irx * 0.7; // 0.75
-        double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+        drivinginput= Math.abs(y) + Math.abs(x) + Math.abs(rx);
+        double denominator = Math.max(drivinginput, 1);
         double frontLeftPower = (y + x + rx) / denominator;
         double backLeftPower = (y - x + rx) / denominator;
         double frontRightPower = (y - x - rx) / denominator;
@@ -1332,8 +1334,8 @@ public class BaseClass extends MecanumDrive {
            asconfig[0] [speedmax]=0.25;
            asconfig[0] [strafemax]=0.35;
            asconfig[0] [turnmax]=0.18;
-           asconfig[0] [xdis]=10;
-           asconfig[0] [ydis]=2.5;//3
+           asconfig[0] [xdis]=8.5;
+           asconfig[0] [ydis]=2;//3
            asconfig[0] [adis]=-45;
            asconfig[0] [time]=1500;
 
@@ -1344,8 +1346,8 @@ public class BaseClass extends MecanumDrive {
            asconfig[1] [speedmax]=0.25;
            asconfig[1] [strafemax]=0.35;
            asconfig[1] [turnmax]=0.18;
-           asconfig[1] [xdis]=18.5;//21
-           asconfig[1] [ydis]=6;
+           asconfig[1] [xdis]=21.5;//21
+           asconfig[1] [ydis]=5;
            asconfig[1] [adis]=0;
            asconfig[1] [time]=1500;
            // move to first sample outtake
@@ -1631,9 +1633,12 @@ public class BaseClass extends MecanumDrive {
         }
         stop_drive();
         Claw.setPosition(claw_open);
-        delay(200);
-        move(0.3);
         delay(100);
+        Left_handle.setPosition(lefthandle_idle);
+        Right_handle.setPosition(righthandle_idle);
+        delay(50);
+        move(0.4);
+        delay(150);
         linearslide(400, slidev2);
         delay(200);
         stop_drive();
@@ -1643,6 +1648,7 @@ public class BaseClass extends MecanumDrive {
 
         }
         arot_angle=arm_angle_preintake;
+        pidf_index=pidf_sampleout_idle;
 
 
     }
@@ -1761,6 +1767,7 @@ public class BaseClass extends MecanumDrive {
 
     public  void asample_intake() {
 
+
         pidf_index=pidf_sampleintake;
         pidfsetting(arm_arngle_intake);
         delay(180); // 500;
@@ -1772,7 +1779,7 @@ public class BaseClass extends MecanumDrive {
         linearslide(slide_idle,slidev2);
     }
 
-    public void amove( int step) {
+    public void amove( int step,boolean intake) {
 
 
         double yaw,atar,gap=1.0;
@@ -1796,7 +1803,7 @@ public class BaseClass extends MecanumDrive {
         atar=asconfig[step][adis];
         timer(0,2);
         while (Op.opModeIsActive() &&!timer(asconfig[step][time],2)) //{// todo &&!timer3(1200)
-        {  armrotatePIDF();
+        {   armrotatePIDF();
             updatePoseEstimate();
             x1=pose.position.x;
             y1=pose.position.y;
@@ -1807,21 +1814,39 @@ public class BaseClass extends MecanumDrive {
 
 
             if (Math.abs(xgap)<gap&&Math.abs(ygap)<gap){//&&  Math.abs(agap)<5
-                xo=x1;
-                yo=y1;
-                ao=a1;
+//                xo=x1;
+//                yo=y1;
+//                ao=a1;
                 break;
             }
             xrange= Range.clip(xgap * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
             yaw = Range.clip(agap * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
             yrange= Range.clip(ygap * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
             moveRobot(xrange, yrange , yaw);
-            if (rot_flag && timer(400,arot)) {
+//            if (rot_flag && timer(400,2)) {
+//
+//                pidfsetting(arot_angle);
+//                //linearslide(aslide, slidev1 + 150);
+//                rot_flag = false;
+////                Left_handle.setPosition(lefthandle_intake);
+////                Right_handle.setPosition(righthandle_intake);
+//            }
+//
+
+            if(slidePos<450&&rot_flag) {
 
                 pidfsetting(arot_angle);
-                //linearslide(aslide, slidev1 + 150);
-                rot_flag = false;
+                rot_flag=false;
             }
+
+            if(intake &&!rot_flag&&(arm_angle<arm_angle_preintake+10))
+            {
+                pidf_index=pidf_idle;
+                pidfsetting(arot_angle-2);
+                rot_flag=false;
+                intake=false;
+            }
+
 
         }
         stop_drive();

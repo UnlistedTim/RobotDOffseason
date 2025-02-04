@@ -26,7 +26,7 @@ public class Autosample extends LinearOpMode {
 
         telemetry.addLine("Make sure linearslide was fully in befroe start and do not move the robot anymore;");
         telemetry.update();
-        rbg.init(0);
+       // rbg.init(0);
         sleep(200);
         rbg.init(3);
         telemetry.addLine("Preload the specimen in the claw and press Driver right bumper;");
@@ -52,10 +52,12 @@ public class Autosample extends LinearOpMode {
        // rbg.timer(0,8);
         while (opModeIsActive()) {
            rbg.asamplefirstmove();
-            rbg.amove(0); //preload sample move to outake
-
-            rbg.amove(1);// forward to 1st sample for intake;
+            rbg.amove(0,false); //preload sample move to outake
             rbg.asample_outtake();
+            rbg.amove(1,true);// forward to 1st sample for intake;
+            rbg.pidf_index=rbg.pidf_idle;
+            rbg.pidfsetting(rbg.arm_angle_preintake-4);
+
             telemetry.addData("x0",rbg.xo);
             telemetry.addData("y0",rbg.yo);
             telemetry.addData("a0",rbg.ao);
@@ -76,16 +78,16 @@ public class Autosample extends LinearOpMode {
 //            telemetry.addData("a",rbg.imu.getRobotYawPitchRollAngles().getYaw((AngleUnit.DEGREES)));
 //            telemetry.update();
 //            rbg.delay(1000000000);
-            rbg.amove(2);
+            rbg.amove(2,false);
             rbg.asample_outtake();
-            rbg.amove(3);
+            rbg.amove(3,true);
             rbg.asample_intake();
-            rbg.amove(4);
+            rbg.amove(4,false);
             rbg.asample_outtake();
-            rbg.amove(5);
+            rbg.amove(5,true);
             rbg.flag[rbg.last]=true;
             rbg.asample_intake();
-            rbg.amove(6);
+            rbg.amove(6,false);
             rbg.asample_outtake();
             rbg.delay(500);
             rbg.stop_drive();
