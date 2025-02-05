@@ -284,20 +284,20 @@ public class TelOp extends LinearOpMode {
             rbg.robot_centric(gamepad1.right_stick_y, gamepad1.right_stick_x, gamepad1.left_stick_x, speed_factor);
          //    telemetry.addData("armlinerslide top", rbg.Slide_top.getCurrentPosition());
         //    telemetry.addData("armlinerslide bot", rbg.Slide_bot.getCurrentPosition());
+////
+//            telemetry.addData("red", rbg.Claw_color.red());
+//            telemetry.addData("green", rbg.Claw_color.green());
+//            telemetry.addData("blue", rbg.Claw_color.blue());
+//            telemetry.addData("color", rbg.Claw_color.argb());
 //
-            telemetry.addData("red", rbg.Claw_color.red());
-            telemetry.addData("green", rbg.Claw_color.green());
-            telemetry.addData("blue", rbg.Claw_color.blue());
-            telemetry.addData("color", rbg.Claw_color.argb());
-
-            telemetry.addData("Arm angle", rbg.arm_angle);
-
-            rbg.updatePoseEstimate();
-
-            telemetry.addData("Pos x" , rbg.pose.position.x);
-            telemetry.addData("Pos y" , rbg.pose.position.y);
-            telemetry.addData("imu",rbg.imu.getRobotYawPitchRollAngles().getYaw((AngleUnit.DEGREES)));
+//            telemetry.addData("Arm angle", rbg.arm_angle);
 //
+//            rbg.updatePoseEstimate();
+//
+//            telemetry.addData("Pos x" , rbg.pose.position.x);
+//            telemetry.addData("Pos y" , rbg.pose.position.y);
+//            telemetry.addData("imu",rbg.imu.getRobotYawPitchRollAngles().getYaw((AngleUnit.DEGREES)));
+////
 //            telemetry.addData("Arm right power", rbg.power);
 //
 //            telemetry.addData("Speed factor", speed_factor);
@@ -315,7 +315,7 @@ public class TelOp extends LinearOpMode {
 //            telemetry.addData("Top slide motor current", rbg.Slide_top.getCurrent(CurrentUnit.AMPS));
 //            telemetry.addData("Bot slide motor current", rbg.Slide_bot.getCurrent(CurrentUnit.AMPS));
 //            telemetry.addData("Bar dist", rbg.bar_dist.getDistance(DistanceUnit.MM));
-            telemetry.update();
+//            telemetry.update();
             }
         }
     }

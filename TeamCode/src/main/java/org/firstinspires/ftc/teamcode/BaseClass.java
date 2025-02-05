@@ -37,7 +37,7 @@ public class BaseClass extends MecanumDrive {
     double arm_angle=0;
     double claw_close=0.46,claw_open=0.04;
     double arm_angle_target,arm_pose,arm_pose_target;
-    double arm_angle_idle=-8,arm_angle_preintake=10,arm_arngle_intake=5,arm_angle_sampleouttake=105,arm_angle_specintake=208,arm_angle_specouttake=31;
+    double arm_angle_idle=-8,arm_angle_preintake=10,arm_arngle_intake=4,arm_angle_sampleouttake=105,arm_angle_specintake=208,arm_angle_specouttake=31;
     double aarm_angle_specouttake =32;
     double arot_angle = 0;
     int aslide = 0;
@@ -181,9 +181,9 @@ public class BaseClass extends MecanumDrive {
 
         move(0.35);
         linearslideTq(3300,0.98);
-        pidfsetting(52); // Hit arm with low rung //1500
+        pidfsetting(54); // Hit arm with low rung //1500
 
-        while (arm_angle_update()<48 && Op.opModeIsActive())
+        while (arm_angle_update()<46 && Op.opModeIsActive())
         {delay(25);}
        delay(100);
 
