@@ -186,7 +186,7 @@ public class BaseClass extends MecanumDrive {
 
         while (arm_angle_update()<46 && Op.opModeIsActive())
         {delay(25);}
-       delay(100);
+       delay(150);
 
         linearslideTq(2900,0.98);
 
@@ -275,12 +275,15 @@ public class BaseClass extends MecanumDrive {
             timer(0,hang_timer);
             return;
         }
-        if ( (step[hang]==1&& (Slide_top.getCurrentPosition() < 20) || timer(2000,hang_timer)) ){
-            delay(150);
+
+        if ( (step[hang]==1&& (Slide_top.getCurrentPosition() < 15) || timer(1500,hang_timer)) ){
+            delay(100);
+
             linearslideTq(0,0);
             Gearbox.setPosition(0.95);
-            pidf_index=pidf_hang0;
-            pidfsetting(20);
+//            delay(200);
+             pidf_index=pidf_hang0;
+            pidfsetting(22);
             timer(0,hang);
             step[hang]=2;
             return;
@@ -1155,7 +1158,10 @@ public class BaseClass extends MecanumDrive {
            afmoveconfig[1] [strafemax]=0.5;
            afmoveconfig[1] [turnmax]=0.2;
            afmoveconfig[1] [xdis]=43;
+
            afmoveconfig[1] [ydis]=-42;
+
+
            afmoveconfig[1] [adis]=0;
            afmoveconfig[1] [time]=2000;
            // strafe for first sample 10
@@ -1203,10 +1209,12 @@ public class BaseClass extends MecanumDrive {
            afmoveconfig[5] [adis]=0;
            afmoveconfig[5] [time]=2000;
            // push second sample
-           afmoveconfig[6] [speedg]=0.1;
-           afmoveconfig[6] [strafeg]=0.18;
+
+           afmoveconfig[6] [speedg]=0.11;//0.10
+           afmoveconfig[6] [strafeg]=0.2;
+
            afmoveconfig[6] [turng]=0.03;
-           afmoveconfig[6] [speedmax]=0.90;
+           afmoveconfig[6] [speedmax]=0.92;
            afmoveconfig[6] [strafemax]=0.5;
            afmoveconfig[6] [turnmax]=0.2;
            afmoveconfig[6] [xdis]=17;//16
@@ -1242,7 +1250,7 @@ public class BaseClass extends MecanumDrive {
            afmoveconfig[22] [speedmax]=0.7;
            afmoveconfig[22] [strafemax]=0.5;
            afmoveconfig[22] [turnmax]=0.2;
-           afmoveconfig[22] [xdis]=21;//16
+           afmoveconfig[22] [xdis]=21.5;//16
            afmoveconfig[22] [ydis]=-68.5;
            afmoveconfig[22] [adis]=0;
            afmoveconfig[22] [time]=2000;
@@ -1253,7 +1261,7 @@ public class BaseClass extends MecanumDrive {
            afmoveconfig[7] [speedg]=0.015;
            afmoveconfig[7] [strafeg]=0.3;
            afmoveconfig[7] [turng]=0.02;
-           afmoveconfig[7] [speedmax]=0.5;
+           afmoveconfig[7] [speedmax]=0.4;
            afmoveconfig[7] [strafemax]=0.9;
            afmoveconfig[7] [turnmax]=0.25;
            afmoveconfig[7] [xdis]=12;
