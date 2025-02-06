@@ -834,6 +834,26 @@ public class BaseClass extends MecanumDrive {
     }
 
 
+    public void autospec_intake() {
+        double last_x = 11;
+        double x_delta = -1;
+        move(-0.2);
+        delay(100);//100
+        Claw.setPosition(claw_open);
+        while (Op.opModeIsActive() && (Math.abs(x_delta) <0.1)){//-0.09
+            delay(25);
+            updatePoseEstimate();
+            x_delta = pose.position.x- last_x;
+            last_x=pose.position.x;
+        }
+        stop_drive();
+        Claw.setPosition(claw_close);
+        delay(150);
+        flag[claw_lock]=true;
+        pose=new Pose2d(0, 0, 0);//for auto
+        imu.resetYaw();
+        delay(100);
+    }
 
 
     public void aspec_outtake() {
@@ -1385,21 +1405,21 @@ public class BaseClass extends MecanumDrive {
            asconfig[2] [speedmax]=0.25;
            asconfig[2] [strafemax]=0.35;
            asconfig[2] [turnmax]=0.18;
-           asconfig[2] [xdis]=8.5;//10
-           asconfig[2] [ydis]=2;//3
-           asconfig[2] [adis]=-45;
-           asconfig[2] [time]=1500;
+           asconfig[2] [xdis]=8;//10
+           asconfig[2] [ydis]=3;//3
+           asconfig[2] [adis]=-52;
+           asconfig[2] [time]=1800;
            // forward to 2nd sample intake
            asconfig[3] [speedg]=0.028;
-           asconfig[3] [strafeg]=0.25;
+           asconfig[3] [strafeg]=0.28;
            asconfig[3] [turng]=0.015;
            asconfig[3] [speedmax]=0.3;
            asconfig[3] [strafemax]=0.35;
            asconfig[3] [turnmax]=0.18;
-           asconfig[3] [xdis]=19.5;
-           asconfig[3] [ydis]=17;
+           asconfig[3] [xdis]=22.5;
+           asconfig[3] [ydis]=16;
            asconfig[3] [adis]=0;
-           asconfig[3] [time]=1500;
+           asconfig[3] [time]=2200;
            //move to 2nd sample outtake
            asconfig[4] [speedg]=0.03;
            asconfig[4] [strafeg]=0.3;
@@ -1409,8 +1429,8 @@ public class BaseClass extends MecanumDrive {
            asconfig[4] [turnmax]=0.18;
            asconfig[4] [xdis]=9;
            asconfig[4] [ydis]=2;
-           asconfig[4] [adis]=-45;
-           asconfig[4] [time]=1500;
+           asconfig[4] [adis]=-40;//-45
+           asconfig[4] [time]=1800;
            // forward 3rd sample intake
            asconfig[5] [speedg]=0.03;
            asconfig[5] [strafeg]=0.2;//0.15
@@ -1504,13 +1524,13 @@ public class BaseClass extends MecanumDrive {
 
         if(tstep==3) {//for auto sample
 
-     ;
+
             // flag[first]=true;
 
             pidf_index=pidf_idle;
             flag[first]=true;
-            Left_handle.setPosition(lefthandle_intake);
-            Right_handle.setPosition(righthandle_intake);
+//            Left_handle.setPosition(lefthandle_intake);
+//            Right_handle.setPosition(righthandle_intake);
             return;
 
         }
@@ -1651,11 +1671,11 @@ public class BaseClass extends MecanumDrive {
         linearslide(slide_sampleouttake, slidev2);
         Left_handle.setPosition(lefthandle_sampleouttake);
         Right_handle.setPosition(righthandle_sampleouttake);
-        delay(350);
-        move(-0.22);//-0.18
-       // delay(40);
+        delay(800);
+        move(-0.24);//-0.18
+       // delay(40);2
         timer(0, 4);
-       while (basket_dist.getDistance(DistanceUnit.MM) > 200 && Op.opModeIsActive() && !timer(4000, 4)) {//target 340// todo
+       while (basket_dist.getDistance(DistanceUnit.MM) > 180 && Op.opModeIsActive() && !timer(2000, 4)) {//target 340// todo
 
                 armrotatePIDF();
         }
@@ -1794,10 +1814,8 @@ public class BaseClass extends MecanumDrive {
 
 
     public  void asample_intake() {
-
-
         pidf_index=pidf_sampleintake;
-        pidfsetting(arm_arngle_intake);
+        pidfsetting(arm_arngle_intake-1);
         delay(180); // 500;
         Claw.setPosition(claw_close);
         delay(350);
@@ -1806,6 +1824,8 @@ public class BaseClass extends MecanumDrive {
         delay(50);
         arot_angle=arm_angle_sampleouttake-10;
         pidf_index=pidf_idle_sampleout;
+        linearslide(slide_preintake,slidev2);
+
     }
     public void amove( int step,boolean intake) {
 

@@ -152,7 +152,7 @@ case SAMPLEINTAKE:
                    if(!rbg.flag[rbg.specintakeready])
                    {
                        rbg.specintake_ready();
-                       speed_factor=0.4;
+                       //speed_factor=0.4;
                        break;
                    }
                    if(gamepad2.right_bumper&&rbg.flag[rbg.claw_lock]) {
@@ -175,8 +175,8 @@ case SAMPLEINTAKE:
                        speed_factor=0.4;
                    }
                    if(gamepad1.right_bumper)
-                   {
-                       rbg.specintake();
+                   {  rbg.autospec_intake();
+
                        if(gamepad1.right_bumper)
                        {
 
@@ -191,6 +191,24 @@ case SAMPLEINTAKE:
                        state = State.SPECOUTTAKE;
                        break;
                    }
+
+                if(gamepad1.right_trigger>0.6)
+                    {
+                        rbg.specintake();
+                         if(gamepad1.right_bumper)
+                        {
+                        rbg.specmove();
+                        state = State.SPECOUTTAKE;
+                        speed_factor=1;
+                         break;
+                        }
+
+                    rbg.pre_specouttake();
+                    speed_factor=1;
+                    state = State.SPECOUTTAKE;
+                     break;
+                }
+
 
 //                   if(gamepad1.right_trigger>0.8)
 //                   {

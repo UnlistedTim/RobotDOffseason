@@ -37,7 +37,7 @@ public class Autosample extends LinearOpMode {
                 rbg.Claw.setPosition(rbg.claw_close);
                 break;
             }
-
+        }
 
             sleep(200);
             rbg.updatePoseEstimate();
@@ -59,23 +59,25 @@ public class Autosample extends LinearOpMode {
                 rbg.asample_outtake();
                 rbg.amove(3, true);
                 rbg.pidf_index = rbg.pidf_idle;
-                rbg.pidfsetting(rbg.arm_angle_preintake - 3);
-                telemetry.addData("red", rbg.Claw_color.red());
-                telemetry.addData("green", rbg.Claw_color.green());
-                telemetry.addData("blue", rbg.Claw_color.blue());
-                telemetry.addData("color", rbg.Claw_color.alpha());
-                telemetry.addData("x0", rbg.xo);
-                telemetry.addData("y0", rbg.yo);
-                telemetry.addData("a0", rbg.ao);
-                telemetry.addData("x", rbg.pose.position.x);
-                telemetry.addData("y", rbg.pose.position.y);
-                telemetry.addData("angle", rbg.imu.getRobotYawPitchRollAngles().getYaw((AngleUnit.DEGREES)));
-                telemetry.update();
-                rbg.delay(1000000000);
+
                 rbg.asample_intake();
                 rbg.amove(4, false);
                 rbg.asample_outtake();
                 rbg.amove(5, true);
+                rbg.linearslide(900,rbg.slidev2);
+                rbg.pidfsetting(rbg.arm_angle_preintake - 3);
+               // telemetry.addData("red", rbg.Claw_color.getConnectionInfo());
+//                telemetry.addData("green", rbg.Claw_color.green());
+//                telemetry.addData("blue", rbg.Claw_color.blue());
+//                telemetry.addData("color", rbg.Claw_color.alpha());
+//                telemetry.addData("x0", rbg.xo);
+//                telemetry.addData("y0", rbg.yo);
+//                telemetry.addData("a0", rbg.ao);
+//                telemetry.addData("x", rbg.pose.position.x);
+//                telemetry.addData("y", rbg.pose.position.y);
+//                telemetry.addData("angle", rbg.imu.getRobotYawPitchRollAngles().getYaw((AngleUnit.DEGREES)));
+//                telemetry.update();
+                rbg.delay(1000000000);
                 rbg.flag[rbg.last] = true;
                 rbg.asample_intake();
                 rbg.amove(6, false);
@@ -87,4 +89,3 @@ public class Autosample extends LinearOpMode {
             }
         }
     }
-}

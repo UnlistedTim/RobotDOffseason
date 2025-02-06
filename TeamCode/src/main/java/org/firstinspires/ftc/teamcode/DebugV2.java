@@ -163,9 +163,9 @@ public class DebugV2 extends LinearOpMode {
         //    rotatetargetPIDF(rotateStart);
         waitForStart();
 
-        Left_handle.setPosition(lefthandlepos);
-        Right_handle.setPosition(righthandlepos);
-        Claw.setPosition(clawpos);
+//        Left_handle.setPosition(lefthandlepos);
+//        Right_handle.setPosition(righthandlepos);
+//        Claw.setPosition(clawpos);
         Arm_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         Arm_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
