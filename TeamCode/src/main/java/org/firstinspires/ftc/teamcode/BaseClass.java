@@ -160,7 +160,7 @@ public class BaseClass extends MecanumDrive {
     public boolean color_check () {
 
         return Claw_color.green() + Claw_color.green() + Claw_color.green() > 150;
-        
+
 //        color_det = 0;
 //        if (Claw_color.green() > 300){
 //            color_det = 3; //detect yellow
@@ -755,7 +755,7 @@ public class BaseClass extends MecanumDrive {
        delay(50);
         if(!color_check())
         {
-            Claw.setPosition(claw_close);
+            Claw.setPosition(claw_open);
             flag[claw_lock]=false;
             pidfsetting(arm_angle_preintake);
             delay(50);
