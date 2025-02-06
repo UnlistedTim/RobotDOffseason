@@ -55,9 +55,16 @@ public class Autosample extends LinearOpMode {
             rbg.amove(0,false); //preload sample move to outake
             rbg.asample_outtake();
             rbg.amove(1,true);// forward to 1st sample for intake;
+            rbg.asample_intake();
+            rbg.amove(2,false);
+            rbg.asample_outtake();
+            rbg.amove(3,true);
             rbg.pidf_index=rbg.pidf_idle;
-            rbg.pidfsetting(rbg.arm_angle_preintake-4);
-
+            rbg.pidfsetting(rbg.arm_angle_preintake-3);
+            telemetry.addData("red", rbg.Claw_color.red());
+            telemetry.addData("green", rbg.Claw_color.green());
+            telemetry.addData("blue", rbg.Claw_color.blue());
+            telemetry.addData("color", rbg.Claw_color.alpha());
             telemetry.addData("x0",rbg.xo);
             telemetry.addData("y0",rbg.yo);
             telemetry.addData("a0",rbg.ao);
@@ -66,21 +73,6 @@ public class Autosample extends LinearOpMode {
             telemetry.addData("angle",rbg.imu.getRobotYawPitchRollAngles().getYaw((AngleUnit.DEGREES)));
             telemetry.update();
             rbg.delay(1000000000);
-            rbg.asample_intake();
-         //   rbg.delay(300);
-//            rbg.updatePoseEstimate();
-//            telemetry.addData("x0",rbg.xo);
-//            telemetry.addData("y0",rbg.yo);
-//            telemetry.addData("a0",rbg.ao);
-//
-//            telemetry.addData("x",rbg.pose.position.x);
-//            telemetry.addData("y",rbg.pose.position.y);
-//            telemetry.addData("a",rbg.imu.getRobotYawPitchRollAngles().getYaw((AngleUnit.DEGREES)));
-//            telemetry.update();
-//            rbg.delay(1000000000);
-            rbg.amove(2,false);
-            rbg.asample_outtake();
-            rbg.amove(3,true);
             rbg.asample_intake();
             rbg.amove(4,false);
             rbg.asample_outtake();

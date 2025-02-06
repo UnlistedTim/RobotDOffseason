@@ -72,7 +72,7 @@ public class TelOp extends LinearOpMode {
                    }
                    break;
 
-               case SAMPLEINTAKE:
+case SAMPLEINTAKE:
                    if(!rbg.flag[rbg.sampleintakeready])
                    {
                        speed_factor=0.4;
@@ -81,12 +81,14 @@ public class TelOp extends LinearOpMode {
                        break;
                    }
 
-                   if(gamepad2.right_bumper&&(rbg.drivinginput<0.01)) {
+                   if(gamepad2.right_bumper&&(rbg.drivinginput<0.1)) {
                        rbg.pidf_index=rbg.pidf_sampleintake;
-                       rbg.sampleintake();
-                       speed_factor=1;
-                       state = State.INTAKEIDLE;
-                       break;
+                       if(rbg.sampleintake());// if wrong color or nothing,
+                       {
+                           speed_factor = 1;
+                           state = State.INTAKEIDLE;
+                           break;
+                       }
                    }
 
                    if(gamepad2.left_bumper) {
@@ -104,7 +106,7 @@ public class TelOp extends LinearOpMode {
                   rbg.intake_claw_rotate(gamepad2.left_stick_x);
                   break;
 
-                case INTAKEIDLE:
+  case INTAKEIDLE:
 //                    if(!rbg.timer(1000,rbg.intake)&&gamepad2.right_bumper){
 //                       rbg.resampleintake();
 //                        state = State.SAMPLEINTAKE;
@@ -146,10 +148,11 @@ public class TelOp extends LinearOpMode {
 
                 break;
 
-               case SPECINTAKE:
+  case SPECINTAKE:
                    if(!rbg.flag[rbg.specintakeready])
                    {
                        rbg.specintake_ready();
+                       speed_factor=0.4;
                        break;
                    }
                    if(gamepad2.right_bumper&&rbg.flag[rbg.claw_lock]) {
@@ -157,6 +160,7 @@ public class TelOp extends LinearOpMode {
                        rbg.pidf_index=rbg.pidf_specin_sampleout;
                        rbg.pre_samplelift(false);
                        state = State.SAMPLELIFT;
+                       speed_factor=1.0;
                        break;
                    }
 
@@ -199,7 +203,7 @@ public class TelOp extends LinearOpMode {
 
                    break;
 
-                case SAMPLELIFT:
+  case SAMPLELIFT:
                    if(!rbg.flag[rbg.sampleliftready]) {
                       if(!rbg.flag[rbg.lift] && gamepad1.right_bumper)  rbg.flag[rbg.lift]=true;
                       rbg.samplelift_ready();
@@ -220,7 +224,9 @@ public class TelOp extends LinearOpMode {
                break;
 
 
-                case SAMPLEOUTTAKE:
+ case SAMPLEOUTTAKE:
+
+
                     if(!rbg.flag[rbg.sampleouttakeready]) {
                         rbg.sampleouttake_ready();
                         break;
@@ -236,7 +242,7 @@ public class TelOp extends LinearOpMode {
                  break;
 
 
-               case SPECOUTTAKE:
+  case SPECOUTTAKE:
                    if(!rbg.flag[rbg.specouttakeready])
                    {
                        rbg.specouttake_ready();
@@ -255,7 +261,9 @@ public class TelOp extends LinearOpMode {
                    break;
 
             }
-            rbg.armrotatePIDF();
+
+
+ rbg.armrotatePIDF();
             if(gamepad1.left_bumper) {
                if (rbg.drop())  state = State.IDLE;
              else state = State.SAMPLEINTAKE;
@@ -285,10 +293,10 @@ public class TelOp extends LinearOpMode {
          //    telemetry.addData("armlinerslide top", rbg.Slide_top.getCurrentPosition());
         //    telemetry.addData("armlinerslide bot", rbg.Slide_bot.getCurrentPosition());
 ////
-//            telemetry.addData("red", rbg.Claw_color.red());
-//            telemetry.addData("green", rbg.Claw_color.green());
-//            telemetry.addData("blue", rbg.Claw_color.blue());
-//            telemetry.addData("color", rbg.Claw_color.argb());
+            telemetry.addData("red", rbg.Claw_color.red());
+            telemetry.addData("green", rbg.Claw_color.green());
+            telemetry.addData("blue", rbg.Claw_color.blue());
+            telemetry.addData("color", rbg.Claw_color.alpha());
 //
 //            telemetry.addData("Arm angle", rbg.arm_angle);
 //
@@ -315,7 +323,7 @@ public class TelOp extends LinearOpMode {
 //            telemetry.addData("Top slide motor current", rbg.Slide_top.getCurrent(CurrentUnit.AMPS));
 //            telemetry.addData("Bot slide motor current", rbg.Slide_bot.getCurrent(CurrentUnit.AMPS));
 //            telemetry.addData("Bar dist", rbg.bar_dist.getDistance(DistanceUnit.MM));
-//            telemetry.update();
+            telemetry.update();
             }
         }
     }
