@@ -159,6 +159,8 @@ public class BaseClass extends MecanumDrive {
 
     public boolean color_check () {
 
+        return Claw_color.green() + Claw_color.green() + Claw_color.green() > 150;
+        
 //        color_det = 0;
 //        if (Claw_color.green() > 300){
 //            color_det = 3; //detect yellow
@@ -174,7 +176,7 @@ public class BaseClass extends MecanumDrive {
 //            if (baseblue) return true; // if blue take
 //            else return false; // if red spit
 //        }
-        return false;
+
     }
     //forhang
     public void hang() {
