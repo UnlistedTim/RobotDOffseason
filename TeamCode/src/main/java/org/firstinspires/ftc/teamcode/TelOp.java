@@ -278,7 +278,7 @@ case SAMPLEINTAKE:
                    rbg.hang();
                 }
 
-                if(!rbg.flag[rbg.vb]&&!rbg.flag[rbg.hang]&&rbg.timer(100000,rbg.start)){
+             if(!rbg.flag[rbg.vb]&&!rbg.flag[rbg.hang]&&rbg.timer(100000,rbg.start)){
                     gamepad2.rumble(0.8,0.8,500);
                     gamepad1.rumble(0.8,0.8,500);
 
@@ -293,37 +293,37 @@ case SAMPLEINTAKE:
          //    telemetry.addData("armlinerslide top", rbg.Slide_top.getCurrentPosition());
         //    telemetry.addData("armlinerslide bot", rbg.Slide_bot.getCurrentPosition());
 ////
-            telemetry.addData("red", rbg.Claw_color.red());
-            telemetry.addData("green", rbg.Claw_color.green());
-            telemetry.addData("blue", rbg.Claw_color.blue());
-            telemetry.addData("color", rbg.Claw_color.alpha());
-//
-//            telemetry.addData("Arm angle", rbg.arm_angle);
-//
-//            rbg.updatePoseEstimate();
-//
-//            telemetry.addData("Pos x" , rbg.pose.position.x);
-//            telemetry.addData("Pos y" , rbg.pose.position.y);
-//            telemetry.addData("imu",rbg.imu.getRobotYawPitchRollAngles().getYaw((AngleUnit.DEGREES)));
+//            telemetry.addData("red", rbg.Claw_color.red());
+//            telemetry.addData("green", rbg.Claw_color.green());
+//            telemetry.addData("blue", rbg.Claw_color.blue());
+//            telemetry.addData("color", rbg.Claw_color.alpha());
 ////
-//            telemetry.addData("Arm right power", rbg.power);
-//
-//            telemetry.addData("Speed factor", speed_factor);
-
-//            telemetry.addData("Preidle",rbg.flag[rbg.preidle]);
-//            telemetry.addData("Idleready",rbg.flag[rbg.idleready]);
+////            telemetry.addData("Arm angle", rbg.arm_angle);
 ////
-//           telemetry.addData("gerbox", rbg.Gearbox.getPosition());
-//            telemetry.addData("K value", rbg.k);
+////            rbg.updatePoseEstimate();
+////
+////            telemetry.addData("Pos x" , rbg.pose.position.x);
+////            telemetry.addData("Pos y" , rbg.pose.position.y);
+////            telemetry.addData("imu",rbg.imu.getRobotYawPitchRollAngles().getYaw((AngleUnit.DEGREES)));
+//////
+////            telemetry.addData("Arm right power", rbg.power);
+////
+////            telemetry.addData("Speed factor", speed_factor);
 //
-//            telemetry.addData("intake_lvel", rbg.intake_level);
-//            telemetry.addData("Right arm motor current", rbg.Arm_right.getCurrent(CurrentUnit.AMPS));
-//            telemetry.addData("Left arm motor current", rbg.Arm_left.getCurrent(CurrentUnit.AMPS));
-//
-//            telemetry.addData("Top slide motor current", rbg.Slide_top.getCurrent(CurrentUnit.AMPS));
-//            telemetry.addData("Bot slide motor current", rbg.Slide_bot.getCurrent(CurrentUnit.AMPS));
-//            telemetry.addData("Bar dist", rbg.bar_dist.getDistance(DistanceUnit.MM));
-            telemetry.update();
+////            telemetry.addData("Preidle",rbg.flag[rbg.preidle]);
+////            telemetry.addData("Idleready",rbg.flag[rbg.idleready]);
+//////
+////           telemetry.addData("gerbox", rbg.Gearbox.getPosition());
+////            telemetry.addData("K value", rbg.k);
+////
+////            telemetry.addData("intake_lvel", rbg.intake_level);
+////            telemetry.addData("Right arm motor current", rbg.Arm_right.getCurrent(CurrentUnit.AMPS));
+////            telemetry.addData("Left arm motor current", rbg.Arm_left.getCurrent(CurrentUnit.AMPS));
+////
+////            telemetry.addData("Top slide motor current", rbg.Slide_top.getCurrent(CurrentUnit.AMPS));
+////            telemetry.addData("Bot slide motor current", rbg.Slide_bot.getCurrent(CurrentUnit.AMPS));
+////            telemetry.addData("Bar dist", rbg.bar_dist.getDistance(DistanceUnit.MM));
+//            telemetry.update();
             }
         }
     }
