@@ -293,10 +293,10 @@ case SAMPLEINTAKE:
          //    telemetry.addData("armlinerslide top", rbg.Slide_top.getCurrentPosition());
         //    telemetry.addData("armlinerslide bot", rbg.Slide_bot.getCurrentPosition());
 ////
-//            telemetry.addData("red", rbg.Claw_color.red());
-//            telemetry.addData("green", rbg.Claw_color.green());
-//            telemetry.addData("blue", rbg.Claw_color.blue());
-//            telemetry.addData("color", rbg.Claw_color.alpha());
+            telemetry.addData("red", rbg.Claw_color.red());
+            telemetry.addData("green", rbg.Claw_color.green());
+            telemetry.addData("blue", rbg.Claw_color.blue());
+            telemetry.addData("color", rbg.Claw_color.alpha());
 ////
 ////            telemetry.addData("Arm angle", rbg.arm_angle);
 ////
@@ -323,7 +323,7 @@ case SAMPLEINTAKE:
 ////            telemetry.addData("Top slide motor current", rbg.Slide_top.getCurrent(CurrentUnit.AMPS));
 ////            telemetry.addData("Bot slide motor current", rbg.Slide_bot.getCurrent(CurrentUnit.AMPS));
 ////            telemetry.addData("Bar dist", rbg.bar_dist.getDistance(DistanceUnit.MM));
-//            telemetry.update();
+            telemetry.update();
             }
         }
     }
