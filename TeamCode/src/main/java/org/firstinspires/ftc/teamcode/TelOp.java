@@ -83,7 +83,7 @@ case SAMPLEINTAKE:
 
                    if(gamepad2.right_bumper&&(rbg.drivinginput<0.1)) {
                        rbg.pidf_index=rbg.pidf_sampleintake;
-                       if(rbg.sampleintake());// if wrong color or nothing,
+                       if(rbg.sampleintake())// if wrong color or nothing,
                        {
                            speed_factor = 1;
                            state = State.INTAKEIDLE;
@@ -279,8 +279,8 @@ case SAMPLEINTAKE:
                 }
 
              if(!rbg.flag[rbg.vb]&&!rbg.flag[rbg.hang]&&rbg.timer(100000,rbg.start)){
-                    gamepad2.rumble(0.8,0.8,500);
-                    gamepad1.rumble(0.8,0.8,500);
+                    gamepad2.rumble(0.9,0.9,500);
+                    gamepad1.rumble(0.9,0.9,500);
 
                     rbg.flag[rbg.vb]=true;
                 }
@@ -293,10 +293,10 @@ case SAMPLEINTAKE:
          //    telemetry.addData("armlinerslide top", rbg.Slide_top.getCurrentPosition());
         //    telemetry.addData("armlinerslide bot", rbg.Slide_bot.getCurrentPosition());
 ////
-            telemetry.addData("red", rbg.Claw_color.red());
-            telemetry.addData("green", rbg.Claw_color.green());
-            telemetry.addData("blue", rbg.Claw_color.blue());
-            telemetry.addData("color", rbg.Claw_color.alpha());
+//            telemetry.addData("red", rbg.Claw_color.red());
+//            telemetry.addData("green", rbg.Claw_color.green());
+//            telemetry.addData("blue", rbg.Claw_color.blue());
+//            telemetry.addData("color", rbg.Claw_color.alpha());
 ////
 ////            telemetry.addData("Arm angle", rbg.arm_angle);
 ////
@@ -323,7 +323,7 @@ case SAMPLEINTAKE:
 ////            telemetry.addData("Top slide motor current", rbg.Slide_top.getCurrent(CurrentUnit.AMPS));
 ////            telemetry.addData("Bot slide motor current", rbg.Slide_bot.getCurrent(CurrentUnit.AMPS));
 ////            telemetry.addData("Bar dist", rbg.bar_dist.getDistance(DistanceUnit.MM));
-            telemetry.update();
+//            telemetry.update();
             }
         }
     }

@@ -37,7 +37,7 @@ public class BaseClass extends MecanumDrive {
     double arm_angle=0;
     double claw_close=0.46,claw_open=0.04;
     double arm_angle_target,arm_pose,arm_pose_target;
-    double arm_angle_idle=-8,arm_angle_preintake=10,arm_arngle_intake=4,arm_angle_sampleouttake=105,arm_angle_specintake=208,arm_angle_specouttake=31;
+    double arm_angle_idle=-8,arm_angle_preintake=10,arm_arngle_intake=5,arm_angle_sampleouttake=105,arm_angle_specintake=208,arm_angle_specouttake=31;
     double aarm_angle_specouttake =32;
     double arot_angle = 0;
     int aslide = 0;
@@ -159,7 +159,7 @@ public class BaseClass extends MecanumDrive {
 
     public boolean color_check () {
 
-        return Claw_color.green() + Claw_color.green() + Claw_color.green() > 150;
+        return Claw_color.green() + Claw_color.green() + Claw_color.green() > 120;
 
 //        color_det = 0;
 //        if (Claw_color.green() > 300){
@@ -184,7 +184,7 @@ public class BaseClass extends MecanumDrive {
 
         move(0.35);
         linearslideTq(3300,0.98);
-        pidfsetting(54); // Hit arm with low rung //1500
+        pidfsetting(57); // Hit arm with low rung //1500
 
         while (arm_angle_update()<46 && Op.opModeIsActive())
         {delay(25);}
@@ -742,17 +742,19 @@ public class BaseClass extends MecanumDrive {
 
     public boolean sampleintake() {
        stop_drive();
+
+       linearslide(slidePos + 20, slidev2);
        pidf_index=pidf_sampleintake;
        pidfsetting(arm_arngle_intake);
        delay(180); // 500;
         Claw.setPosition(claw_close);
-        delay(300);
+        delay(250);
         flag[claw_lock]=true;
 
        Left_handle.setPosition(lefthandle_idle);
        Right_handle.setPosition(righthandle_idle);
 
-       delay(50);
+       delay(220);
         if(!color_check())
         {
             Claw.setPosition(claw_open);
@@ -1118,7 +1120,7 @@ public class BaseClass extends MecanumDrive {
 
             pidftable[ pidf_specout_specin][pp] = 0.00025; pidftable[pidf_specout_specin][ii]=0.00001;  pidftable[pidf_specout_specin][dd]=0;
 
-           pidftable[pidf_sampleintake][pp]=0.002;  pidftable[pidf_outtake_spec][ii]=0;  pidftable[pidf_outtake_spec][dd]=0.00001;
+           pidftable[pidf_sampleintake][pp]=0.002;  pidftable[pidf_outtake_spec][ii]=0;  pidftable[pidf_outtake_spec][dd]=0.000013;
            pidftable[pidf_specintake][pp]=0.002;  pidftable[pidf_specintake][ii]=0.00015;  pidftable[pidf_specintake][dd]=0.00008; // 0.00008
            pidftable[pidf_aspecintake][pp]=0.0017;  pidftable[pidf_aspecintake][ii]=0.00015;  pidftable[pidf_aspecintake][dd]=0.00008; // 0.00008
            pidftable[pidf_specouttake][pp]=0.00095;  pidftable[pidf_specouttake][ii]=0.00002;  pidftable[pidf_specouttake][dd]=0.000;
@@ -1482,8 +1484,8 @@ public class BaseClass extends MecanumDrive {
 
         if(tstep==1) {// for auto spec
             flag[first]=true;
-            Left_handle.setPosition(lefthandle_intake);
-            Right_handle.setPosition(righthandle_intake);
+//            Left_handle.setPosition(lefthandle_intake);
+//            Right_handle.setPosition(righthandle_intake);
             return;
         }
 
