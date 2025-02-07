@@ -141,7 +141,7 @@ public class PedroAutoSamples extends OpMode {
     private final Pose startPose = new Pose(0, 0, Math.toRadians(0));
 
     /** Scoring Pose of our robot. It is facing the submersible at a -45 degree (315 degree) angle. */
-    private final Pose scorePose = new Pose(2, 8.5, Math.toRadians(-45)); // 9, 132
+    private final Pose scorePose = new Pose(8.5, 3, Math.toRadians(-45)); // 9, 132
 
     private final Pose scoreControlPose = new Pose(21,121,Math.toRadians(315));
 
@@ -242,7 +242,6 @@ public class PedroAutoSamples extends OpMode {
     public void autonomousPathUpdate() {
         switch (pathState) {
             case 0:
-
                 follower.followPath(scorePreload,true);
 
                 setPathState(8);
@@ -344,9 +343,6 @@ public class PedroAutoSamples extends OpMode {
 //                    claw.closeClaw();
 //
 //                    /* Set the state to a Case we won't use or define, so it just stops running an new paths */
-
-                    delay(1000000000);
-                    setPathState(-1);
                     break;
 
 
