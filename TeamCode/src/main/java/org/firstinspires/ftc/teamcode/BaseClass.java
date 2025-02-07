@@ -159,7 +159,7 @@ public class BaseClass extends MecanumDrive {
 
     public boolean color_check () {
 
-        return Claw_color.green() + Claw_color.green() + Claw_color.green() > 120;
+        return (Claw_color.green() + Claw_color.green() + Claw_color.green()) > 120;
 
 //        color_det = 0;
 //        if (Claw_color.green() > 300){
@@ -837,10 +837,10 @@ public class BaseClass extends MecanumDrive {
     public void autospec_intake() {
         double last_x = 11;
         double x_delta = -1;
-        move(-0.2);
-        delay(100);//100
+        move(-0.23);
+        delay(150);//100
         Claw.setPosition(claw_open);
-        while (Op.opModeIsActive() && (Math.abs(x_delta) <0.1)){//-0.09
+        while (Op.opModeIsActive() && (Math.abs(x_delta) >0.1)){//-0.09
             delay(25);
             updatePoseEstimate();
             x_delta = pose.position.x- last_x;
@@ -1170,7 +1170,7 @@ public class BaseClass extends MecanumDrive {
            afmoveconfig[0] [strafemax]=0.85;
            afmoveconfig[0] [turnmax]=0.2;
            afmoveconfig[0] [xdis]=14;
-           afmoveconfig[0] [ydis]=-33;
+           afmoveconfig[0] [ydis]=-32;
            afmoveconfig[0] [adis]=0;
            afmoveconfig[0] [time]=2000;
 
