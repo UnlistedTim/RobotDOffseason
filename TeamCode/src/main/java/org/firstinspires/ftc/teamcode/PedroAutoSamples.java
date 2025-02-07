@@ -14,18 +14,22 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.LED;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.pedroPathing.follower.*;
 import org.firstinspires.ftc.teamcode.pedroPathing.localization.Pose;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.BezierCurve;
@@ -67,19 +71,40 @@ public class PedroAutoSamples extends OpMode {
 
     double pid ,power, ff;
 
-    int rotatePos,slidePos,absrotategap;
+    int rotatePos,slidePos;
 
     public  DcMotorEx Arm_right, Arm_left, Slide_top,Slide_bot;
-    public  Servo Intake_rot,Intake_handle, Gearbox;
-    public DigitalChannel Arm_touch;
-    public CRServo Intake;
-    public VoltageSensor voltageSensor;
-    public ColorSensor Intake_color;
 
+    public VoltageSensor voltageSensor;
+
+    public  DcMotorEx leftFront, leftBack, rightBack, rightFront;
+
+    public  Servo Left_handle,Right_handle, Claw, Gearbox;
+    public AnalogInput Arm_encoder;
+    public ColorSensor Claw_color;
     public DistanceSensor bar_dist;
     public DistanceSensor basket_dist;
+    public IMU imu;
+    int pidf_sampleouttake=1;
 
 
+    double claw_close=0.46,claw_open=0.04;
+    double arm_angle_target,arm_pose,arm_pose_target;
+    double arm_angle_idle=-8,arm_angle_preintake=10,arm_arngle_intake=5,arm_angle_sampleouttake=105,arm_angle_specintake=208,arm_angle_specouttake=31;
+    double aarm_angle_specouttake =32;
+    double arot_angle = 0;
+    final  double arm_angle_offset=38;
+    double arm_angle;
+    int aslide = 0,pidf_index;
+    double lefthandle_idle=0.46,lefthandle_intake=0.18,lefthandle_left45=0.14,lefthandle_left90=0.08,lefthandle_right45=0.22,lefthandle_right90=0.28;
+    double lefthandle_sampleouttake=0.64,lefthandle_specintake=0.61,lefthandle_specouttake=0.64,lefthandle_start=0.12;
+    int intake_rotate_index=0;
+
+    double righthandle_idle=0.54,righthandle_intake=0.82,righthandle_left45=0.78,righthandle_left90=0.72,righthandle_right45=0.86,righthandle_right90=0.92;
+    double righthandle_sampleouttake=0.36,righthandle_specintake=0.77,righthandle_specouttake=0.36,righthandle_start=0.88;
+
+    int slide_idle=200,slide_preintake=400,slide_sampleouttake=1800,slide_specintake=0,slide_specouttake=700,slide_intakemax=1250;
+    double[][] pidftablep= new double[40][3];
 
     int pidf_intake_up=0,pidf_intake_down=1, pidf_outtake_down=2,pidf_outtake_up=3, pidf_intake_idle = 4,
             pidf_hang_up = 5, pidf_hang2 = 6, pidf_hang3 = 7, pidf_outtake_spec = 8,
@@ -89,16 +114,6 @@ public class PedroAutoSamples extends OpMode {
     int rotateTarget=0;
 
 
-
-
-
-    public LED front_led_red;
-    public LED front_led_green;
-
-    public DcMotorEx leftFront;
-    public DcMotorEx leftBack;
-    public DcMotorEx rightFront;
-    public DcMotorEx rightBack;
 
     PIDController controller;
 
@@ -123,10 +138,10 @@ public class PedroAutoSamples extends OpMode {
      * Lets assume the Robot is facing the human player and we want to score in the bucket */
 
     /** Start Pose of our robot */
-    private final Pose startPose = new Pose(8, 110, Math.toRadians(0));
+    private final Pose startPose = new Pose(0, 0, Math.toRadians(0));
 
     /** Scoring Pose of our robot. It is facing the submersible at a -45 degree (315 degree) angle. */
-    private final Pose scorePose = new Pose(19, 123, Math.toRadians(315)); // 9, 132
+    private final Pose scorePose = new Pose(2, 8.5, Math.toRadians(-45)); // 9, 132
 
     private final Pose scoreControlPose = new Pose(21,121,Math.toRadians(315));
 
@@ -148,7 +163,7 @@ public class PedroAutoSamples extends OpMode {
 
     /* These are our Paths and PathChains that we will define in buildPaths() */
     private Path scorePreload, park;
-    private PathChain grabPickup1, grabPickup2, grabPickup3, scorePickup1, scorePickup2, scorePickup3;
+    private PathChain scordrop1,Pickup1, grabPickup2, grabPickup3, scorePickup1, scorePickup2, scorePickup3;
 
     /** Build the paths for the auto (adds, for example, constant/linear headings while doing paths)
      * It is necessary to do this so that all the paths are built before the auto starts. **/
@@ -170,16 +185,16 @@ public class PedroAutoSamples extends OpMode {
          * Here is a explanation of the difference between Paths and PathChains <https://pedropathing.com/commonissues/pathtopathchain.html> */
 
         /* This is our scorePreload path. We are using a BezierLine, which is a straight line. */
-        scorePreload = new Path(new BezierCurve(new Point(startPose), new Point(scoreControlPose), new Point(scorePose)));
+        scorePreload = new Path(new BezierLine(new Point(startPose),  new Point(scorePose)));
         scorePreload.setLinearHeadingInterpolation(startPose.getHeading(), scorePose.getHeading());
 
         /* Here is an example for Constant Interpolation
         scorePreload.setConstantInterpolation(startPose.getHeading()); */
 
         /* This is our grabPickup1 PathChain. We are using a single path with a BezierLine, which is a straight line. */
-        grabPickup1 = follower.pathBuilder()
-                .addPath(new BezierLine(new Point(scorePose), new Point(pickup1Pose)))
-                .setLinearHeadingInterpolation(scorePose.getHeading(), pickup1Pose.getHeading())
+        scordrop1 = follower.pathBuilder()
+                .addPath(new BezierLine(new Point(startPose), new Point(scorePose)))
+                .setLinearHeadingInterpolation(startPose.getHeading(), scorePose.getHeading())
                 .build();
 
         /* This is our scorePickup1 PathChain. We are using a single path with a BezierLine, which is a straight line. */
@@ -189,10 +204,7 @@ public class PedroAutoSamples extends OpMode {
                 .build();
 
         /* This is our grabPickup2 PathChain. We are using a single path with a BezierLine, which is a straight line. */
-        grabPickup2 = follower.pathBuilder()
-                .addPath(new BezierLine(new Point(scorePose), new Point(pickup2Pose)))
-                .setLinearHeadingInterpolation(scorePose.getHeading(), pickup2Pose.getHeading())
-                .build();
+
 
         /* This is our scorePickup2 PathChain. We are using a single path with a BezierLine, which is a straight line. */
         scorePickup2 = follower.pathBuilder()
@@ -201,10 +213,7 @@ public class PedroAutoSamples extends OpMode {
                 .build();
 
         /* This is our grabPickup3 PathChain. We are using a single path with a BezierLine, which is a straight line. */
-        grabPickup3 = follower.pathBuilder()
-                .addPath(new BezierLine(new Point(scorePose), new Point(pickup3Pose)))
-                .setLinearHeadingInterpolation(scorePose.getHeading(), pickup3Pose.getHeading())
-                .build();
+
 
         /* This is our scorePickup3 PathChain. We are using a single path with a BezierLine, which is a straight line. */
         scorePickup3 = follower.pathBuilder()
@@ -225,51 +234,7 @@ public class PedroAutoSamples extends OpMode {
 
     }
 
-    public void pedrosample_preouttake() {
 
-
-        pidfsetting(2325+50, pidf_outtake_up);
-
-
-
-    }
-
-    public void pedrosample_outtake() {
-        move(0);
-        Intake_handle.setPosition(0);
-        Intake_rot.setPosition(0.55);
-        pidfsetting(2325+50, pidf_outtake_up2);
-        linearslide(2470-20, 2000);
-        delay(2000);
-
-        Intake.setPower(-0.26);//-0.28
-        delay(300);
-        Intake.setPower(0);
-        // delay(100);
-        Intake_handle.setPosition(0.3);// lift the handle for a temp  higher locaiton.
-        delay(50);
-        move(0.25);
-        delay(100);
-        linearslide(400, 2500);
-        delay(200);
-        move(0);
-        Intake_handle.setPosition(0.37);
-        delay(200);
-       // linearslide(-10, 1500);
-        //delay(200);
-        pidfsetting(325-250 ,pidf_outtake_down);
-
-
-    }
-
-
-    public void move(double power) {
-       leftFront .setPower(power);
-        rightFront.setPower(power);
-        leftBack.setPower(power);
-        rightBack.setPower(power);
-    }
-    
 
     /** This switch is called continuously and runs the pathing, at certain points, it triggers the action state.
      * Everytime the switch changes case, it will reset the timer. (This is because of the setPathState() method)
@@ -277,9 +242,10 @@ public class PedroAutoSamples extends OpMode {
     public void autonomousPathUpdate() {
         switch (pathState) {
             case 0:
-                pedrosample_preouttake();
+
                 follower.followPath(scorePreload,true);
-                setPathState(1);
+
+                setPathState(8);
                 break;
             case 1:
 
@@ -297,7 +263,7 @@ public class PedroAutoSamples extends OpMode {
                     pedrosample_outtake();
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
                     if (Slide_top.getCurrentPosition() < 600 && -Arm_right.getCurrentPosition() < 600){
-                        follower.followPath(grabPickup1,true);
+                        //follower.followPath(grabPickup1,true);
                         setPathState(2);
                         return;
                     }
@@ -370,7 +336,7 @@ public class PedroAutoSamples extends OpMode {
 //                    setPathState(8);
 //                }
 //                break;
-//            case 8:
+            case 8:
 //                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
 //                if(follower.getPose().getX() > (parkPose.getX() - 1) && follower.getPose().getY() > (parkPose.getY() - 1)) {
 //                    /* Put the claw in position to get a level 1 ascent */
@@ -378,9 +344,12 @@ public class PedroAutoSamples extends OpMode {
 //                    claw.closeClaw();
 //
 //                    /* Set the state to a Case we won't use or define, so it just stops running an new paths */
-//                    setPathState(-1);
-//                }
-//            break;
+
+                    delay(1000000000);
+                    setPathState(-1);
+                    break;
+
+
         }
     }
 
@@ -418,22 +387,22 @@ public class PedroAutoSamples extends OpMode {
         armrotatePIDF();
     }
 
-    public void armrotatePIDF()
-
-    {
-        rotatePos = -Arm_right.getCurrentPosition();
-        slidePos = Slide_top.getCurrentPosition();
-        controller.setPID(p,i,d);
-        pid = controller.calculate(rotatePos,rotateTarget);
-        ff = Math.cos(Math.toRadians(rotatePos/ticks_in_degree +rotateStartangle)) * (f + k*slidePos) ;// target
-        power = pid + ff;
-
-//        if (power > 1.0) power = 0.98;
-//        if (power < -1.0) power = -0.98;
-        Arm_left.setPower(-power);
-        Arm_right.setPower(power);// to be changed director.
-
-    }
+//    public void armrotatePIDF()
+//
+//    {
+//        rotatePos = -Arm_right.getCurrentPosition();
+//        slidePos = Slide_top.getCurrentPosition();
+//        controller.setPID(p,i,d);
+//        pid = controller.calculate(rotatePos,rotateTarget);
+//        ff = Math.cos(Math.toRadians(rotatePos/ticks_in_degree +rotateStartangle)) * (f + k*slidePos) ;// target
+//        power = pid + ff;
+//
+////        if (power > 1.0) power = 0.98;
+////        if (power < -1.0) power = -0.98;
+//        Arm_left.setPower(-power);
+//        Arm_right.setPower(power);// to be changed director.
+//
+//    }
 
     /** This is the main loop of the OpMode, it will run repeatedly after clicking "Play". **/
     @Override
@@ -458,136 +427,19 @@ public class PedroAutoSamples extends OpMode {
     @Override
     public void init() {
 
+        IniHardware(hardwareMap);
         follower = new Follower(hardwareMap);
-
-
-        pidftable[pidf_intake_up][ppp]=0.0024;  pidftable[pidf_intake_up][ii]=0;  pidftable[pidf_intake_up][dd]=0.0001;
-        pidftable[pidf_intake_idle][ppp]=0.003;  pidftable[pidf_intake_idle][ii]=0;  pidftable[pidf_intake_idle][dd]=0.00008;
-        pidftable[pidf_intake_down][ppp]=0.002;  pidftable[pidf_intake_down][ii]=0;  pidftable[pidf_intake_down][dd]=0.00005;
-        pidftable[pidf_outtake_up][ppp]=0.00037;  pidftable[pidf_outtake_up][ii]=0;  pidftable[pidf_outtake_up][dd]=0.000023;//
-        pidftable[pidf_outtake_up2][ppp]=0.00075;  pidftable[pidf_outtake_up2][ii]=0.00012;  pidftable[pidf_outtake_up2][dd]=0.0001;//0.0025
-
-        pidftable[pidf_outtake_down][ppp]=0.00035;  pidftable[pidf_outtake_down][ii]=0;  pidftable[pidf_outtake_down][dd]=0.00012;
-
-
-
-
-        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
-        leftBack = hardwareMap.get(DcMotorEx.class, "leftBack");
-        rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
-        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
-
-
-//        RevHubOrientationOnRobot.LogoFacingDirection logoFacingDirection =
-//                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT;
-//        RevHubOrientationOnRobot.UsbFacingDirection usbFacingDirection =
-//                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
-
-
-
-        Arm_right = hardwareMap.get(DcMotorEx.class, "Arm_right");
-        Arm_left = hardwareMap.get(DcMotorEx.class, "Arm_left");
-        Slide_bot = hardwareMap.get(DcMotorEx.class, "Slide_bot");
-        Slide_top = hardwareMap.get(DcMotorEx.class, "Slide_top");
-
-        front_led_green = hardwareMap.get(LED.class, "front_led_green");
-        front_led_red = hardwareMap.get(LED.class, "front_led_red");
-        rear_led_green = hardwareMap.get(LED.class, "rear_led_green");
-        rear_led_red = hardwareMap.get(LED.class, "rear_led_red");
-
-//        arm_grab = hardwareMap.get(Servo.class, "arm_grab");
-        Intake_rot = hardwareMap.get(Servo.class, "Intake_rot");
-        Intake = hardwareMap.get(CRServo.class, "Intake");
-        Intake_handle = hardwareMap.get(Servo.class, "Intake_handle");
-        Gearbox = hardwareMap.get(Servo.class, "Gearbox");
-
-//        Intake_color = hardwareMap.get(ColorSensor.class, "Intake_color");
-        Arm_touch = hardwareMap.get(DigitalChannel.class,"Arm_touch");
-
-        basket_dist = hardwareMap.get(DistanceSensor.class,"basket_dist");
-        bar_dist = hardwareMap.get(DistanceSensor.class,"bar_dist");
-
-//        Webcam1=hardwareMap.get(WebcamName.class, "Webcam 1");
-
-
-
-
-
-        Slide_bot.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        Slide_top.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-
-        voltageSensor = hardwareMap.voltageSensor.iterator().next();
-
-
-        Arm_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        Arm_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        Arm_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        Arm_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-
-        Slide_bot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        Slide_bot.setTargetPosition(0);
-        Slide_bot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        Slide_bot.setVelocity(0);
-
-        Slide_top.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        Slide_top.setTargetPosition(0);
-        Slide_top.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        Slide_top.setVelocity(0);
         pathTimer = new Timer();
         opmodeTimer = new Timer();
-
         opmodeTimer.resetTimer();
-
         controller = new PIDController(p, i, d);
-        Intake_rot.setPosition(0.55);
-        Gearbox.setPosition(0);
-
-
-
-
-       // s0.0016
-
-
-
         follower.setStartingPose(startPose);
-
         buildPaths();
-
         telemetry.update();
         pause(500);
-        Arm_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        Arm_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        Arm_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        Arm_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        pause(500);
-
         telemetry.addLine("Ready for right bumper");
         telemetry.update();
-//        while(true)
-//        {
-//            telemetry.addLine("In this loop");
-//            telemetry.update();
-//            pause(20);
-//            if(gamepad1.right_bumper) break;
-//        }
-//        Slide_bot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        Slide_bot.setTargetPosition(0);
-//        Slide_bot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        Slide_bot.setVelocity(0);
-//
-//        Slide_top.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        Slide_top.setTargetPosition(0);
-//        Slide_top.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        Slide_top.setVelocity(0);
-//        pause(500);
-//        pidfsetting(-Arm_right.getCurrentPosition(),pidf_intake_idle);
-//        delay(500);
-//        telemetry.addLine("Done");
-//        telemetry.update();
 
-        // Set the claw to positions for init
     }
 
     /** This method is called continuously after Init while waiting for "play". **/
@@ -605,23 +457,10 @@ public class PedroAutoSamples extends OpMode {
 
         if (gamepad1.right_bumper){
 
-            Intake_handle.setPosition(0.3);
-            Intake_rot.setPosition(0.55);
-            Slide_bot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            Slide_bot.setTargetPosition(0);
-            Slide_bot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            Slide_bot.setVelocity(0);
 
-            Slide_top.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            Slide_top.setTargetPosition(0);
-            Slide_top.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            Slide_top.setVelocity(0);
-            pause(300);
-            pidfsetting((-Arm_right.getCurrentPosition()),pidf_intake_idle);
-            delay(500);
+            Claw.setPosition(claw_close);
             telemetry.addLine("Done");
             telemetry.update();
-
 
         }
 
@@ -629,9 +468,75 @@ public class PedroAutoSamples extends OpMode {
 
     }
 
+    public void asample_outtake() {
+        delay(10000000);
+        pidf_index=pidf_sampleouttake;
+        pidfsetting(arm_angle_sampleouttake);
+        linearslide(slide_sampleouttake, 2500);
+        Left_handle.setPosition(lefthandle_sampleouttake);
+        Right_handle.setPosition(righthandle_sampleouttake);
+        delay(800);
+        move(-0.24);//-0.18
+        // delay(40);2
+       // timer(0, 4);
+        while (basket_dist.getDistance(DistanceUnit.MM) > 180  ) {//target 340// todo&& !timer(2000, 4
+
+            armrotatePIDF();
+        }
+        stop_drive();
+        Claw.setPosition(claw_open);
+        delay(150);
+        Left_handle.setPosition(lefthandle_idle);
+        Right_handle.setPosition(righthandle_idle);
+        delay(50);
+        move(0.4);
+        delay(150);
+        linearslide(slide_preintake, 2500);
+        delay(200);
+        stop_drive();
+
+//        if(flag[last]){
+//            linearslide(0, slidev2);
+//
+//        }
+        arot_angle=arm_angle_preintake;
+//        pidf_index=pidf_sampleout_idle;
+//
+
+    }
+
+
+    public void preouttake() {
 
 
 
+
+
+
+    }
+
+    public void pedrosample_outtake() {
+        move(0);
+
+        pidfsetting(2325+50, pidf_outtake_up2);
+        linearslide(2470-20, 2000);
+        delay(2000);
+
+        delay(200);
+        // linearslide(-10, 1500);
+        //delay(200);
+        pidfsetting(325-250 ,pidf_outtake_down);
+
+
+    }
+
+
+    public void move(double power) {
+        leftFront .setPower(power);
+        rightFront.setPower(power);
+        leftBack.setPower(power);
+        rightBack.setPower(power);
+    }
 
 
     /** This method is called once at the start of the OpMode.
@@ -645,5 +550,158 @@ public class PedroAutoSamples extends OpMode {
     /** We do not use this because everything should automatically disable **/
     @Override
     public void stop() {
+    }
+
+
+    public void armrotatePIDF() {
+
+        slidePos = Slide_top.getCurrentPosition();
+        arm_pose= arm_angle*22.75556;
+        pid = controller.calculate( arm_pose,arm_pose_target);
+        ff = Math.cos(Math.toRadians(arm_angle)) * (f + k *slidePos) ;
+        power = pid + ff;
+        Arm_left.setPower(-power);
+        Arm_right.setPower(power);
+    }
+
+    public void stop_drive() {
+        leftFront.setPower(0);
+        rightFront.setPower(0);
+        leftBack.setPower(0);
+        rightBack.setPower(0);
+    }
+
+
+    public void pidfsetting(double target)
+
+    {
+        p = pidftable[pidf_index][ppp];
+        i = pidftable[pidf_index][ii];
+        d = pidftable[pidf_index][dd];
+
+        arm_angle_target=target;
+        arm_pose_target=target*22.755556;
+        controller.setPID(p,i,d);
+        armrotatePIDF();
+    }
+
+    public double  arm_angle_update()
+
+
+    {
+        arm_angle = 360 - ((Arm_encoder.getVoltage() / 3.2 * 360 + arm_angle_offset) % 360);
+        if ( arm_angle > 330) arm_angle-=360;
+        return arm_angle;
+
+    }
+
+    public void IniHardware(HardwareMap hardwareMap) {
+
+
+        RevHubOrientationOnRobot.LogoFacingDirection logoFacingDirection =
+                RevHubOrientationOnRobot.LogoFacingDirection.LEFT;
+        RevHubOrientationOnRobot.UsbFacingDirection usbFacingDirection =
+                RevHubOrientationOnRobot.UsbFacingDirection.UP;
+
+        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
+        leftBack = hardwareMap.get(DcMotorEx.class, "leftBack");
+        rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
+        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightBack.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
+
+
+//        RevHubOrientationOnRobot.LogoFacingDirection logoFacingDirection =
+//                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT;
+//        RevHubOrientationOnRobot.UsbFacingDirection usbFacingDirection =
+//                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
+
+
+        Arm_right = hardwareMap.get(DcMotorEx.class, "Arm_right");
+        Arm_left = hardwareMap.get(DcMotorEx.class, "Arm_left");
+        Slide_bot = hardwareMap.get(DcMotorEx.class, "Slide_bot");
+        Slide_top = hardwareMap.get(DcMotorEx.class, "Slide_top");
+
+        //Make the encoder value be postive
+
+
+
+
+
+
+
+
+//        front_led_green = hardwareMap.get(LED.class, "front_led_green");
+//        front_led_red = hardwareMap.get(LED.class, "front_led_red");
+//        rear_led_green = hardwareMap.get(LED.class, "rear_led_green");
+//        rear_led_red = hardwareMap.get(LED.class, "rear_led_red");
+        Right_handle = hardwareMap.get(Servo.class, "Right_handle");
+        Claw = hardwareMap.get(Servo.class, "Claw");
+        Left_handle = hardwareMap.get(Servo.class, "Left_handle");
+
+//        arm_grab = hardwareMap.get(Servo.class, "arm_grab");
+        //  Intake_rot = hardwareMap.get(Servo.class, "Intake_rot");
+        //  Intake = hardwareMap.get(CRServo.class, "Intake");
+        //  Intake_handle = hardwareMap.get(Servo.class, "Intake_handle");
+        Gearbox = hardwareMap.get(Servo.class, "Gearbox");
+
+        Claw_color=hardwareMap.get(ColorSensor.class, "Claw_color");
+
+//        Intake_color = hardwareMap.get(ColorSensor.class, "Intake_color");
+        Arm_encoder= hardwareMap.get(AnalogInput.class, "Arm_encoder");
+
+        basket_dist = hardwareMap.get(DistanceSensor.class,"basket_dist");
+        bar_dist = hardwareMap.get(DistanceSensor.class,"bar_dist");
+
+//        Webcam1=hardwareMap.get(WebcamName.class, "Webcam 1");
+
+
+
+
+
+        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        Slide_bot.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        Slide_top.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+//        Back_led.setPwmRange(500,250);
+
+        Slide_bot.setDirection(DcMotorSimple.Direction.REVERSE);
+        Slide_top.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        imu = hardwareMap.get(IMU.class, "imu");
+        IMU.Parameters imuparameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
+                RevHubOrientationOnRobot.UsbFacingDirection.UP));
+        imu.initialize(imuparameters);
+
+        voltageSensor = hardwareMap.voltageSensor.iterator().next();
+
+
+        Arm_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        Arm_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        Arm_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        Arm_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+
+
+        Slide_bot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        Slide_bot.setTargetPosition(0);
+        Slide_bot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        Slide_bot.setVelocity(0);
+
+        Slide_top.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        Slide_top.setTargetPosition(0);
+        Slide_top.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        Slide_top.setVelocity(0);
+
+
+
+
     }
 }

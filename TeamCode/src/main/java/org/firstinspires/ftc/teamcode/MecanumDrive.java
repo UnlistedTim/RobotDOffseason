@@ -125,7 +125,7 @@ public  class MecanumDrive {
     public  DcMotorEx Arm_right, Arm_left, Slide_top,Slide_bot;
     public  Servo Left_handle,Right_handle, Claw, Gearbox;
     public AnalogInput Arm_encoder;
-    public DigitalChannel Arm_touch;
+   // public DigitalChannel Arm_touch;
     //public CRServo Intake;
     public  VoltageSensor voltageSensor;
     public ColorSensor Claw_color;
@@ -565,26 +565,18 @@ public  class MecanumDrive {
 
 
 
-
-//        front_led_green = hardwareMap.get(LED.class, "front_led_green");
-//        front_led_red = hardwareMap.get(LED.class, "front_led_red");
-//        rear_led_green = hardwareMap.get(LED.class, "rear_led_green");
-//        rear_led_red = hardwareMap.get(LED.class, "rear_led_red");
         Right_handle = hardwareMap.get(Servo.class, "Right_handle");
         Claw = hardwareMap.get(Servo.class, "Claw");
         Left_handle = hardwareMap.get(Servo.class, "Left_handle");
 
-//        arm_grab = hardwareMap.get(Servo.class, "arm_grab");
-      //  Intake_rot = hardwareMap.get(Servo.class, "Intake_rot");
-      //  Intake = hardwareMap.get(CRServo.class, "Intake");
-      //  Intake_handle = hardwareMap.get(Servo.class, "Intake_handle");
+//
         Gearbox = hardwareMap.get(Servo.class, "Gearbox");
 
         Claw_color=hardwareMap.get(ColorSensor.class, "Claw_color");
 
 //        Intake_color = hardwareMap.get(ColorSensor.class, "Intake_color");
         Arm_encoder= hardwareMap.get(AnalogInput.class, "Arm_encoder");
-        Arm_touch = hardwareMap.get(DigitalChannel.class,"Arm_touch");
+        //Arm_touch = hardwareMap.get(DigitalChannel.class,"Arm_touch");
         basket_dist = hardwareMap.get(DistanceSensor.class,"basket_dist");
         bar_dist = hardwareMap.get(DistanceSensor.class,"bar_dist");
 
