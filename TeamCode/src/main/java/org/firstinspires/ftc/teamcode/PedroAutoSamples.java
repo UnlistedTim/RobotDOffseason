@@ -28,6 +28,7 @@ import com.qualcomm.robotcore.hardware.LED;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.pedroPathing.follower.*;
@@ -53,9 +54,9 @@ import java.security.KeyStore;
 
 @Autonomous(name = "PedroAutoSamples", group = "A")
 @Config
-public class PedroAutoSamples extends OpMode {
+public class PedroAutoSamples extends OpMode  {
 
-    public double[][] pidftable = new double[20][3];
+    public double[][] ptable = new double[40][3];
 
     private Follower follower;
     private Timer pathTimer, actionTimer, opmodeTimer;
@@ -63,11 +64,13 @@ public class PedroAutoSamples extends OpMode {
     /** This is the variable where we store the state of our auto.
      * It is used by the pathUpdate method. */
     private int pathState;
-    Pose2d pp = new Pose2d(0, 0, 0);
+  //  Pose2d pp = new Pose2d(0, 0, 0);
 
-    int ppp=0,ii=1,dd=2;
+    int pp=0,ii=1,dd=2;
 
     BaseClass rbg;
+    public OpMode op;
+
 
     double pid ,power, ff;
 
@@ -85,7 +88,9 @@ public class PedroAutoSamples extends OpMode {
     public DistanceSensor bar_dist;
     public DistanceSensor basket_dist;
     public IMU imu;
-    int pidf_sampleouttake=1;
+    public ElapsedTime runtime = new ElapsedTime();
+    int sampleouttake=1, sampleintake=2,idle=3;
+
 
 
     double claw_close=0.46,claw_open=0.04;
@@ -95,7 +100,7 @@ public class PedroAutoSamples extends OpMode {
     double arot_angle = 0;
     final  double arm_angle_offset=38;
     double arm_angle;
-    int aslide = 0,pidf_index;
+    int aslide = 0,pidf_index ,step=0;
     double lefthandle_idle=0.46,lefthandle_intake=0.18,lefthandle_left45=0.14,lefthandle_left90=0.08,lefthandle_right45=0.22,lefthandle_right90=0.28;
     double lefthandle_sampleouttake=0.64,lefthandle_specintake=0.61,lefthandle_specouttake=0.64,lefthandle_start=0.12;
     int intake_rotate_index=0;
@@ -104,12 +109,6 @@ public class PedroAutoSamples extends OpMode {
     double righthandle_sampleouttake=0.36,righthandle_specintake=0.77,righthandle_specouttake=0.36,righthandle_start=0.88;
 
     int slide_idle=200,slide_preintake=400,slide_sampleouttake=1800,slide_specintake=0,slide_specouttake=700,slide_intakemax=1250;
-    double[][] pidftablep= new double[40][3];
-
-    int pidf_intake_up=0,pidf_intake_down=1, pidf_outtake_down=2,pidf_outtake_up=3, pidf_intake_idle = 4,
-            pidf_hang_up = 5, pidf_hang2 = 6, pidf_hang3 = 7, pidf_outtake_spec = 8,
-            pidf_outtake_spec_down = 9, pidf_outtake_spec1 = 10 , pidf_outtake_up2 = 11,
-            pidf_intake_spec = 12, pidf_intake_spec2 = 13,pidf_intake_aspec=14,pidf_aspec_outtake=15,pidf_outtake_aspec_down=16,pidf_aintake_down=17, pidf_hang4 = 18,pidf_aouttake_up2;
 
     int rotateTarget=0;
 
@@ -125,6 +124,12 @@ public class PedroAutoSamples extends OpMode {
     double rotateStartangle=0 ;
 
     double p = 0.0000, i = 0, d = 0.000 ,f = 0.12,k = 0.000035; //0.000035
+    final int force = 15,first=16, hang0 = 17,color_check=18,arot=19,preidle=20,idleready=21, spec = 22,specouttaketime=23, pre_samp = 24,presampleintake=25,sampleintakeready=26;
+    final int preintakeidle=27,intakeidleready=28,presampleouttake=29,sampleouttakeready=30,presamplelift=31,sampleliftready=32,prespecintake=33,specintakeready=34,placement=35,prespecouttake=36,specouttakeready=37;
+
+    int   idle_sampleout=21,sampleout_idle=22;
+    double[] stoptime = new double[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0,0};
+
 
 
 
@@ -162,8 +167,8 @@ public class PedroAutoSamples extends OpMode {
     private final Pose parkControlPose = new Pose(60, 98, Math.toRadians(90));
 
     /* These are our Paths and PathChains that we will define in buildPaths() */
-    private Path scorePreload, park;
-    private PathChain scordrop1,Pickup1, grabPickup2, grabPickup3, scorePickup1, scorePickup2, scorePickup3;
+    private Path scorePreload, park,scorePickup1;
+    private PathChain scordrop1,Pickup1, grabPickup2, grabPickup3, scorePickup2, scorePickup3;
 
     /** Build the paths for the auto (adds, for example, constant/linear headings while doing paths)
      * It is necessary to do this so that all the paths are built before the auto starts. **/
@@ -187,7 +192,8 @@ public class PedroAutoSamples extends OpMode {
         /* This is our scorePreload path. We are using a BezierLine, which is a straight line. */
         scorePreload = new Path(new BezierLine(new Point(startPose),  new Point(scorePose)));
         scorePreload.setLinearHeadingInterpolation(startPose.getHeading(), scorePose.getHeading());
-
+        scorePickup1 = new Path(new BezierLine(new Point(scorePose),  new Point(pickup1Pose)));
+        scorePickup1.setLinearHeadingInterpolation(scorePose.getHeading(), pickup1Pose.getHeading());
         /* Here is an example for Constant Interpolation
         scorePreload.setConstantInterpolation(startPose.getHeading()); */
 
@@ -198,10 +204,10 @@ public class PedroAutoSamples extends OpMode {
                 .build();
 
         /* This is our scorePickup1 PathChain. We are using a single path with a BezierLine, which is a straight line. */
-        scorePickup1 = follower.pathBuilder()
-                .addPath(new BezierLine(new Point(pickup1Pose), new Point(scorePose)))
-                .setLinearHeadingInterpolation(pickup1Pose.getHeading(), scorePose.getHeading())
-                .build();
+//        scorePickup1 = follower.pathBuilder()
+//                .addPath(new BezierLine(new Point(pickup1Pose), new Point(scorePose)))
+//                .setLinearHeadingInterpolation(pickup1Pose.getHeading(), scorePose.getHeading())
+//                .build();
 
         /* This is our grabPickup2 PathChain. We are using a single path with a BezierLine, which is a straight line. */
 
@@ -242,12 +248,23 @@ public class PedroAutoSamples extends OpMode {
     public void autonomousPathUpdate() {
         switch (pathState) {
             case 0:
-                follower.followPath(scorePreload,true);
 
-                setPathState(8);
-                break;
+                   if(step==0) {
+                       follower.followPath(scorePreload, true);
+                       step++;
+
+                   }
+//                   if(pouttake()) {
+//                       setPathState(1);
+//                       break;
+//                   }
+                setPathState(1);
+
+
+
+
             case 1:
-
+                    delay(100000000);
                 /* You could check for
                 - Follower State: "if(!follower.isBusy() {}" (Though, I don't recommend this because it might not return due to holdEnd
                 - Time: "if(pathTimer.getElapsedTimeSeconds() > 1) {}"
@@ -259,7 +276,7 @@ public class PedroAutoSamples extends OpMode {
                     /* Score Preload */
 
 
-                    pedrosample_outtake();
+
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
                     if (Slide_top.getCurrentPosition() < 600 && -Arm_right.getCurrentPosition() < 600){
                         //follower.followPath(grabPickup1,true);
@@ -336,6 +353,7 @@ public class PedroAutoSamples extends OpMode {
 //                }
 //                break;
             case 8:
+
 //                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
 //                if(follower.getPose().getX() > (parkPose.getX() - 1) && follower.getPose().getY() > (parkPose.getY() - 1)) {
 //                    /* Put the claw in position to get a level 1 ascent */
@@ -373,15 +391,15 @@ public class PedroAutoSamples extends OpMode {
         }
     }
 
-    public void pidfsetting(int target, int index)
-
-    {
-        p=pidftable[index][ppp];
-        i=pidftable[index][ii];
-        d=pidftable[index][dd];
-        rotateTarget=target;
-        armrotatePIDF();
-    }
+//    public void pidfsetting(int target, int index)
+//
+//    {
+//        p=ptable[index][pp];
+//        i=ptable[index][ii];
+//        d=ptable[index][dd];
+//        rotateTarget=target;
+//        armrotatePIDF();
+//    }
 
 //    public void armrotatePIDF()
 //
@@ -436,6 +454,19 @@ public class PedroAutoSamples extends OpMode {
         telemetry.addLine("Ready for right bumper");
         telemetry.update();
 
+
+
+
+        ptable[idle_sampleout][pp]=0.0003;  ptable[idle_sampleout][ii]=0;  ptable[idle_sampleout][dd]=0;//
+        ptable[sampleout_idle][pp]=0.00027;  ptable[sampleout_idle][ii]=0.00001;  ptable[sampleout_idle][dd]=0;//0.00024
+
+
+        ptable[sampleintake][pp]=0.002;  ptable[sampleintake][ii]=0;  ptable[sampleintake][dd]=0.000013;
+
+        ptable[sampleouttake][pp]=0.0008;  ptable[sampleouttake][ii]=0;  ptable[sampleouttake][dd]=0.000;
+        ptable[idle][pp]=0.00075;  ptable[idle][ii]=0;  ptable[idle][dd]=0.0001;
+
+
     }
 
     /** This method is called continuously after Init while waiting for "play". **/
@@ -460,45 +491,61 @@ public class PedroAutoSamples extends OpMode {
 
         }
 
-    armrotatePIDF();
+   // armrotatePIDF();
 
     }
 
-    public void asample_outtake() {
-        delay(10000000);
-        pidf_index=pidf_sampleouttake;
-        pidfsetting(arm_angle_sampleouttake);
-        linearslide(slide_sampleouttake, 2500);
-        Left_handle.setPosition(lefthandle_sampleouttake);
-        Right_handle.setPosition(righthandle_sampleouttake);
-        delay(800);
-        move(-0.24);//-0.18
-        // delay(40);2
-       // timer(0, 4);
-        while (basket_dist.getDistance(DistanceUnit.MM) > 180  ) {//target 340// todo&& !timer(2000, 4
+    public boolean pouttake() {
+       if(step==1) {
 
-            armrotatePIDF();
+           pidf_index = idle_sampleout;
+           psetting(arm_angle_sampleouttake);
+           step++;
+
+       }
+
+      if( arm_angle>arm_angle_sampleouttake-20&& step==2) {
+          linearslide(slide_sampleouttake, 2500);
+          pidf_index = sampleouttake;
+          psetting(arm_angle_sampleouttake);
+          Left_handle.setPosition(lefthandle_sampleouttake);
+          Right_handle.setPosition(righthandle_sampleouttake);
+       //   timer(0,1);
+          step++;
+      }
+
+      if(Slide_top.getCurrentPosition()>(slide_sampleouttake-100)&&step==3){
+
+          move(-0.24);//-0.18
+          delay(50);
+           step++;
+      }
+
+       if (basket_dist.getDistance(DistanceUnit.MM) < 180&&step==4 ) {//target 340// todo&& !timer(2000, 4
+
+          // delay(50);
+           step++;
         }
-        stop_drive();
-        Claw.setPosition(claw_open);
-        delay(150);
-        Left_handle.setPosition(lefthandle_idle);
-        Right_handle.setPosition(righthandle_idle);
-        delay(50);
-        move(0.4);
-        delay(150);
-        linearslide(slide_preintake, 2500);
-        delay(200);
-        stop_drive();
 
-//        if(flag[last]){
-//            linearslide(0, slidev2);
-//
-//        }
-        arot_angle=arm_angle_preintake;
-//        pidf_index=pidf_sampleout_idle;
-//
+       if(step==5) {
+           stop_drive();
+           Claw.setPosition(claw_open);
+           delay(150);
+           Left_handle.setPosition(lefthandle_idle);
+           Right_handle.setPosition(righthandle_idle);
+           delay(50);
+           move(0.4);
+           delay(150);
+           linearslide(slide_preintake, 2500);
+           delay(100);
+           stop_drive();
+           delay(100);
+           step=0;
+           return true;
+       }
 
+       delay(25);
+       return false;
     }
 
 
@@ -507,21 +554,6 @@ public class PedroAutoSamples extends OpMode {
 
 
 
-
-
-    }
-
-    public void pedrosample_outtake() {
-        move(0);
-
-        pidfsetting(2325+50, pidf_outtake_up2);
-        linearslide(2470-20, 2000);
-        delay(2000);
-
-        delay(200);
-        // linearslide(-10, 1500);
-        //delay(200);
-        pidfsetting(325-250 ,pidf_outtake_down);
 
 
     }
@@ -550,7 +582,7 @@ public class PedroAutoSamples extends OpMode {
 
 
     public void armrotatePIDF() {
-
+        arm_angle_update();
         slidePos = Slide_top.getCurrentPosition();
         arm_pose= arm_angle*22.75556;
         pid = controller.calculate( arm_pose,arm_pose_target);
@@ -559,28 +591,6 @@ public class PedroAutoSamples extends OpMode {
         Arm_left.setPower(-power);
         Arm_right.setPower(power);
     }
-
-    public void stop_drive() {
-        leftFront.setPower(0);
-        rightFront.setPower(0);
-        leftBack.setPower(0);
-        rightBack.setPower(0);
-    }
-
-
-    public void pidfsetting(double target)
-
-    {
-        p = pidftable[pidf_index][ppp];
-        i = pidftable[pidf_index][ii];
-        d = pidftable[pidf_index][dd];
-
-        arm_angle_target=target;
-        arm_pose_target=target*22.755556;
-        controller.setPID(p,i,d);
-        armrotatePIDF();
-    }
-
     public double  arm_angle_update()
 
 
@@ -591,6 +601,37 @@ public class PedroAutoSamples extends OpMode {
 
     }
 
+    public void stop_drive() {
+        leftFront.setPower(0);
+        rightFront.setPower(0);
+        leftBack.setPower(0);
+        rightBack.setPower(0);
+    }
+
+
+    public void psetting(double target)
+
+    {
+        p = ptable[pidf_index][pp];
+        i = ptable[pidf_index][ii];
+        d = ptable[pidf_index][dd];
+
+        arm_angle_target=target;
+        arm_pose_target=target*22.755556;
+        controller.setPID(p,i,d);
+        armrotatePIDF();
+    }
+
+
+
+    public boolean timer(double period, int i) {
+
+        if (period == 0) {
+            stoptime[i] = runtime.milliseconds();
+            return false;
+        }
+        return runtime.milliseconds() - stoptime[i] > period;
+    }
     public void IniHardware(HardwareMap hardwareMap) {
 
 

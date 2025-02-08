@@ -1140,7 +1140,7 @@ public class BaseClass extends MecanumDrive {
 
             pidftable[ pidf_specout_specin][pp] = 0.00025; pidftable[pidf_specout_specin][ii]=0.00001;  pidftable[pidf_specout_specin][dd]=0;
 
-           pidftable[pidf_sampleintake][pp]=0.002;  pidftable[pidf_outtake_spec][ii]=0;  pidftable[pidf_outtake_spec][dd]=0.000013;
+           pidftable[pidf_sampleintake][pp]=0.002;  pidftable[pidf_sampleintake][ii]=0;  pidftable[pidf_sampleintake][dd]=0.000013;//todo
            pidftable[pidf_specintake][pp]=0.002;  pidftable[pidf_specintake][ii]=0.00015;  pidftable[pidf_specintake][dd]=0.00008; // 0.00008
            pidftable[pidf_aspecintake][pp]=0.0017;  pidftable[pidf_aspecintake][ii]=0.00015;  pidftable[pidf_aspecintake][dd]=0.00008; // 0.00008
            pidftable[pidf_specouttake][pp]=0.00095;  pidftable[pidf_specouttake][ii]=0.00002;  pidftable[pidf_specouttake][dd]=0.000;
@@ -1399,19 +1399,19 @@ public class BaseClass extends MecanumDrive {
            asconfig[1] [adis]=0;
            asconfig[1] [time]=1500;
            // move to first sample outtake
-           asconfig[2] [speedg]=0.028;
-           asconfig[2] [strafeg]=0.27;
+           asconfig[2] [speedg]=0.03;
+           asconfig[2] [strafeg]=0.3;
            asconfig[2] [turng]=0.015;
            asconfig[2] [speedmax]=0.25;
-           asconfig[2] [strafemax]=0.35;
+           asconfig[2] [strafemax]=0.30;
            asconfig[2] [turnmax]=0.18;
            asconfig[2] [xdis]=8;//10
            asconfig[2] [ydis]=3;//3
            asconfig[2] [adis]=-52;
            asconfig[2] [time]=1800;
            // forward to 2nd sample intake
-           asconfig[3] [speedg]=0.028;
-           asconfig[3] [strafeg]=0.28;
+           asconfig[3] [speedg]=0.03;
+           asconfig[3] [strafeg]=0.3;
            asconfig[3] [turng]=0.015;
            asconfig[3] [speedmax]=0.3;
            asconfig[3] [strafemax]=0.35;
