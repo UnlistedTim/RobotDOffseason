@@ -1723,13 +1723,13 @@ public class BaseClass extends MecanumDrive {
 
          updatePoseEstimate();
         double x0=pose.position.x,y0=pose.position.y;
-        double xtar=x0+5.5,ytar=y0+35,atar= imu.getRobotYawPitchRollAngles().getYaw((AngleUnit.DEGREES));
+        double xtar=x0+4.5,ytar=y0+35,atar= imu.getRobotYawPitchRollAngles().getYaw((AngleUnit.DEGREES));
         double yrange,xrange;
         double yaw;//,gap;
 
 
         double ygap,agap,xgap;
-        double SPEED_GAIN = 0.01; // 0.015  //  Forward Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
+        double SPEED_GAIN = 0.009; // 0.015  //  Forward Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
         double STRAFE_GAIN = 0.3; //0.03  //  Strafe Speed Control "Gain".  eg: Ramp up to 25% power at a 25 degree Yaw error.   (0.25 / 25.0)
         double TURN_GAIN = 0.015;  //0.015  //  Turn Control "Gain".  eg: Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
 
