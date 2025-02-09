@@ -781,10 +781,10 @@ public class BaseClass extends MecanumDrive {
 
 
     public void aspec_intake() {
-        double last_x = 11;
-      //  double current_x = 15;
-        double x_delta = -1;
         move(-0.2);
+        double last_x = 11;
+        double x_delta = -1;
+
         delay(100);//100
 
         timer(0,5);
@@ -1241,7 +1241,6 @@ public class BaseClass extends MecanumDrive {
 
            afmoveconfig[6] [speedg]=0.11;//0.10
            afmoveconfig[6] [strafeg]=0.2;
-
            afmoveconfig[6] [turng]=0.03;
            afmoveconfig[6] [speedmax]=0.92;
            afmoveconfig[6] [strafemax]=0.5;
@@ -1352,7 +1351,7 @@ public class BaseClass extends MecanumDrive {
            afmoveconfig[12] [strafemax]=0.8;
            afmoveconfig[12] [turnmax]=0.2;
            afmoveconfig[12] [xdis]=14;
-           afmoveconfig[12] [ydis]=-40;
+           afmoveconfig[12] [ydis]=-41;// strafe gain lower
            afmoveconfig[12] [adis]=0;
            afmoveconfig[12] [time]=2000;
            //strafe for outtake
@@ -1368,7 +1367,7 @@ public class BaseClass extends MecanumDrive {
            afmoveconfig[13] [time]=2000;
            //strafe for parking
            afmoveconfig[14] [speedg]=0.03;
-           afmoveconfig[14] [strafeg]=0.28;
+           afmoveconfig[14] [strafeg]=0.3;
            afmoveconfig[14] [turng]=0.02;
            afmoveconfig[14] [speedmax]=0.7;
            afmoveconfig[14] [strafemax]=0.99;
@@ -1668,6 +1667,33 @@ public class BaseClass extends MecanumDrive {
 
 
     }
+
+     void linersliderest()
+
+     {
+         linearslide(0,slidev1);
+         delay(800);
+         Slide_bot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+         Slide_top.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+         Slide_bot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+         Slide_top.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+         delay(100);
+         Slide_top.setPower(-0.5);
+         Slide_top.setPower(-0.5);
+         delay(1000);
+         Slide_top.setPower(0);
+         Slide_top.setPower(-0);
+         Slide_bot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+         Slide_bot.setTargetPosition(0);
+         Slide_bot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+         Slide_bot.setVelocity(0);
+         Slide_top.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+         Slide_top.setTargetPosition(0);
+         Slide_top.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+         Slide_top.setVelocity(0);
+         delay(100);
+
+     }
 
     public void asample_outtake() {
 

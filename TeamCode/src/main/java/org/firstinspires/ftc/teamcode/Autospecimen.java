@@ -77,9 +77,7 @@ public class Autospecimen extends LinearOpMode {
             rbg.aspec_outtake();;
             rbg.afmove(10,true,true);//strafe for i ntake;
             rbg.aspec_intake();
-
             rbg.afmove(11,true,true);//strafe for outtake;
-
             rbg.aspec_outtake();
             rbg.afmove(12,true,true);//strafe for park;
             rbg.aspec_intake();
