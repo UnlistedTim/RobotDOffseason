@@ -842,7 +842,6 @@ public class BaseClass extends MecanumDrive {
         double last_x = 11;
         double x_delta = -1;
         move(-0.23);
-        delay(150);//100
         Claw.setPosition(claw_open);
         while (Op.opModeIsActive() && (Math.abs(x_delta) >0.1)){//-0.09
             delay(25);
