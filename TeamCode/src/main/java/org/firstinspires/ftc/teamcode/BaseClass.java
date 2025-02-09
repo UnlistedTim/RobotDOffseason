@@ -787,7 +787,9 @@ public class BaseClass extends MecanumDrive {
         move(-0.2);
         delay(100);//100
 
-        while(Op.opModeIsActive() && pose.position.x>11.5) {
+        timer(0,5);
+
+        while(Op.opModeIsActive() && pose.position.x>11.5 && !timer(500,5)) {
            // current_x = pose.position.x;
 
             armrotatePIDF();
