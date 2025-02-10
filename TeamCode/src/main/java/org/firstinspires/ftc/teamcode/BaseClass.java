@@ -502,7 +502,7 @@ public class BaseClass extends MecanumDrive {
 
             if (slidePos < slide_rotate) {  //slide roataiton target
                 pidf_index=pidf_idle_specin;
-                pidfsetting(arm_angle_specintake-1);
+                pidfsetting(arm_angle_specintake-2);
                 flag[prespecintake] = false;
                 timer(0,stateready);
             }
@@ -517,7 +517,7 @@ public class BaseClass extends MecanumDrive {
             curright_handle = righthandle_specintake;
             flag[spec_adj] = false;
            pidf_index=pidf_specintake;
-            pidfsetting(arm_angle_specintake-1);
+            pidfsetting(arm_angle_specintake-2);
             flag[specintakeready]=true;
 
         }
@@ -570,8 +570,8 @@ public class BaseClass extends MecanumDrive {
         move(0.8);
         delay(50);
 
-        curleft_handle = lefthandle_specouttake-0.05;
-        curright_handle = righthandle_specouttake+0.05;
+//        curleft_handle = lefthandle_specouttake-0.05;
+//        curright_handle = righthandle_specouttake+0.05;
 //        Left_handle.setPosition(lefthandle_specouttake-0.05);
 //        Right_handle.setPosition(righthandle_specouttake+0.05);
         stop_drive();
@@ -601,7 +601,6 @@ public class BaseClass extends MecanumDrive {
              pidf_index=pidf_specouttake;
             pidfsetting(arm_angle_specouttake+1);
             flag[specouttakeready]=true;
-
             curleft_handle = lefthandle_specouttake-0.05;
             curright_handle = righthandle_specouttake+0.05;
             timer(0,spec_adj);
@@ -852,9 +851,11 @@ public class BaseClass extends MecanumDrive {
         double x_delta = -1;
         move(-0.23);
         Claw.setPosition(claw_open);
-        if (arm_angle >= 197 && arm_angle <= 209){
-            Left_handle.setPosition(In_LHandle.get(arm_angle));
-            Right_handle.setPosition(In_RHandle.get(arm_angle));
+        if (!flag[spec_adj]){
+            if (arm_angle >= 197 && arm_angle <= 209){
+                Left_handle.setPosition(In_LHandle.get(arm_angle));
+                Right_handle.setPosition(In_RHandle.get(arm_angle));
+            }
         }
         delay(150);
         while (Op.opModeIsActive() && (Math.abs(x_delta) >0.1)){//-0.09
@@ -1771,6 +1772,8 @@ public class BaseClass extends MecanumDrive {
                 pidf_index=pidf_specouttake;
                 pidfsetting(arm_angle_specouttake+1);
                 linearslide(slide_specouttake,slidev1+100);
+                curleft_handle = lefthandle_specouttake-0.05;
+                curright_handle = righthandle_specouttake+0.05;
                 flag[prespecouttake]=false;
                 flag[specouttakeready]=true;
             }

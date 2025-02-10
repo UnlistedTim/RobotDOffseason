@@ -165,21 +165,19 @@ case SAMPLEINTAKE:
 
                    rbg.inspec_handleadj(gamepad2.right_stick_y);
 
-//                   if (Math.abs(gamepad2.right_stick_y) > 0.5){
-//
-//                   }
+
 
                    if(gamepad1.touchpad||rbg.flag[rbg.placement]){
                        rbg.specplacment();
                        speed_factor=0.4;
                    }
-                   if(gamepad1.right_bumper)
-                   {  rbg.autospec_intake();
+                   if(gamepad1.right_bumper) {
+                       rbg.autospec_intake();
 
-                       if(gamepad1.right_bumper)
-                       {
+                       if(gamepad1.right_bumper) {
 
                            rbg.specmove();
+                           rbg.pre_specouttake();
                            state = State.SPECOUTTAKE;
                            speed_factor=1;
                            break;
@@ -208,17 +206,7 @@ case SAMPLEINTAKE:
                      break;
                 }
 
-
-//                   if(gamepad1.right_trigger>0.8)
-//                   {
-//                       rbg.specintake();
-//                       rbg.specmove();
-//                       state = State.SPECOUTTAKE;
-//                        break;
-//
-//                   }
-
-                   break;
+                break;
 
   case SAMPLELIFT:
                    if(!rbg.flag[rbg.sampleliftready]) {
@@ -272,12 +260,14 @@ case SAMPLEINTAKE:
                        rbg.specouttake();
                        rbg.pre_idle();
                        state = State.IDLE;
+                       break;
 
                    }
 
                    break;
 
             }
+
 
 
  rbg.armrotatePIDF();
@@ -341,8 +331,13 @@ case SAMPLEINTAKE:
 ////            telemetry.addData("Bot slide motor current", rbg.Slide_bot.getCurrent(CurrentUnit.AMPS));
 ////            telemetry.addData("Bar dist", rbg.bar_dist.getDistance(DistanceUnit.MM));
 
-            telemetry.addData("LeftHanlde ", rbg.Left_handle.getPosition());
-            telemetry.addData("Right handle ", rbg.Right_handle.getPosition());
+//            telemetry.addData("LeftHanlde ", rbg.Left_handle.getPosition());
+//            telemetry.addData("Right handle ", rbg.Right_handle.getPosition());
+//            telemetry.addData("LeftHanlde current  ", rbg.curleft_handle);
+//            telemetry.addData("Right handle current ", rbg.curright_handle);
+//            telemetry.addData("Flag specouttakje ready",rbg.flag[rbg.specouttakeready]);
+
+            telemetry.addData("Arm angle",rbg.arm_angle);
             telemetry.update();
             }
         }
