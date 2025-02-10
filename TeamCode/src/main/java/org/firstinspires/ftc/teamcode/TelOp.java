@@ -163,7 +163,7 @@ case SAMPLEINTAKE:
                        break;
                    }
 
-                   rbg.spec_handleadj(gamepad2.right_stick_y);
+                   rbg.inspec_handleadj(gamepad2.right_stick_y);
 
 //                   if (Math.abs(gamepad2.right_stick_y) > 0.5){
 //
@@ -266,7 +266,7 @@ case SAMPLEINTAKE:
                        break;
                    }
 
-                   rbg.spec_handleadj(gamepad2.right_stick_y);
+                   rbg.outspec_handleadj(gamepad2.right_stick_y);
 
                    if(gamepad1.right_bumper) {
                        rbg.specouttake();
@@ -340,7 +340,10 @@ case SAMPLEINTAKE:
 ////            telemetry.addData("Top slide motor current", rbg.Slide_top.getCurrent(CurrentUnit.AMPS));
 ////            telemetry.addData("Bot slide motor current", rbg.Slide_bot.getCurrent(CurrentUnit.AMPS));
 ////            telemetry.addData("Bar dist", rbg.bar_dist.getDistance(DistanceUnit.MM));
-//            telemetry.update();
+
+            telemetry.addData("LeftHanlde ", rbg.Left_handle.getPosition());
+            telemetry.addData("Right handle ", rbg.Right_handle.getPosition());
+            telemetry.update();
             }
         }
     }

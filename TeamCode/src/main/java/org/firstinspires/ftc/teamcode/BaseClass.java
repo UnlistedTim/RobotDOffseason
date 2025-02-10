@@ -570,8 +570,8 @@ public class BaseClass extends MecanumDrive {
         move(0.8);
         delay(50);
 
-        curleft_handle = lefthandle_specintake-0.05;
-        curright_handle = righthandle_specintake+0.05;
+        curleft_handle = lefthandle_specouttake-0.05;
+        curright_handle = righthandle_specouttake+0.05;
 //        Left_handle.setPosition(lefthandle_specouttake-0.05);
 //        Right_handle.setPosition(righthandle_specouttake+0.05);
         stop_drive();
@@ -591,6 +591,7 @@ public class BaseClass extends MecanumDrive {
                 k = 0.0003;
                 linearslide(slide_specouttake, slidev1+150);
                 flag[prespecouttake] = false;
+
             }
             return;
         }
@@ -600,6 +601,12 @@ public class BaseClass extends MecanumDrive {
              pidf_index=pidf_specouttake;
             pidfsetting(arm_angle_specouttake+1);
             flag[specouttakeready]=true;
+
+            curleft_handle = lefthandle_specouttake-0.05;
+            curright_handle = righthandle_specouttake+0.05;
+            timer(0,spec_adj);
+
+
         }
 
 
@@ -845,6 +852,11 @@ public class BaseClass extends MecanumDrive {
         double x_delta = -1;
         move(-0.23);
         Claw.setPosition(claw_open);
+        if (arm_angle >= 197 && arm_angle <= 209){
+            Left_handle.setPosition(In_LHandle.get(arm_angle));
+            Right_handle.setPosition(In_RHandle.get(arm_angle));
+        }
+        delay(150);
         while (Op.opModeIsActive() && (Math.abs(x_delta) >0.1)){//-0.09
             delay(25);
             updatePoseEstimate();
@@ -1583,12 +1595,12 @@ public class BaseClass extends MecanumDrive {
     }
 
 
-    public void spec_handleadj(double sticky){
+    public void outspec_handleadj(double sticky){
         if (Math.abs(sticky) < 0.4 || !timer(400,spec_adj)) return;
 
-        if (sticky < 0 && curleft_handle > lefthandle_specintake - 0.043){
-            curleft_handle-=0.015;
-            curright_handle+=0.015;
+        if (sticky < 0 && curleft_handle < (lefthandle_specouttake-0.05) + 0.043){
+            curleft_handle+=0.015;
+            curright_handle-=0.015;
 
             Left_handle.setPosition(curleft_handle);
             Right_handle.setPosition(curright_handle);
@@ -1599,9 +1611,9 @@ public class BaseClass extends MecanumDrive {
 
         }
 
-        if (sticky > 0  && curleft_handle < lefthandle_specintake + 0.043) {
-            curleft_handle += 0.015;
-            curright_handle -= 0.015;
+        if (sticky > 0  && curleft_handle > (lefthandle_specouttake-0.05) - 0.043) {
+            curleft_handle -= 0.015;
+            curright_handle += 0.015;
 
             Left_handle.setPosition(curleft_handle);
             Right_handle.setPosition(curright_handle);
@@ -1613,12 +1625,12 @@ public class BaseClass extends MecanumDrive {
 
     }
 
-    public void outspec_handleadj(double sticky){
+    public void inspec_handleadj(double sticky){
         if (Math.abs(sticky) < 0.5 || !timer(400,spec_adj)) return;
 
-        if (sticky < -0.5 && curleft_handle < lefthandle_specintake + 0.043){
-            curleft_handle+=0.015;
-            curright_handle-=0.015;
+        if (sticky < -0.5 && curleft_handle > lefthandle_specintake - 0.043){
+            curleft_handle-=0.015;
+            curright_handle+=0.015;
 
             Left_handle.setPosition(curleft_handle);
             Right_handle.setPosition(curright_handle);
@@ -1628,9 +1640,9 @@ public class BaseClass extends MecanumDrive {
 
         }
 
-        if (sticky > 0.5  && curleft_handle > lefthandle_specintake - 0.043) {
-            curleft_handle -= 0.015;
-            curright_handle += 0.015;
+        if (sticky > 0.5  && curleft_handle < lefthandle_specintake + 0.043) {
+            curleft_handle += 0.015;
+            curright_handle -= 0.015;
 
             Left_handle.setPosition(curleft_handle);
             Right_handle.setPosition(curright_handle);
