@@ -868,7 +868,7 @@ public class BaseClass extends MecanumDrive {
 
         boolean handleflag = false;
 
-        move(0.5);
+        move(0.45);
         double dis=500;
         if(flag[first])
         {
@@ -880,43 +880,24 @@ public class BaseClass extends MecanumDrive {
             linearslide(slide_specouttake,slidev2);
             flag[first]=false;
         }
-//        else {
-//            pidf_index = pidf_specouttake;
-//            pidfsetting(arm_angle_specouttake);
-//
-//
-//        }
-//        delay(400);
+
+            timer(0,2);
+     while(Op.opModeIsActive()&& dis>215&&!timer(1800,2)) {
 
 
-     while(Op.opModeIsActive()&& dis>215) {
 
-
-            //movestraight(0.4);
-           // move(0.4);
             armrotatePIDF();
             dis=bar_dist.getDistance(DistanceUnit.MM);
-//            if (!handleflag && dis < 415){
-//                if (arm_angle >= 27 && arm_angle <= 39){
-//                    Left_handle.setPosition(Out_LHandle.get(arm_angle));
-//                    Right_handle.setPosition(Out_RHandle.get(arm_angle));
-//                    handleflag = true;
-//                }
 //
-//            }
         }
         delay(30);
         stop_drive();
         Claw.setPosition(claw_open);
-        //delay(25);
         linearslide(0,slidev2);
         move(-1.0);
         Left_handle.setPosition(lefthandle_idle);
         Right_handle.setPosition(righthandle_idle);
-
         delay(200);
-      //  linearslide(0,slidev2);
-
         pidf_index=pidf_specout_specin;
         pidfsetting(arm_angle_specintake-10);
 
@@ -926,22 +907,14 @@ public class BaseClass extends MecanumDrive {
         pidf_index=pidf_aspecintake;
         aslide = 0;
         arot_angle = arm_angle_specintake-3;
-
         stop_drive();
-
         aarm_angle_specouttake-=0.33;
-
         k = 0.0001;
-
-
-
         if (flag[last]){
             pidf_index=pidf_idle_sampleout;
-            // pidfsetting(arm_angle_idle+10);
+
             arot_angle =arm_angle_sampleouttake;
-           // Left_handle.setPosition(lefthandle_idle);
-           // Right_handle.setPosition(righthandle_idle);
-            //return;
+
 
         }
         Left_handle.setPosition(lefthandle_specintake);
@@ -1262,7 +1235,7 @@ public class BaseClass extends MecanumDrive {
            afmoveconfig[20] [time]=2000;
            //strafe for third samples 8
            afmoveconfig[21] [speedg]=0.04;
-           afmoveconfig[21] [strafeg]=0.16;//0.2
+           afmoveconfig[21] [strafeg]=0.2;//0.2
            afmoveconfig[21] [turng]=0.025;
            afmoveconfig[21] [speedmax]=0.5;
            afmoveconfig[21] [strafemax]=0.5;
@@ -1273,10 +1246,10 @@ public class BaseClass extends MecanumDrive {
            afmoveconfig[21] [time]=2000;
            // push third sample
            afmoveconfig[22] [speedg]=0.05;
-           afmoveconfig[22] [strafeg]=0.18;
+           afmoveconfig[22] [strafeg]=0.16;//0.18
            afmoveconfig[22] [turng]=0.03;
            afmoveconfig[22] [speedmax]=0.7;
-           afmoveconfig[22] [strafemax]=0.5;
+           afmoveconfig[22] [strafemax]=0.4;
            afmoveconfig[22] [turnmax]=0.2;
            afmoveconfig[22] [xdis]=21.5;//16
            afmoveconfig[22] [ydis]=-68.5;
@@ -1611,9 +1584,9 @@ public class BaseClass extends MecanumDrive {
 
 
     public void spec_handleadj(double sticky){
-        if (Math.abs(sticky) < 0.5 || !timer(400,spec_adj)) return;
+        if (Math.abs(sticky) < 0.4 || !timer(400,spec_adj)) return;
 
-        if (sticky < -0.5 && curleft_handle > lefthandle_specintake - 0.043){
+        if (sticky < 0 && curleft_handle > lefthandle_specintake - 0.043){
             curleft_handle-=0.015;
             curright_handle+=0.015;
 
@@ -1622,10 +1595,11 @@ public class BaseClass extends MecanumDrive {
             timer(0,spec_adj);
 
             flag[spec_adj] = true;
+            return;
 
         }
 
-        if (sticky > 0.5  && curleft_handle < lefthandle_specintake + 0.043) {
+        if (sticky > 0  && curleft_handle < lefthandle_specintake + 0.043) {
             curleft_handle += 0.015;
             curright_handle -= 0.015;
 

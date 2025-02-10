@@ -152,7 +152,6 @@ case SAMPLEINTAKE:
                    if(!rbg.flag[rbg.specintakeready])
                    {
                        rbg.specintake_ready();
-                       //speed_factor=0.4;
                        break;
                    }
                    if(gamepad2.right_bumper&&rbg.flag[rbg.claw_lock]) {
