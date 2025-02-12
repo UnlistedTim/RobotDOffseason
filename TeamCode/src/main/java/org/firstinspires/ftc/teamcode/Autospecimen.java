@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.arcrobotics.ftclib.util.InterpLUT;
 
-@Autonomous(name = "AutoSpec", group = "A")
+@Autonomous(name = "AutoSpecimen State", group = "A")
 //@Disabled
 @Config
 public class Autospecimen extends LinearOpMode {
@@ -25,21 +25,35 @@ public class Autospecimen extends LinearOpMode {
         rbg.init(0);
         sleep(500);
         rbg.init(1);
-        telemetry.addLine("Preload the specimen in the claw and press Driver right bumper;");
+        telemetry.addLine("Load the specimen in the claw and press Driver right bumper;");
         telemetry.update();
         while(!isStopRequested())
         {
             sleep(20);
+            if(gamepad2.dpad_up&&rbg.courntnumber<4) {
+                rbg.courntnumber = rbg.courntnumber + 1;
+                telemetry.addData("Field location Number",rbg.courntnumber);
+                telemetry.update();
+
+            }
+            if(gamepad2.dpad_down&&rbg.courntnumber>0) {
+                rbg.courntnumber = rbg.courntnumber - 1;
+                telemetry.addData("Field location Number",rbg.courntnumber);
+                telemetry.update();
+            }
+
+
             if(gamepad1.right_bumper){
              rbg.Claw.setPosition(rbg.claw_close);
              break;
             }
         }
-
+        rbg.autocourtadjustment();
         sleep(200);
         rbg.updatePoseEstimate();
-        telemetry.addData("x",rbg.pose.position.x);
-        telemetry.addData("y",rbg.pose.position.y);
+        telemetry.addData("Field location Number",rbg.courntnumber);
+        telemetry.addLine("1-- First Filed Red side, 2--First Field Blue side");
+        telemetry.addLine("1-- First Filed Red side, 2--First Field Blue side");
         telemetry.addData(">", "Press Play to start op mode ");
         telemetry.update();
         waitForStart();

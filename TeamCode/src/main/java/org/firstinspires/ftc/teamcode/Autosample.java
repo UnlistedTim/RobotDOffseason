@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-@Autonomous(name = "AutoSamples", group = "A")
+@Autonomous(name = "AutoSample State", group = "B")
 //@Disabled
 @Config
 public class Autosample extends LinearOpMode {
@@ -58,14 +58,12 @@ public class Autosample extends LinearOpMode {
                 rbg.amove(2, false);
                 rbg.asample_outtake();
                 rbg.amove(3, true);
-                rbg.pidf_index = rbg.pidf_idle;
-
                 rbg.asample_intake();
                 rbg.amove(4, false);
                 rbg.asample_outtake();
-                rbg.amove(5, true);
-                rbg.linearslide(900,rbg.slidev2);
-                rbg.pidfsetting(rbg.arm_angle_preintake - 3);
+              rbg.amove(5, true);
+
+              //  rbg.pidfsetting(rbg.arm_angle_preintake - 3);
                // telemetry.addData("red", rbg.Claw_color.getConnectionInfo());
 //                telemetry.addData("green", rbg.Claw_color.green());
 //                telemetry.addData("blue", rbg.Claw_color.blue());
@@ -77,14 +75,14 @@ public class Autosample extends LinearOpMode {
 //                telemetry.addData("y", rbg.pose.position.y);
 //                telemetry.addData("angle", rbg.imu.getRobotYawPitchRollAngles().getYaw((AngleUnit.DEGREES)));
 //                telemetry.update();
-                rbg.delay(1000000000);
+               // rbg.delay(1000000000);
                 rbg.flag[rbg.last] = true;
                 rbg.asample_intake();
                 rbg.amove(6, false);
                 rbg.asample_outtake();
                 rbg.delay(500);
                 rbg.stop_drive();
-                sleep(100000);
+                sleep(1000000);
 
             }
         }

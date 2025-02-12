@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -34,6 +35,7 @@ public class BaseClass extends MecanumDrive {
     // p 0.0002 up: intake idle (100) to spec outtake and intake idle to sample outtake
     double speed_index=1;
     double drivinginput;
+    public int courntnumber=0;
     double arm_angle=0;
     double claw_close=0.46,claw_open=0.04;
     double arm_angle_target,arm_pose,arm_pose_target;
@@ -66,7 +68,7 @@ public class BaseClass extends MecanumDrive {
 
     int slidePos;
     double pid ,power, ff;
-    double p = 0.00004, i = 0, d = 0.0001 ,f = 0.12,k = 0.0001; //0.000035
+    double p = 0.00004, i = 0, d = 0.0001 ,f = 0.12,k= 0.0001; //0.000035
     double handlePos = 0.05, handleStep = 0.05;
 
 
@@ -178,6 +180,236 @@ public class BaseClass extends MecanumDrive {
 //        }
 
     }
+     public  void autocourtadjustment()
+     {
+         if(courntnumber==1){//first court red
+
+             return;
+         }
+         if(courntnumber==2){//first court blue
+
+             return;
+         }
+         if(courntnumber==3){// second court red
+
+             return;
+         }
+         if(courntnumber==4){//second court blue
+
+             return;
+         }
+
+
+
+
+//         afmoveconfig[0] [speedg]=0.02;
+//         afmoveconfig[0] [strafeg]=0.35;//0.4
+//         afmoveconfig[0] [turng]=0.018;
+//         afmoveconfig[0] [speedmax]=0.6;
+//         afmoveconfig[0] [strafemax]=0.85;
+//         afmoveconfig[0] [turnmax]=0.2;
+//         afmoveconfig[0] [xdis]=14;
+//         afmoveconfig[0] [ydis]=-31;
+//         afmoveconfig[0] [adis]=0;
+//         afmoveconfig[0] [time]=2000;
+//
+//         // forward to move sample
+//         afmoveconfig[1] [speedg]=0.08;
+//         afmoveconfig[1] [strafeg]=0.18;
+//         afmoveconfig[1] [turng]=0.03;
+//         afmoveconfig[1] [speedmax]=0.9;
+//         afmoveconfig[1] [strafemax]=0.5;
+//         afmoveconfig[1] [turnmax]=0.2;
+//         afmoveconfig[1] [xdis]=43;
+//         afmoveconfig[1] [ydis]=-41;
+//         afmoveconfig[1] [adis]=0;
+//         afmoveconfig[1] [time]=2000;
+//         // strafe for first sample 10
+//         afmoveconfig[2] [speedg]=0.02;
+//         afmoveconfig[2] [strafeg]=0.2;//0.2
+//         afmoveconfig[2] [turng]=0.03;
+//         afmoveconfig[2] [speedmax]=0.6;
+//         afmoveconfig[2] [strafemax]=0.5;
+//         afmoveconfig[2] [turnmax]=0.2;
+//         afmoveconfig[2] [xdis]=42;
+//         afmoveconfig[2] [ydis]=-48;
+//         afmoveconfig[2] [adis]=0;
+//         afmoveconfig[2] [time]=3000;
+//         // push first sample TO -6
+//         afmoveconfig[3] [speedg]=0.1;
+//         afmoveconfig[3] [strafeg]=0.18;
+//         afmoveconfig[3] [turng]=0.02;
+//         afmoveconfig[3] [speedmax]=0.9;
+//         afmoveconfig[3] [strafemax]=0.5;
+//         afmoveconfig[3] [turnmax]=0.2;
+//         afmoveconfig[3] [xdis]=18;
+//         afmoveconfig[3] [ydis]=-52;
+//         afmoveconfig[3] [adis]=0;
+//         afmoveconfig[3] [time]=2000;
+//         // back  for second sample 42
+//         afmoveconfig[4] [speedg]=0.1;
+//         afmoveconfig[4] [strafeg]=0.18;
+//         afmoveconfig[4] [turng]=0.03;
+//         afmoveconfig[4] [speedmax]=0.9;
+//         afmoveconfig[4] [strafemax]=0.5;
+//         afmoveconfig[4] [turnmax]=0.2;
+//         afmoveconfig[4] [xdis]=42;
+//         afmoveconfig[4] [ydis]=-51;
+//         afmoveconfig[4] [adis]=0;
+//         afmoveconfig[4] [time]=2000;
+//         //strafe for second samples 8
+//         afmoveconfig[5] [speedg]=0.04;
+//         afmoveconfig[5] [strafeg]=0.2;//0.2
+//         afmoveconfig[5] [turng]=0.03;
+//         afmoveconfig[5] [speedmax]=0.95;
+//         afmoveconfig[5] [strafemax]=0.5;
+//         afmoveconfig[5] [turnmax]=0.2;
+//         afmoveconfig[5] [xdis]=42;
+//         afmoveconfig[5] [ydis]=-62;
+//         afmoveconfig[5] [adis]=0;
+//         afmoveconfig[5] [time]=2000;
+//         // push second sample
+//
+//         afmoveconfig[6] [speedg]=0.11;//0.10
+//         afmoveconfig[6] [strafeg]=0.2;
+//         afmoveconfig[6] [turng]=0.03;
+//         afmoveconfig[6] [speedmax]=0.92;
+//         afmoveconfig[6] [strafemax]=0.5;
+//         afmoveconfig[6] [turnmax]=0.2;
+//         afmoveconfig[6] [xdis]=17;//16
+//         afmoveconfig[6] [ydis]=-62;
+//         afmoveconfig[6] [adis]=0;
+//         afmoveconfig[6] [time]=2000;
+//         // back  for 3rd sample 44
+//         afmoveconfig[20] [speedg]=0.1;
+//         afmoveconfig[20] [strafeg]=0.18;
+//         afmoveconfig[20] [turng]=0.03;
+//         afmoveconfig[20] [speedmax]=0.9;
+//         afmoveconfig[20] [strafemax]=0.5;
+//         afmoveconfig[20] [turnmax]=0.2;
+//         afmoveconfig[20] [xdis]=44;
+//         afmoveconfig[20] [ydis]=-62;
+//         afmoveconfig[20] [adis]=0;
+//         afmoveconfig[20] [time]=2000;
+//         //strafe for third samples 8
+//         afmoveconfig[21] [speedg]=0.04;
+//         afmoveconfig[21] [strafeg]=0.2;//0.2
+//         afmoveconfig[21] [turng]=0.025;
+//         afmoveconfig[21] [speedmax]=0.5;
+//         afmoveconfig[21] [strafemax]=0.5;
+//         afmoveconfig[21] [turnmax]=0.2;
+//         afmoveconfig[21] [xdis]=42;
+//         afmoveconfig[21] [ydis]=-68.5;
+//         afmoveconfig[21] [adis]=0;
+//         afmoveconfig[21] [time]=2000;
+//         // push third sample
+//         afmoveconfig[22] [speedg]=0.05;
+//         afmoveconfig[22] [strafeg]=0.16;//0.18
+//         afmoveconfig[22] [turng]=0.03;
+//         afmoveconfig[22] [speedmax]=0.7;
+//         afmoveconfig[22] [strafemax]=0.4;
+//         afmoveconfig[22] [turnmax]=0.2;
+//         afmoveconfig[22] [xdis]=21.5;//16
+//         afmoveconfig[22] [ydis]=-68.5;
+//         afmoveconfig[22] [adis]=0;
+//         afmoveconfig[22] [time]=2000;
+//
+//
+//
+//         //strafe for outtake
+//         afmoveconfig[7] [speedg]=0.015;
+//         afmoveconfig[7] [strafeg]=0.3;
+//         afmoveconfig[7] [turng]=0.02;
+//         afmoveconfig[7] [speedmax]=0.4;
+//         afmoveconfig[7] [strafemax]=0.9;
+//         afmoveconfig[7] [turnmax]=0.25;
+//         afmoveconfig[7] [xdis]=12;
+//         afmoveconfig[7] [ydis]=-6.5;
+//         afmoveconfig[7] [adis]=0;
+//         afmoveconfig[7] [time]=2000;
+//
+//         //strafe for intake
+//         afmoveconfig[8] [speedg]=0.02;
+//         afmoveconfig[8] [strafeg]=0.2;
+//         afmoveconfig[8] [turng]=0.02;
+//         afmoveconfig[8] [speedmax]=0.7;
+//         afmoveconfig[8] [strafemax]=0.9;
+//         afmoveconfig[8] [turnmax]=0.25;
+//         afmoveconfig[8] [xdis]=14;
+//         afmoveconfig[8] [ydis]=-40;
+//         afmoveconfig[8] [adis]=0;
+//         afmoveconfig[8] [time]=2000;
+//         //strafe for outtake
+//         afmoveconfig[9] [speedg]=0.02;
+//         afmoveconfig[9] [strafeg]=0.2;
+//         afmoveconfig[9] [turng]=0.02;
+//         afmoveconfig[9] [speedmax]=0.7;
+//         afmoveconfig[9] [strafemax]=0.9;
+//         afmoveconfig[9] [turnmax]=0.25;
+//         afmoveconfig[9] [xdis]=14;
+//         afmoveconfig[9] [ydis]=-9;
+//         afmoveconfig[9] [adis]=0;
+//         afmoveconfig[9] [time]=2000;
+//
+//         //strafe for intake
+//         afmoveconfig[10] [speedg]=0.02;
+//         afmoveconfig[10] [strafeg]=0.2;
+//         afmoveconfig[10] [turng]=0.02;
+//         afmoveconfig[10] [speedmax]=0.7;
+//         afmoveconfig[10] [strafemax]=0.9;
+//         afmoveconfig[10] [turnmax]=0.2;
+//         afmoveconfig[10] [xdis]=14;
+//         afmoveconfig[10] [ydis]=-40;
+//         afmoveconfig[10] [adis]=0;
+//         afmoveconfig[10] [time]=2000;
+//         //strafe for outtake
+//         afmoveconfig[11] [speedg]=0.02;
+//         afmoveconfig[11] [strafeg]=0.19;
+//         afmoveconfig[11] [turng]=0.02;
+//         afmoveconfig[11] [speedmax]=0.7;
+//         afmoveconfig[11] [strafemax]=0.9;
+//         afmoveconfig[11] [turnmax]=0.25;
+//         afmoveconfig[11] [xdis]=14;
+//         afmoveconfig[11] [ydis]=-11.5; //2
+//         afmoveconfig[11] [adis]=0;
+//         afmoveconfig[11] [time]=2000;
+//         //strafe for intake
+//
+//         afmoveconfig[12] [speedg]=0.02;
+//         afmoveconfig[12] [strafeg]=0.18;
+//         afmoveconfig[12] [turng]=0.02;
+//         afmoveconfig[12] [speedmax]=0.7;
+//         afmoveconfig[12] [strafemax]=0.8;
+//         afmoveconfig[12] [turnmax]=0.2;
+//         afmoveconfig[12] [xdis]=14;
+//         afmoveconfig[12] [ydis]=-41;// strafe gain lower
+//         afmoveconfig[12] [adis]=0;
+//         afmoveconfig[12] [time]=2000;
+//         //strafe for outtake
+//         afmoveconfig[13] [speedg]=0.02;
+//         afmoveconfig[13] [strafeg]=0.17;
+//         afmoveconfig[13] [turng]=0.02;
+//         afmoveconfig[13] [speedmax]=0.6;
+//         afmoveconfig[13] [strafemax]=0.8;
+//         afmoveconfig[13] [turnmax]=0.25;
+//         afmoveconfig[13] [xdis]=14;
+//         afmoveconfig[13] [ydis]=-14; //2
+//         afmoveconfig[13] [adis]=0;
+//         afmoveconfig[13] [time]=2000;
+//         //strafe for parking
+//         afmoveconfig[14] [speedg]=0.03;
+//         afmoveconfig[14] [strafeg]=0.3;
+//         afmoveconfig[14] [turng]=0.02;
+//         afmoveconfig[14] [speedmax]=0.7;
+//         afmoveconfig[14] [strafemax]=0.99;
+//         afmoveconfig[14] [turnmax]=0.2;
+//         afmoveconfig[14] [xdis]=7;
+//         afmoveconfig[14] [ydis]=-45;
+//         afmoveconfig[14] [adis]=0;
+//         afmoveconfig[14] [time]=2000;
+
+     }
+
     //forhang
     public void hang() {
         if(!flag[hang0] || Slide_top.getCurrentPosition() < 3000 ) return;
@@ -1138,10 +1370,7 @@ public class BaseClass extends MecanumDrive {
            pidftable[pidf_specintake][pp]=0.002;  pidftable[pidf_specintake][ii]=0.00015;  pidftable[pidf_specintake][dd]=0.00008; // 0.00008
            pidftable[pidf_aspecintake][pp]=0.0017;  pidftable[pidf_aspecintake][ii]=0.00015;  pidftable[pidf_aspecintake][dd]=0.00008; // 0.00008
            pidftable[pidf_specouttake][pp]=0.00095;  pidftable[pidf_specouttake][ii]=0.00002;  pidftable[pidf_specouttake][dd]=0.000;
-           pidftable[pidf_sampleouttake][pp]=0.0008;  pidftable[pidf_sampleouttake][ii]=0;  pidftable[pidf_sampleouttake][dd]=0.000;
-           pidftable[pidf_idle][pp]=0.00075;  pidftable[pidf_idle][ii]=0;  pidftable[pidf_idle][dd]=0.0001;
-          // pidftable[pidf_afspinouttake][pp]=0.0003;  pidftable[pidf_afspinouttake][ii]=0;  pidftable[pidf_afspinouttake][dd]=0.;
-
+           pidftable[pidf_sampleouttake][pp]=0.0008;  pidftable[pidf_sampleouttake][ii]=0;  pidftable[pidf_sampleouttake][dd]=0.00002;
 
 
            pidftable[pidf_hang0][pp]=0.0015;  pidftable[pidf_hang0][ii]=0;  pidftable[pidf_hang0][dd]=0.000;
@@ -1395,7 +1624,7 @@ public class BaseClass extends MecanumDrive {
            asconfig[2] [speedmax]=0.25;
            asconfig[2] [strafemax]=0.30;
            asconfig[2] [turnmax]=0.18;
-           asconfig[2] [xdis]=8;//10
+           asconfig[2] [xdis]=9;//10
            asconfig[2] [ydis]=3;//3
            asconfig[2] [adis]=-52;
            asconfig[2] [time]=1800;
@@ -1404,10 +1633,10 @@ public class BaseClass extends MecanumDrive {
            asconfig[3] [strafeg]=0.3;
            asconfig[3] [turng]=0.015;
            asconfig[3] [speedmax]=0.3;
-           asconfig[3] [strafemax]=0.35;
+           asconfig[3] [strafemax]=0.3;
            asconfig[3] [turnmax]=0.18;
-           asconfig[3] [xdis]=22.5;
-           asconfig[3] [ydis]=16;
+           asconfig[3] [xdis]=23;
+           asconfig[3] [ydis]=15.5;
            asconfig[3] [adis]=0;
            asconfig[3] [time]=2200;
            //move to 2nd sample outtake
@@ -1415,12 +1644,12 @@ public class BaseClass extends MecanumDrive {
            asconfig[4] [strafeg]=0.3;
            asconfig[4] [turng]=0.018;
            asconfig[4] [speedmax]=0.3;
-           asconfig[4] [strafemax]=0.35;
+           asconfig[4] [strafemax]=0.3;
            asconfig[4] [turnmax]=0.18;
-           asconfig[4] [xdis]=9;
-           asconfig[4] [ydis]=2;
-           asconfig[4] [adis]=-40;//-45
-           asconfig[4] [time]=1800;
+           asconfig[4] [xdis]=13;
+           asconfig[4] [ydis]=1.5;
+           asconfig[4] [adis]=-40;//
+           asconfig[4] [time]=200;
            // forward 3rd sample intake
            asconfig[5] [speedg]=0.03;
            asconfig[5] [strafeg]=0.2;//0.15
@@ -1428,10 +1657,10 @@ public class BaseClass extends MecanumDrive {
            asconfig[5] [speedmax]=0.3;
            asconfig[5] [strafemax]=0.4;
            asconfig[5] [turnmax]=0.2;
-           asconfig[5] [xdis]=14;
-           asconfig[5] [ydis]=19.5;
+           asconfig[5] [xdis]=16;
+           asconfig[5] [ydis]=21;
            asconfig[5] [adis]=20;
-           asconfig[5] [time]=1500;
+           asconfig[5] [time]=2000;
            // 3rd sample outake
            asconfig[6] [speedg]=0.03;
            asconfig[6] [strafeg]=0.3;
@@ -1440,9 +1669,9 @@ public class BaseClass extends MecanumDrive {
            asconfig[6] [strafemax]=0.3;
            asconfig[6] [turnmax]=0.2;
            asconfig[6] [xdis]=10;//16
-           asconfig[6] [ydis]=5;
-           asconfig[6] [adis]=-45;
-           asconfig[6] [time]=1500;
+           asconfig[6] [ydis]=1;
+           asconfig[6] [adis]=-39;
+           asconfig[6] [time]=2000;
 
            //strafe for outtake
            asconfig[7] [speedg]=0.02;
@@ -1689,14 +1918,18 @@ public class BaseClass extends MecanumDrive {
         linearslide(slide_sampleouttake, slidev2);
         Left_handle.setPosition(lefthandle_sampleouttake);
         Right_handle.setPosition(righthandle_sampleouttake);
-        delay(800);
-        move(-0.24);//-0.18
+        while(Slide_top.getCurrentPosition()<slide_sampleouttake-50&& Op.opModeIsActive())
+        {
+            delay(25);
+        }
+        move(-0.22);//-0.18
        // delay(40);2
         timer(0, 4);
-       while (basket_dist.getDistance(DistanceUnit.MM) > 180 && Op.opModeIsActive() && !timer(2000, 4)) {//target 340// todo
+       while (basket_dist.getDistance(DistanceUnit.MM) > 170 && Op.opModeIsActive() && !timer(1500, 4)) {//target 340// todo
 
                 armrotatePIDF();
         }
+     //  delay(20);
         stop_drive();
         Claw.setPosition(claw_open);
         delay(150);
@@ -1707,14 +1940,18 @@ public class BaseClass extends MecanumDrive {
         delay(150);
         linearslide(slide_preintake, slidev2);
         delay(200);
-        stop_drive();
+        arot_angle=arm_angle_preintake;
+        pidf_index=pidf_sampleout_idle;
 
         if(flag[last]){
             linearslide(0, slidev2);
+            delay(500);
+            pidfsetting(arot_angle);
+
 
         }
-        arot_angle=arm_angle_preintake;
-        pidf_index=pidf_sampleout_idle;
+        stop_drive();
+
 
 
     }
@@ -1834,6 +2071,13 @@ public class BaseClass extends MecanumDrive {
 
 
     public  void asample_intake() {
+        if (flag[last]) {
+            linearslide(900, slidev2);
+
+            while (Slide_top.getCurrentPosition() < 880&& Op.opModeIsActive()) {
+            delay(25);
+            }
+         }
         pidf_index=pidf_sampleintake;
         pidfsetting(arm_arngle_intake-1);
         delay(180); // 500;
@@ -1862,10 +2106,6 @@ public class BaseClass extends MecanumDrive {
         double MAX_AUTO_STRAFE = asconfig[step][strafemax];;   //  Clip the approach speed to this max value (adjust for your robot)
         double MAX_AUTO_TURN =asconfig[step][turnmax];;
 
-        //  updatePoseEstimate();
-//        x1=pose.position.x;
-//        y1=pose.position.y;
-        //     a1=imu.getRobotYawPitchRollAngles().getYaw((AngleUnit.DEGREES));
         xtar=asconfig[step][xdis];
         ytar=asconfig[step][ydis];
         atar=asconfig[step][adis];
@@ -1891,18 +2131,8 @@ public class BaseClass extends MecanumDrive {
             yaw = Range.clip(agap * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
             yrange= Range.clip(ygap * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
             moveRobot(xrange, yrange , yaw);
-//            if (rot_flag && timer(400,2)) {
-//
-//                pidfsetting(arot_angle);
-//                //linearslide(aslide, slidev1 + 150);
-//                rot_flag = false;
-////                Left_handle.setPosition(lefthandle_intake);
-////                Right_handle.setPosition(righthandle_intake);
-//            }
-//
 
             if(slidePos<450&&rot_flag) {
-
                 pidfsetting(arot_angle);
                 rot_flag=false;
             }
@@ -1918,11 +2148,9 @@ public class BaseClass extends MecanumDrive {
 
             }
 
-
         }
         stop_drive();
 
-        //  delay(30);//100
     }
 
 
