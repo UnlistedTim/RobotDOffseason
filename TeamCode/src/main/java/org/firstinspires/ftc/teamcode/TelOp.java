@@ -192,7 +192,7 @@ case SAMPLEINTAKE:
                 if(gamepad1.right_trigger>0.6)
                     {
                         rbg.specintake();
-                         if(gamepad1.right_bumper)
+                        if(gamepad1.right_trigger>0.6)
                         {
                         rbg.specmove();
                         state = State.SPECOUTTAKE;
@@ -336,9 +336,9 @@ case SAMPLEINTAKE:
 //            telemetry.addData("LeftHanlde current  ", rbg.curleft_handle);
 //            telemetry.addData("Right handle current ", rbg.curright_handle);
 //            telemetry.addData("Flag specouttakje ready",rbg.flag[rbg.specouttakeready]);
-
-            telemetry.addData("Arm angle",rbg.arm_angle);
-            telemetry.update();
+//
+//            telemetry.addData("Arm angle",rbg.arm_angle);
+//            telemetry.update();
             }
         }
     }
