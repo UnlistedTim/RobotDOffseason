@@ -1483,9 +1483,9 @@ public class BaseClass extends MecanumDrive {
            afmoveconfig[21] [strafemax]=0.5;
            afmoveconfig[21] [turnmax]=0.2;
            afmoveconfig[21] [xdis]=42;
-           afmoveconfig[21] [ydis]=-68.5;
+           afmoveconfig[21] [ydis]=-68;
            afmoveconfig[21] [adis]=0;
-           afmoveconfig[21] [time]=2000;
+           afmoveconfig[21] [time]=1000;
            // push third sample
            afmoveconfig[22] [speedg]=0.05;
            afmoveconfig[22] [strafeg]=0.16;//0.18
@@ -1508,7 +1508,7 @@ public class BaseClass extends MecanumDrive {
            afmoveconfig[7] [strafemax]=0.9;
            afmoveconfig[7] [turnmax]=0.25;
            afmoveconfig[7] [xdis]=12;
-           afmoveconfig[7] [ydis]=-6.5;
+           afmoveconfig[7] [ydis]=-7;
            afmoveconfig[7] [adis]=0;
            afmoveconfig[7] [time]=2000;
 
