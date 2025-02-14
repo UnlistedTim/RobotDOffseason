@@ -22,7 +22,8 @@ public class TelOp extends LinearOpMode {
         SPECINTAKE,
         SAMPLELIFT,
         SAMPLEOUTTAKE,
-        SPECOUTTAKE
+        SPECOUTTAKE,
+        HANG
 
     }
 
@@ -266,11 +267,22 @@ case SAMPLEINTAKE:
 
                    break;
 
-            }
+
+
+    case HANG:
+
+
+                break;
+
+        }
 
 
 
  rbg.armrotatePIDF();
+
+
+
+
             if(gamepad1.left_bumper && !rbg.flag[rbg.hang] && !rbg.flag[rbg.hang0]) {
                if (rbg.drop())  state = State.IDLE;
              else state = State.SAMPLEINTAKE;
@@ -279,7 +291,7 @@ case SAMPLEINTAKE:
             if (rbg.timer(88000, rbg.start) || rbg.flag[rbg.force]) {
 
                 if (gamepad2.share || rbg.flag[rbg.hang]) {
-
+                    state=State.HANG;
                     speed_factor = 1.0;
                     rbg.pre_hang();
                 }
