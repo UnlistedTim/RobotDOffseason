@@ -4,7 +4,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "TeleOpState", group = "AA")
+@TeleOp(name = "TeleopDemo", group = "AA")
 public class Demo extends LinearOpMode {
     BaseClass rbg;// hardware init at Mecanumdrive.
     double speed_factor = 1.0;
@@ -42,7 +42,7 @@ public class Demo extends LinearOpMode {
         waitForStart();
       //  rbg.pp0=new Pose2d(0, 0, 0);
         rbg.timer(0,rbg.start);
-        rbg.pidf_index = rbg.pidf_idle;
+        rbg.pidf_index = rbg.pidf_idle_demo;
         rbg.pidfsetting(rbg.arm_angle_preintake);
         rbg.delay(500);
 
@@ -58,7 +58,7 @@ public class Demo extends LinearOpMode {
 
                     rbg.intake_claw_rotate(gamepad1.left_stick_x);
                    if(gamepad1.right_bumper) {
-                       rbg.pidf_index=rbg.pidf_sampleintake;
+                       rbg.pidf_index=rbg.pidf_idle_demo;
                        rbg.pidfsetting(rbg.arm_arngle_intake);
                        rbg.delay(180); // 500;
                        rbg.Claw.setPosition(rbg.claw_close);
@@ -88,8 +88,8 @@ public class Demo extends LinearOpMode {
 
 
                   if(gamepad1.right_bumper) {
-                      rbg.pidf_index=rbg.pidf_sampleout_specin;
-                      rbg.pidfsetting(rbg.arm_angle_preintake);
+                      rbg.pidf_index=rbg.pidf_outtake_up2;
+                      rbg.pidfsetting(rbg.arm_angle_specintake);
                       rbg.Left_handle.setPosition(rbg.lefthandle_specintake);
                       rbg.Right_handle.setPosition(rbg.righthandle_specintake);
                       rbg.delay(1500);

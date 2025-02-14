@@ -26,14 +26,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 //CLAW POS Fully open 0.72, Fully closed 0.93;
 
-@Disabled
 @TeleOp(name = "DebugV2", group = "B")
 public class DebugV2 extends LinearOpMode {
 
-    double lefthandlepos =  0.64-0.05; // 0.59
-    double righthandlepos = 0.36+0.05; //0.41
+    double lefthandlepos =  0.61; // 0.59
+    double righthandlepos = 0.77; //0.41
 
-    double clawpos = 0.48;
+    double clawpos = 0;
 
     double clawopen = 0.04;
     double clawclose = 0.48;
@@ -166,7 +165,7 @@ public class DebugV2 extends LinearOpMode {
 
 //        Left_handle.setPosition(lefthandlepos);
 //        Right_handle.setPosition(righthandlepos);
-//        Claw.setPosition(clawpos);
+        Claw.setPosition(clawpos);
         Arm_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         Arm_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
