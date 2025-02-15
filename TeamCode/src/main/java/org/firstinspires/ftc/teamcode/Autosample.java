@@ -55,16 +55,22 @@ public class Autosample extends LinearOpMode {
                 rbg.asample_outtake();
                 rbg.amove(1, true);// forward to 1st sample for intake;
                 rbg.asample_intake();
-                rbg.amove(2, false);
+                rbg.amove(2, false);// first sample outtake
                 rbg.asample_outtake();
-                rbg.amove(3, true);
+                rbg.amove(3, true);//second sample intake
                 rbg.asample_intake();
-                rbg.amove(4, false);
+                rbg.amove(4, false);//secone smaple outatek
                 rbg.asample_outtake();
-              rbg.amove(5, true);
-
-              //  rbg.pidfsetting(rbg.arm_angle_preintake - 3);
-               // telemetry.addData("red", rbg.Claw_color.getConnectionInfo());
+                rbg.amove(5, true);//third sampe intake
+                rbg.flag[rbg.last] = true;
+                rbg.asample_intake();
+                rbg.amove(6, false);
+                rbg.asample_outtake();
+                rbg.delay(500);
+                rbg.stop_drive();
+                sleep(1000000);
+                //  rbg.pidfsetting(rbg.arm_angle_preintake - 3);
+                // telemetry.addData("red", rbg.Claw_color.getConnectionInfo());
 //                telemetry.addData("green", rbg.Claw_color.green());
 //                telemetry.addData("blue", rbg.Claw_color.blue());
 //                telemetry.addData("color", rbg.Claw_color.alpha());
@@ -75,14 +81,7 @@ public class Autosample extends LinearOpMode {
 //                telemetry.addData("y", rbg.pose.position.y);
 //                telemetry.addData("angle", rbg.imu.getRobotYawPitchRollAngles().getYaw((AngleUnit.DEGREES)));
 //                telemetry.update();
-               // rbg.delay(1000000000);
-                rbg.flag[rbg.last] = true;
-                rbg.asample_intake();
-                rbg.amove(6, false);
-                rbg.asample_outtake();
-                rbg.delay(500);
-                rbg.stop_drive();
-                sleep(1000000);
+                // rbg.delay(1000000000);
 
             }
         }

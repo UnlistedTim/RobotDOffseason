@@ -572,7 +572,7 @@ public  class MecanumDrive {
 //
         Gearbox = hardwareMap.get(Servo.class, "Gearbox");
 
-        Claw_color=hardwareMap.get(ColorSensor.class, "Claw_color");
+       // Claw_color=hardwareMap.get(ColorSensor.class, "Claw_color");
 
 //        Intake_color = hardwareMap.get(ColorSensor.class, "Intake_color");
         Arm_encoder= hardwareMap.get(AnalogInput.class, "Arm_encoder");

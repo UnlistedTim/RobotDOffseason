@@ -310,6 +310,12 @@ case SAMPLEINTAKE:
             }
 
             if (gamepad2.ps) rbg.flag[rbg.force] = true;
+            if(gamepad1.ps)   {
+                rbg.linersliderest();
+                state=State.IDLE;
+
+
+            }
             rbg.robot_centric(gamepad1.right_stick_y, gamepad1.right_stick_x, gamepad1.left_stick_x, speed_factor);
          //    telemetry.addData("armlinerslide top", rbg.Slide_top.getCurrentPosition());
         //    telemetry.addData("armlinerslide bot", rbg.Slide_bot.getCurrentPosition());
