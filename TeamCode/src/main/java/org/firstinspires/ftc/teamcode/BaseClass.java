@@ -44,11 +44,11 @@ public class BaseClass extends MecanumDrive {
     double arot_angle = 0;
     int aslide = 0;
     double lefthandle_idle=0.46,lefthandle_intake=0.18,lefthandle_left45=0.14,lefthandle_left90=0.08,lefthandle_right45=0.22,lefthandle_right90=0.28;
-    double lefthandle_sampleouttake=0.64,lefthandle_specintake=0.63,lefthandle_specouttake=0.64,lefthandle_start=0.12;
+    double lefthandle_sampleouttake=0.64,lefthandle_specintake=0.63,lefthandle_specouttake=0.64,lefthandle_start=0.12, lefthandle_fold = 0.04;
     int intake_rotate_index=0;  // old left spec intake 0.61, 0.77
 
     double righthandle_idle=0.54,righthandle_intake=0.82,righthandle_left45=0.78,righthandle_left90=0.72,righthandle_right45=0.86,righthandle_right90=0.92;
-    double righthandle_sampleouttake=0.36,righthandle_specintake=0.78,righthandle_specouttake=0.36,righthandle_start=0.88;
+    double righthandle_sampleouttake=0.36,righthandle_specintake=0.78,righthandle_specouttake=0.36,righthandle_start=0.88, righthandle_fold = 0.98;
 
     int slide_idle=200,slide_preintake=400,slide_sampleouttake=1800,slide_specintake=0,slide_specouttake=700,slide_intakemax=1050;
 
@@ -504,7 +504,8 @@ public class BaseClass extends MecanumDrive {
 
         if (!flag[hang]){
 
-            if(step[hang]==3) return;
+            if(step[hang]==4) return;
+
             linearslide(0,slidev2);
             flag[hang] = true;
             step[hang]=1;
@@ -527,13 +528,23 @@ public class BaseClass extends MecanumDrive {
         }
 
         if(step[hang]==2&&timer(500,hang)) {
+
+            Left_handle.setPosition(lefthandle_fold);
+            Right_handle.setPosition(righthandle_fold);
            linearslideTq(3350,0.98);
           //  linearslide(3350,slidev2);
 
-           flag[hang]=false;
-            flag[hang0]=true;
+            timer(0,hang);
             step[hang]=3;
 
+        }
+
+        if (step[hang]==3 && timer(300,hang)){
+            Left_handle.setPosition(lefthandle_fold);
+            Right_handle.setPosition(righthandle_fold);
+            flag[hang]=false;
+            flag[hang0]=true;
+            step[hang]=4;
         }
     }
 
@@ -676,7 +687,7 @@ public class BaseClass extends MecanumDrive {
     public void pre_sampleintake()
 
     {
-//        linearslide(slide_preintake,slidev2);
+        linearslide(slide_preintake,slidev2);
         pidfsetting(arm_angle_preintake);
 
         flag[button_flip]=false;
@@ -1145,7 +1156,7 @@ public class BaseClass extends MecanumDrive {
             Left_handle.setPosition(lefthandle_specouttake-0.05);
             Right_handle.setPosition(righthandle_specouttake+0.05);
             pidf_index=  pidf_afspecouttake;
-            pidfsetting(arm_angle_specouttake+6);
+            pidfsetting(arm_angle_specouttake+5);
             linearslide(slide_specouttake,slidev2);
 
         }
@@ -1514,11 +1525,11 @@ public class BaseClass extends MecanumDrive {
            afmoveconfig[21] [adis]=0;
            afmoveconfig[21] [time]=1000;
            // push third sample
-           afmoveconfig[22] [speedg]=0.05;
+           afmoveconfig[22] [speedg]=0.06;
            afmoveconfig[22] [strafeg]=0.12;//0.18
            afmoveconfig[22] [turng]=0.03;
-           afmoveconfig[22] [speedmax]=0.7;
-           afmoveconfig[22] [strafemax]=0.4;
+           afmoveconfig[22] [speedmax]=0.6;
+           afmoveconfig[22] [strafemax]=0.3;
            afmoveconfig[22] [turnmax]=0.2;
            afmoveconfig[22] [xdis]=21.5;//16
            afmoveconfig[22] [ydis]=-68;
