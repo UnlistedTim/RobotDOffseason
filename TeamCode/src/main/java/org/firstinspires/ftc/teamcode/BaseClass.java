@@ -416,18 +416,18 @@ public class BaseClass extends MecanumDrive {
         if(!flag[hang0] || Slide_top.getCurrentPosition() < 3000 ) return;
 
         move(0.35);
-        linearslideTq(3300,0.98);
+        linearslideTq(3300,1.0);
         pidfsetting(57); // Hit arm with low rung //1500
 
         while (arm_angle_update()<46 && Op.opModeIsActive())
         {delay(25);}
        delay(150);
 
-        linearslideTq(2900,0.98);
+        linearslideTq(2900,1.0);
 
         pidfsetting(90); //1600
         //  rbg.delay(1000);
-        linearslideTq(-500,0.98);
+        linearslideTq(-500,1.0);
         stop_drive();
 
         while(Op.opModeIsActive()&&Slide_top.getCurrentPosition() > -250) {delay(25);}
@@ -435,16 +435,16 @@ public class BaseClass extends MecanumDrive {
 
         pidfsetting(85);
         delay(50);
-        linearslideTq(4800,0.98);
+        linearslideTq(4800,1.0);
         while(Op.opModeIsActive() && Slide_top.getCurrentPosition() < 4400){delay(25);}
         pidf_index=pidf_hang1;
         pidfsetting(140); // 2700
         delay(800);
-        linearslideTq(-600,0.98);
+        linearslideTq(-650,1.0);
         while (Op.opModeIsActive() && Slide_top.getCurrentPosition() > 4350){delay(25);}
         delay(50);
         pidfsetting(60);
-        linearslideTq(-600,1);
+        linearslideTq(-650,1);
 
 
 
@@ -456,8 +456,8 @@ public class BaseClass extends MecanumDrive {
             }
             delay(25);
         }
-        delay(1000);
-        linearslideTq(-600,0);
+        delay(2000);
+        linearslideTq(-650,0);
         Arm_left.setPower(0);
         Arm_right.setPower(0);
         pause(100000);
@@ -1093,7 +1093,7 @@ public class BaseClass extends MecanumDrive {
         delay(50);
 
         pidf_index=pidf_specouttake;
-        arot_angle = aarm_angle_specouttake;
+        arot_angle = aarm_angle_specouttake+1;
         aslide = slide_specouttake;
 
 
@@ -1112,7 +1112,7 @@ public class BaseClass extends MecanumDrive {
     public void autospec_intake() {
         double last_x = 11;
         double x_delta = -1;
-        move(-0.23);
+        move(-0.25);
 
 
         Claw.setPosition(claw_open);
@@ -1123,7 +1123,7 @@ public class BaseClass extends MecanumDrive {
             }
         }
 
-        delay(150);
+        delay(180);
         timer(0,specintake);
         while (Op.opModeIsActive() && (Math.abs(x_delta) >0.1) && !timer(2000,specintake)){//-0.09
             delay(25);
@@ -1156,7 +1156,7 @@ public class BaseClass extends MecanumDrive {
             Left_handle.setPosition(lefthandle_specouttake-0.05);
             Right_handle.setPosition(righthandle_specouttake+0.05);
             pidf_index=  pidf_afspecouttake;
-            pidfsetting(arm_angle_specouttake+5);
+            pidfsetting(arm_angle_specouttake+4);
             linearslide(slide_specouttake,slidev2);
 
         }
@@ -1186,7 +1186,7 @@ public class BaseClass extends MecanumDrive {
 
         pidf_index=pidf_aspecintake;
         aslide = 0;
-        arot_angle = arm_angle_specintake-3;
+        arot_angle = arm_angle_specintake-4;
         stop_drive();
         aarm_angle_specouttake-=0.33;
         k = 0.0001;
