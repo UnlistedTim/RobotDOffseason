@@ -4,8 +4,10 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+
 @TeleOp(name = "TeleOpDemo", group = "AA")
-public class TelOpDemo extends LinearOpMode {
+public class TelOpOutreachDemo extends LinearOpMode {
     BaseClass rbg;// hardware init at Mecanumdrive.
     double speed_factor = 1.0;
 
@@ -307,6 +309,13 @@ case SAMPLEINTAKE:
                 rbg.linersliderest();
                 state= State.IDLE;
 
+
+            }
+
+
+            if (rbg.Slide_top.getCurrent(CurrentUnit.AMPS) > 8 || rbg.Slide_bot.getCurrent(CurrentUnit.AMPS) > 8){
+                gamepad2.rumble(0.9,0.9,500);
+                gamepad1.rumble(0.9,0.9,500);
 
             }
 

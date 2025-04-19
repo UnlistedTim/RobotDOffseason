@@ -43,12 +43,12 @@ public class BaseClass extends MecanumDrive {
     double aarm_angle_specouttake =32;
     double arot_angle = 0;
     int aslide = 0;
-    double lefthandle_idle=0.46,lefthandle_intake=0.18,lefthandle_left45=0.14,lefthandle_left90=0.08,lefthandle_right45=0.22,lefthandle_right90=0.28;
-    double lefthandle_sampleouttake=0.64,lefthandle_specintake=0.63,lefthandle_specouttake=0.64,lefthandle_start=0.12, lefthandle_fold = 0.04;
+    double lefthandle_idle=0.47,lefthandle_intake=0.205,lefthandle_left45=0.14,lefthandle_left90=0.08,lefthandle_right45=0.22,lefthandle_right90=0.28;
+    double lefthandle_sampleouttake=0.64,lefthandle_specintake=0.64,lefthandle_specouttake=0.67,lefthandle_start=0.12, lefthandle_fold = 0.04;
     int intake_rotate_index=0;  // old left spec intake 0.61, 0.77
 
-    double righthandle_idle=0.54,righthandle_intake=0.82,righthandle_left45=0.78,righthandle_left90=0.72,righthandle_right45=0.86,righthandle_right90=0.92;
-    double righthandle_sampleouttake=0.36,righthandle_specintake=0.78,righthandle_specouttake=0.36,righthandle_start=0.88, righthandle_fold = 0.98;
+    double righthandle_idle=0.55,righthandle_intake=0.815,righthandle_left45=0.78,righthandle_left90=0.72,righthandle_right45=0.86,righthandle_right90=0.92;
+    double righthandle_sampleouttake=0.4,righthandle_specintake=0.79,righthandle_specouttake=0.35,righthandle_start=0.88, righthandle_fold = 0.98;
 
     int slide_idle=200,slide_preintake=400,slide_sampleouttake=1800,slide_specintake=0,slide_specouttake=700,slide_intakemax=1050;
 
