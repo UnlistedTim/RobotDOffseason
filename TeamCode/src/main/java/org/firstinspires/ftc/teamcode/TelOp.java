@@ -15,6 +15,14 @@ public class TelOp extends LinearOpMode {
     BaseClass rbg;// hardware init at Mecanumdrive.
     double speed_factor = 1.0;
 
+//    double[] deltaSlidePowers= new double[1000];
+//
+//    double deltaPower = 0;
+
+//    int index = 0;
+
+
+
     public enum State {
         IDLE,
         SAMPLEINTAKE,
@@ -51,6 +59,8 @@ public class TelOp extends LinearOpMode {
         rbg.timer(0,rbg.start);
         rbg.pre_idle();
         while (opModeIsActive()) {
+
+
             switch (state) {
                case IDLE:
                    if(!rbg.flag[rbg.idleready])
@@ -316,6 +326,7 @@ case SAMPLEINTAKE:
 
 
             }
+
             rbg.robot_centric(gamepad1.right_stick_y, gamepad1.right_stick_x, gamepad1.left_stick_x, speed_factor);
 
             if (rbg.Slide_top.getCurrent(CurrentUnit.AMPS) > 8 || rbg.Slide_bot.getCurrent(CurrentUnit.AMPS) > 8){
@@ -323,6 +334,10 @@ case SAMPLEINTAKE:
                 gamepad1.rumble(0.9,0.9,500);
 
             }
+
+
+
+
          //    telemetry.addData("armlinerslide top", rbg.Slide_top.getCurrentPosition());
         //    telemetry.addData("armlinerslide bot", rbg.Slide_bot.getCurrentPosition());
 ////
@@ -365,6 +380,15 @@ case SAMPLEINTAKE:
 //
 //            telemetry.addData("Arm angle",rbg.arm_angle);
 //            telemetry.update();
+
+
+//            deltaPower = Math.abs(rbg.Slide_top.getPower() - rbg.Slide_bot.getPower());
+//
+//            telemetry.addData("Motor delta power", deltaPower);
+//            telemetry.addData("Top Power",rbg.Slide_top.getPower());
+//            telemetry.addData("Bot power", rbg.Slide_bot.getPower());
+//            telemetry.update();
+
             }
         }
     }
