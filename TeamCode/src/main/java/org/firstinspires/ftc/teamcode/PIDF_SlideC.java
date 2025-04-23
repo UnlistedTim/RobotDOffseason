@@ -4,7 +4,6 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.controller.PIDController;
-import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
@@ -12,8 +11,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-
-import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 //183
 
@@ -59,7 +56,7 @@ public class PIDF_SlideC extends OpMode {
     private DcMotorEx Arm_right;
     private DcMotorEx Arm_left;
 
-    private DcMotorEx Slide_encoder;
+    private DcMotorEx Slide_enencoder;
 
 
     private DcMotorEx Slide_bot;
@@ -99,7 +96,7 @@ public class PIDF_SlideC extends OpMode {
 
         Arm_encoder = hardwareMap.get(AnalogInput.class, "Arm_encoder");
 
-        Slide_encoder = hardwareMap.get(DcMotorEx.class, "leftFront");
+        Slide_enencoder = hardwareMap.get(DcMotorEx.class, "leftFront");
 
         Left_handle = hardwareMap.get(Servo.class, "Left_handle");
         Right_handle = hardwareMap.get(Servo.class, "Right_handle");
@@ -115,7 +112,7 @@ public class PIDF_SlideC extends OpMode {
         Arm_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         Arm_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
-        Slide_encoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        Slide_enencoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 
         Slide_bot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -148,7 +145,8 @@ public class PIDF_SlideC extends OpMode {
     @Override
     public void loop() {
 
-        Slide_pos = Math.floor(Slide_encoder.getCurrentPosition()/30);
+        Slide_pos = Math.floor(Slide_enencoder.getCurrentPosition()/30);//
+
 
 //
         controller.setPID(p, i, d);

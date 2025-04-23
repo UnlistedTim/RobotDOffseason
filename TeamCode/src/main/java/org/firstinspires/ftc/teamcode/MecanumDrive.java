@@ -120,6 +120,7 @@ public  class MecanumDrive {
             new ProfileAccelConstraint(PARAMS.minProfileAccel, PARAMS.maxProfileAccel);
 
     public  DcMotorEx leftFront, leftBack, rightBack, rightFront;
+    public  DcMotorEx revEncoder;
 
 
     public  DcMotorEx Arm_right, Arm_left, Slide_top,Slide_bot;
@@ -541,6 +542,9 @@ public  class MecanumDrive {
         leftBack = hardwareMap.get(DcMotorEx.class, "leftBack");
         rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+
+
+        revEncoder = hardwareMap.get(DcMotorEx.class, "leftFront");
 
 
 

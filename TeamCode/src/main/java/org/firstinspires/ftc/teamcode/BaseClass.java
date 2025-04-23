@@ -36,6 +36,9 @@ public class BaseClass extends MecanumDrive {
     double speed_index=1;
     double drivinginput;
     public int courntnumber=0;
+    public  double revmotencrate=30;
+    public  int revpos=0,revtarget=0;
+    public static int deadband = 20;
     double arm_angle=0;
     double claw_close=0.42,claw_open=0.0;
     double arm_angle_target,arm_pose,arm_pose_target;
@@ -63,11 +66,16 @@ public class BaseClass extends MecanumDrive {
 
 
     PIDController controller;
+    PIDController lcontroller;
+
 
     boolean hangflag = false;
+    boolean newlinearslides=false;
 
     int slidePos;
-    double pid ,power, ff;
+    double pid ,power, ff,lpid,lpower,lff;
+    public double lp = 0.007, li = 0, ld = 0.0002,lf=0.03,lk=0.0001;//todo
+
     double p = 0.00004, i = 0, d = 0.0001 ,f = 0.12,k= 0.0001; //0.000035
     double handlePos = 0.05, handleStep = 0.05;
 
@@ -1221,10 +1229,18 @@ public class BaseClass extends MecanumDrive {
     public void linearslide( int target, int speed) {
 
         if (target > lshi || target < lslo) return;
-        Slide_top.setTargetPosition(target); // ne
-        Slide_bot.setTargetPosition(target);
-        Slide_top.setVelocity(speed);
-        Slide_bot.setVelocity(speed);
+
+        if(newlinearslides){
+           revtarget=(int)(target/revmotencrate);
+            lcontroller.setPID(lp, li, ld);
+
+        }
+        else {
+            Slide_top.setTargetPosition(target); // ne
+            Slide_bot.setTargetPosition(target);
+            Slide_top.setVelocity(speed);
+            Slide_bot.setVelocity(speed);
+        }
 
     }
 
@@ -1298,14 +1314,31 @@ public class BaseClass extends MecanumDrive {
            Arm_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
            Arm_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+           Slide_top.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+           Slide_bot.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
            Slide_bot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-           Slide_bot.setTargetPosition(0);
-           Slide_bot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-           Slide_bot.setVelocity(0);
            Slide_top.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-           Slide_top.setTargetPosition(0);
-           Slide_top.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-           Slide_top.setVelocity(0);
+
+
+
+
+
+           if(newlinearslides){
+               Slide_bot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+               Slide_top.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+               revEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+               revEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+           }
+           else
+           {
+               Slide_bot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+               Slide_bot.setVelocity(0);
+               Slide_top.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+               Slide_top.setTargetPosition(0);
+               Slide_top.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+               Slide_top.setVelocity(0);
+
+           }
 
         // left 0.61, 0.77
          //  LHandle_correction.add(0,0.655);
@@ -2203,13 +2236,49 @@ public class BaseClass extends MecanumDrive {
 
     public void armrotatePIDF() {
 
-        slidePos = Slide_top.getCurrentPosition();
+        if(newlinearslides){
+            slidePos = (revEncoder.getCurrentPosition()/30);//todo
+        }
+           else {
+            slidePos = Slide_top.getCurrentPosition();
+
+        }
+
         arm_pose= arm_angle_update()*22.75556;
         pid = controller.calculate( arm_pose,arm_pose_target);
         ff = Math.cos(Math.toRadians(arm_angle)) * (f + k *slidePos) ;
         power = pid + ff;
+        if(newlinearslides) {
+            slidePIDF();
+        }
         Arm_left.setPower(-power);
         Arm_right.setPower(power);
+    }
+
+    public void slidePIDF() {
+
+        if (Math.abs(revpos - revtarget) > deadband) {
+            lpid = lcontroller.calculate(revpos, revtarget);
+            if(lpid>0) lpid=Math.sqrt(lpid);
+            else lpid= -Math.sqrt(-lpid);
+        } else {
+            lpid = 0.0;
+        }
+
+         lff = Math.sin(Math.toRadians(arm_angle)) * lf;
+         lpower = lpid + lff;
+
+      //  double ff2 = Math.cos(Math.toRadians(angle)) * (-0.04 + k * Slide_pos);  // target
+
+        Slide_top.setPower(lpower);
+        Slide_bot.setPower(lpower);
+
+//
+//        Arm_left.setPower(-ff2);
+//
+//
+//        Arm_right.setPower(ff2);
+
     }
 
 
