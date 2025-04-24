@@ -597,6 +597,9 @@ public  class MecanumDrive {
         Slide_bot.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         Slide_top.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        Arm_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        Arm_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 //        Back_led.setPwmRange(500,250);
 
         Slide_bot.setDirection(DcMotorSimple.Direction.REVERSE);
