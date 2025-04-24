@@ -1308,15 +1308,15 @@ public class BaseClass extends MecanumDrive {
            lcontroller = new PIDController(lp, li, ld);
            pause(500);
 //           Intake_rot.setPosition(handlerot_intake);
-           Arm_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+          // Arm_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
            Arm_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
            Arm_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-           Arm_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+         //  Arm_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
            Arm_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
            Arm_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-           Slide_top.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-           Slide_bot.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+          // Slide_top.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+         //  Slide_bot.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
            Slide_bot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
            Slide_top.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
@@ -2241,7 +2241,7 @@ public class BaseClass extends MecanumDrive {
             revpos = revEncoder.getCurrentPosition();//todo
             slidePos = (int)(revpos/revmotencrate);
         }
-           else {
+        else {
             slidePos = Slide_top.getCurrentPosition();
 
         }
