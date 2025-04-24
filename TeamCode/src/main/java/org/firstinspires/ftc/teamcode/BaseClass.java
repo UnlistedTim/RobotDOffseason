@@ -53,7 +53,7 @@ public class BaseClass extends MecanumDrive {
     double righthandle_idle=0.55,righthandle_intake=0.815,righthandle_left45=0.78,righthandle_left90=0.72,righthandle_right45=0.86,righthandle_right90=0.92;
     double righthandle_sampleouttake=0.4,righthandle_specintake=0.79,righthandle_specouttake=0.35,righthandle_start=0.88, righthandle_fold = 0.98;
 
-    int slide_idle=200,slide_preintake=400,slide_sampleouttake=1800,slide_specintake=0,slide_specouttake=700,slide_intakemax=1050;
+    int slide_idle=200,slide_preintake=400,slide_sampleouttake=1775,slide_specintake=0,slide_specouttake=700,slide_intakemax=1050;
 
     double curleft_handle = 0; double curright_handle = 0;
 
@@ -73,8 +73,8 @@ public class BaseClass extends MecanumDrive {
     boolean newlinearslides=false;
 
     int slidePos;
-    double pid ,power, ff,lpid,lpower,lff;
-    public double lp = 0.007, li = 0, ld = 0.0002,lf=0.03,lk=0.0001;//todo
+    double pid ,power, ff,lpid,lpower,lff, lkk;
+    public double lp = 0.008, li = 0, ld = 0.0002,lf=0.05,lk=0.00015;//todo
 
     double p = 0.00004, i = 0, d = 0.0001 ,f = 0.12,k= 0.0001; //0.000035
     double handlePos = 0.05, handleStep = 0.05;
@@ -2271,7 +2271,7 @@ public class BaseClass extends MecanumDrive {
         }
 
          lff = Math.sin(Math.toRadians(arm_angle)) * lf;
-         lpower = lpid + lff;
+         lpower = lpid + lff + slidePos * lk;
 
       //  double ff2 = Math.cos(Math.toRadians(angle)) * (-0.04 + k * Slide_pos);  // target
 

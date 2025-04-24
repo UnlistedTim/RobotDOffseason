@@ -238,11 +238,10 @@ case SAMPLEINTAKE:
 
  case SAMPLEOUTTAKE:
 
-
-                    if(!rbg.flag[rbg.sampleouttakeready]) {
-                        rbg.sampleouttake_ready();
-                        break;
-                    }
+                if(!rbg.flag[rbg.sampleouttakeready]) {
+                    rbg.sampleouttake_ready();
+                    break;
+                }
                  if(gamepad1.right_bumper) {
                      rbg.sampleouttake();
                      rbg.pidf_index=rbg.pidf_sampleout_idle;
@@ -324,6 +323,12 @@ case SAMPLEINTAKE:
             }
 
             rbg.robot_centric(gamepad1.right_stick_y, gamepad1.right_stick_x, gamepad1.left_stick_x, speed_factor);
+
+            telemetry.addData("State",state);
+            telemetry.addData("Slide encoder",rbg.revEncoder.getCurrentPosition());
+//            telemetry.addData("Arm pos", rbg.arm_angle);
+            telemetry.addData("Slide powers", rbg.lpower);
+            telemetry.update();
 //
 //            if (rbg.Slide_top.getCurrent(CurrentUnit.AMPS) > 8 || rbg.Slide_bot.getCurrent(CurrentUnit.AMPS) > 8){
 //                gamepad2.rumble(0.9,0.9,500);
