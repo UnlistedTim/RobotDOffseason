@@ -325,12 +325,24 @@ case SAMPLEINTAKE:
             }
 
             rbg.robot_centric(gamepad1.right_stick_y, gamepad1.right_stick_x, gamepad1.left_stick_x, speed_factor);
+//
+//            if (rbg.Slide_top.getCurrent(CurrentUnit.AMPS) > 8 || rbg.Slide_bot.getCurrent(CurrentUnit.AMPS) > 8){
+//                gamepad2.rumble(0.9,0.9,500);
+//                gamepad1.rumble(0.9,0.9,500);
+//
+//            }
 
-            if (rbg.Slide_top.getCurrent(CurrentUnit.AMPS) > 8 || rbg.Slide_bot.getCurrent(CurrentUnit.AMPS) > 8){
-                gamepad2.rumble(0.9,0.9,500);
-                gamepad1.rumble(0.9,0.9,500);
 
-            }
+
+//            telemetry.addData("Motor encoder", rbg.Slide_top.getCurrentPosition());
+//            telemetry.addData("External encoder", rbg.revEncoder.getCurrentPosition());
+//
+//            telemetry.addData("total power" , rbg.lpower);
+//            telemetry.addData("PID Power", rbg.lpid);
+//            telemetry.addData("Rev target", rbg.revtarget);
+//            telemetry.update();
+
+
 
 
 

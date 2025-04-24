@@ -36,7 +36,7 @@ public class BaseClass extends MecanumDrive {
     double speed_index=1;
     double drivinginput;
     public int courntnumber=0;
-    public  double revmotencrate=30;
+    public  double revmotencrate=28.407;
     public  int revpos=0,revtarget=0;
     public static int deadband = 20;
     double arm_angle=0;
@@ -1231,7 +1231,7 @@ public class BaseClass extends MecanumDrive {
         if (target > lshi || target < lslo) return;
 
         if(newlinearslides){
-           revtarget=(int)(target/revmotencrate);
+           revtarget=(int)(target*revmotencrate);
             lcontroller.setPID(lp, li, ld);
 
         }
@@ -1305,6 +1305,7 @@ public class BaseClass extends MecanumDrive {
            imu.resetYaw();
            Gearbox.setPosition(0);
            controller = new PIDController(p, i, d);
+           lcontroller = new PIDController(lp, li, ld);
            pause(500);
 //           Intake_rot.setPosition(handlerot_intake);
            Arm_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -1326,8 +1327,8 @@ public class BaseClass extends MecanumDrive {
            if(newlinearslides){
                Slide_bot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                Slide_top.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-               revEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-               revEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//               revEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//               revEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
            }
            else
            {
@@ -2237,7 +2238,8 @@ public class BaseClass extends MecanumDrive {
     public void armrotatePIDF() {
 
         if(newlinearslides){
-            slidePos = (revEncoder.getCurrentPosition()/30);//todo
+            revpos = revEncoder.getCurrentPosition();//todo
+            slidePos = (int)(revpos/revmotencrate);
         }
            else {
             slidePos = Slide_top.getCurrentPosition();
@@ -2248,17 +2250,18 @@ public class BaseClass extends MecanumDrive {
         pid = controller.calculate( arm_pose,arm_pose_target);
         ff = Math.cos(Math.toRadians(arm_angle)) * (f + k *slidePos) ;
         power = pid + ff;
+        Arm_left.setPower(-power);
+        Arm_right.setPower(power);
         if(newlinearslides) {
             slidePIDF();
         }
-        Arm_left.setPower(-power);
-        Arm_right.setPower(power);
+
     }
 
     public void slidePIDF() {
 
-        if (Math.abs(revpos - revtarget) > deadband) {
-            lpid = lcontroller.calculate(revpos, revtarget);
+        if (Math.abs(revpos - revtarget) > (deadband*revmotencrate)) {
+            lpid = lcontroller.calculate(revpos/revmotencrate, revtarget/revmotencrate);
             if(lpid>0) lpid=Math.sqrt(lpid);
             else lpid= -Math.sqrt(-lpid);
         } else {

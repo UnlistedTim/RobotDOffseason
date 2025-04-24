@@ -544,7 +544,7 @@ public  class MecanumDrive {
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
 
 
-        revEncoder = hardwareMap.get(DcMotorEx.class, "leftFront");
+        revEncoder = hardwareMap.get(DcMotorEx.class, "Arm_right");
 
 
 
