@@ -59,6 +59,8 @@ public class TelOp extends LinearOpMode {
         rbg.timer(0,rbg.start);
         rbg.pre_idle();
         while (opModeIsActive()) {
+
+
             switch (state) {
                case IDLE:
                    if(!rbg.flag[rbg.idleready])
