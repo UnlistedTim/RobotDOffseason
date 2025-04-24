@@ -36,7 +36,7 @@ public class BaseClass extends MecanumDrive {
     double speed_index=1;
     double drivinginput;
     public int courntnumber=0;
-    public  double revmotencrate=30;
+    public  double revmotencrate=28.407;
     public  int revpos=0,revtarget=0;
     public static int deadband = 20;
     double arm_angle=0;
@@ -46,12 +46,12 @@ public class BaseClass extends MecanumDrive {
     double aarm_angle_specouttake =32;
     double arot_angle = 0;
     int aslide = 0;
-    double lefthandle_idle=0.46,lefthandle_intake=0.195,lefthandle_left45=0.14,lefthandle_left90=0.08,lefthandle_right45=0.25,lefthandle_right90=0.31;
-    double lefthandle_sampleouttake=0.64,lefthandle_specintake=0.62,lefthandle_specouttake=0.67,lefthandle_start=0.12, lefthandle_fold = 0.04;
+    double lefthandle_idle=0.47,lefthandle_intake=0.205,lefthandle_left45=0.14,lefthandle_left90=0.08,lefthandle_right45=0.22,lefthandle_right90=0.28;
+    double lefthandle_sampleouttake=0.64,lefthandle_specintake=0.64,lefthandle_specouttake=0.67,lefthandle_start=0.12, lefthandle_fold = 0.04;
     int intake_rotate_index=0;  // old left spec intake 0.61, 0.77
 
-    double righthandle_idle=0.54,righthandle_intake=0.805,righthandle_left45=0.750,righthandle_left90=0.69,righthandle_right45=0.86,righthandle_right90=0.92;
-    double righthandle_sampleouttake=0.36,righthandle_specintake=0.78,righthandle_specouttake=0.35,righthandle_start=0.88, righthandle_fold = 0.98;
+    double righthandle_idle=0.55,righthandle_intake=0.815,righthandle_left45=0.78,righthandle_left90=0.72,righthandle_right45=0.86,righthandle_right90=0.92;
+    double righthandle_sampleouttake=0.4,righthandle_specintake=0.79,righthandle_specouttake=0.35,righthandle_start=0.88, righthandle_fold = 0.98;
 
     int slide_idle=200,slide_preintake=400,slide_sampleouttake=1800,slide_specintake=0,slide_specouttake=700,slide_intakemax=1050;
 
@@ -1231,7 +1231,7 @@ public class BaseClass extends MecanumDrive {
         if (target > lshi || target < lslo) return;
 
         if(newlinearslides){
-           revtarget=(int)(target/revmotencrate);
+           revtarget=(int)(target*revmotencrate);
             lcontroller.setPID(lp, li, ld);
 
         }
@@ -1305,6 +1305,7 @@ public class BaseClass extends MecanumDrive {
            imu.resetYaw();
            Gearbox.setPosition(0);
            controller = new PIDController(p, i, d);
+           lcontroller = new PIDController(lp, li, ld);
            pause(500);
 //           Intake_rot.setPosition(handlerot_intake);
            Arm_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -1326,8 +1327,8 @@ public class BaseClass extends MecanumDrive {
            if(newlinearslides){
                Slide_bot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                Slide_top.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-               revEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-               revEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//               revEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//               revEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
            }
            else
            {
@@ -2237,7 +2238,8 @@ public class BaseClass extends MecanumDrive {
     public void armrotatePIDF() {
 
         if(newlinearslides){
-            slidePos = (revEncoder.getCurrentPosition()/30);//todo
+            revpos = revEncoder.getCurrentPosition();//todo
+            slidePos = (int)(revpos/revmotencrate);
         }
            else {
             slidePos = Slide_top.getCurrentPosition();
@@ -2248,17 +2250,18 @@ public class BaseClass extends MecanumDrive {
         pid = controller.calculate( arm_pose,arm_pose_target);
         ff = Math.cos(Math.toRadians(arm_angle)) * (f + k *slidePos) ;
         power = pid + ff;
+        Arm_left.setPower(-power);
+        Arm_right.setPower(power);
         if(newlinearslides) {
             slidePIDF();
         }
-        Arm_left.setPower(-power);
-        Arm_right.setPower(power);
+
     }
 
     public void slidePIDF() {
 
-        if (Math.abs(revpos - revtarget) > deadband) {
-            lpid = lcontroller.calculate(revpos, revtarget);
+        if (Math.abs(revpos - revtarget) > (deadband*revmotencrate)) {
+            lpid = lcontroller.calculate(revpos/revmotencrate, revtarget/revmotencrate);
             if(lpid>0) lpid=Math.sqrt(lpid);
             else lpid= -Math.sqrt(-lpid);
         } else {
