@@ -38,7 +38,7 @@ public class BaseClass extends MecanumDrive {
     public int courntnumber=0;
     public  double revmotencrate=28.407;
     public  int revpos=0,revtarget=0;
-    public static int deadband = 20;
+    public static int deadband = 16;//20
     double arm_angle=0;
     double claw_close=0.42,claw_open=0.0;
     double arm_angle_target,arm_pose,arm_pose_target;
@@ -651,7 +651,8 @@ public class BaseClass extends MecanumDrive {
     public void pre_idle()
 
     {
-        if (Slide_top.getCurrentPosition() > 700)
+        if (slidePos > 700)
+            //if (Slide_top.getCurrentPosition() > 700)
         {
 //            Claw.setPosition(claw_open);
 //            delay(100);
@@ -666,6 +667,7 @@ public class BaseClass extends MecanumDrive {
         linearslide(slide_idle, slidev2);
         flag[preidle]=true;
         flag[idleready]=false;
+      //  delay(50);
     }
 
     public void idle_ready()
@@ -1306,7 +1308,7 @@ public class BaseClass extends MecanumDrive {
            Gearbox.setPosition(0);
            controller = new PIDController(p, i, d);
            lcontroller = new PIDController(lp, li, ld);
-           pause(500);
+           pause(100);
 //           Intake_rot.setPosition(handlerot_intake);
           // Arm_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
            Arm_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

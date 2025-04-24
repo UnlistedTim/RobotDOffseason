@@ -11,7 +11,6 @@ public class TelOpNew extends LinearOpMode {
     BaseClass rbg;// hardware init at Mecanumdrive.
     double speed_factor = 1.0;
 
-
 //    double[] deltaSlidePowers= new double[1000];
 //
 //    double deltaPower = 0;
