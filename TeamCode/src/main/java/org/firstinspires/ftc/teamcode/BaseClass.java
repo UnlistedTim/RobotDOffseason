@@ -38,7 +38,7 @@ public class BaseClass extends MecanumDrive {
     public int courntnumber=0;
     public  double revmotencrate=28.407;
     public  int revpos=0,revtarget=0;
-    public static int deadband = 16;//20
+    public static int deadband = 30;//20
     double arm_angle=0;
     double claw_close=0.42,claw_open=0.0;
     double arm_angle_target,arm_pose,arm_pose_target;
@@ -47,13 +47,13 @@ public class BaseClass extends MecanumDrive {
     double arot_angle = 0;
     int aslide = 0;
     double lefthandle_idle=0.47,lefthandle_intake=0.205,lefthandle_left45=0.14,lefthandle_left90=0.08,lefthandle_right45=0.22,lefthandle_right90=0.28;
-    double lefthandle_sampleouttake=0.64,lefthandle_specintake=0.64,lefthandle_specouttake=0.67,lefthandle_start=0.12, lefthandle_fold = 0.04;
+    double lefthandle_sampleouttake=0.67,lefthandle_specintake=0.61,lefthandle_specouttake=0.67,lefthandle_start=0.12, lefthandle_fold = 0.04;
     int intake_rotate_index=0;  // old left spec intake 0.61, 0.77
 
-    double righthandle_idle=0.55,righthandle_intake=0.815,righthandle_left45=0.78,righthandle_left90=0.72,righthandle_right45=0.86,righthandle_right90=0.92;
-    double righthandle_sampleouttake=0.4,righthandle_specintake=0.79,righthandle_specouttake=0.35,righthandle_start=0.88, righthandle_fold = 0.98;
+    double righthandle_idle=0.53,righthandle_intake=0.815,righthandle_left45=0.78,righthandle_left90=0.72,righthandle_right45=0.86,righthandle_right90=0.92;
+    double righthandle_sampleouttake=0.33,righthandle_specintake=0.79,righthandle_specouttake=0.35,righthandle_start=0.88, righthandle_fold = 0.98;
 
-    int slide_idle=200,slide_preintake=400,slide_sampleouttake=1775,slide_specintake=0,slide_specouttake=700,slide_intakemax=1050;
+    int slide_idle=200,slide_preintake=400,slide_sampleouttake=1815,slide_specintake=0,slide_specouttake=700,slide_intakemax=1050;
 
     double curleft_handle = 0; double curright_handle = 0;
 
@@ -74,7 +74,7 @@ public class BaseClass extends MecanumDrive {
 
     int slidePos;
     double pid ,power, ff,lpid,lpower,lff, lkk;
-    public double lp = 0.008, li = 0, ld = 0.0002,lf=0.05,lk=0.00015;//todo
+    public double lp = 0.01, li = 0, ld = 0.0002,lf=0.05,lk=0.00018;//todo
 
     double p = 0.00004, i = 0, d = 0.0001 ,f = 0.12,k= 0.0001; //0.000035
     double handlePos = 0.05, handleStep = 0.05;
@@ -594,10 +594,10 @@ public class BaseClass extends MecanumDrive {
             return;
         }
         if(flag[smooth_adj]) {
-            linearslide( slidePos-10,slidev0-200);
+            linearslide( slidePos,slidev0-200);
             if(slidePos>1100) pidfsetting(arm_angle_preintake-2);
             else if(slidePos>700) pidfsetting(arm_angle_preintake-1);
-                    else  pidfsetting(arm_angle_preintake);
+            else  pidfsetting(arm_angle_preintake);
             flag[smooth_adj]=false;}
     }
   public void intake_claw_rotate(double stickx)
@@ -1234,7 +1234,15 @@ public class BaseClass extends MecanumDrive {
 
         if(newlinearslides){
            revtarget=(int)(target*revmotencrate);
-            lcontroller.setPID(lp, li, ld);
+           if (target - slidePos  > 1000 ){
+               lp = 0.013;
+               ld= 0.0002;
+           }
+            else{
+                lp = 0.008;
+               ld= 0.00035;
+           }
+           lcontroller.setPID(lp, li, ld);
 
         }
         else {
@@ -2271,7 +2279,7 @@ public class BaseClass extends MecanumDrive {
         }
 
          lff = Math.sin(Math.toRadians(arm_angle)) * lf;
-         lpower = lpid + lff + slidePos * lk;
+         lpower = lpid + lff + (slidePos * lk * Math.sin(Math.toRadians(arm_angle)));
 
       //  double ff2 = Math.cos(Math.toRadians(angle)) * (-0.04 + k * Slide_pos);  // target
 
