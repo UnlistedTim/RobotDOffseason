@@ -38,7 +38,7 @@ public class BaseClass extends MecanumDrive {
     public int courntnumber=0;
     public  double revmotencrate=28.407;
     public  int revpos=0,revtarget=0;
-    public static int deadband = 30;//20
+    public static int deadband = 40;//20
     double arm_angle=0;
     double claw_close=0.42,claw_open=0.0;
     double arm_angle_target,arm_pose,arm_pose_target;
@@ -53,7 +53,7 @@ public class BaseClass extends MecanumDrive {
     double righthandle_idle=0.53,righthandle_intake=0.815,righthandle_left45=0.78,righthandle_left90=0.72,righthandle_right45=0.86,righthandle_right90=0.92;
     double righthandle_sampleouttake=0.33,righthandle_specintake=0.79,righthandle_specouttake=0.35,righthandle_start=0.88, righthandle_fold = 0.98;
 
-    int slide_idle=200,slide_preintake=400,slide_sampleouttake=1815,slide_specintake=0,slide_specouttake=700,slide_intakemax=1050;
+    int slide_idle=200,slide_preintake=400,slide_sampleouttake=1840,slide_specintake=0,slide_specouttake=700,slide_intakemax=1050;
 
     double curleft_handle = 0; double curright_handle = 0;
 
@@ -1448,7 +1448,7 @@ public class BaseClass extends MecanumDrive {
 
             pidftable[ pidf_specout_specin][pp] = 0.00025; pidftable[pidf_specout_specin][ii]=0.00001;  pidftable[pidf_specout_specin][dd]=0;
 
-           pidftable[pidf_sampleintake][pp]=0.002;  pidftable[pidf_sampleintake][ii]=0;  pidftable[pidf_sampleintake][dd]=0.000013;//todo
+           pidftable[pidf_sampleintake][pp]=0.0015;  pidftable[pidf_sampleintake][ii]=0;  pidftable[pidf_sampleintake][dd]=0.000015;//todo
            pidftable[pidf_specintake][pp]=0.002;  pidftable[pidf_specintake][ii]=0.00015;  pidftable[pidf_specintake][dd]=0.00008; // 0.00008
            pidftable[pidf_aspecintake][pp]=0.0017;  pidftable[pidf_aspecintake][ii]=0.00015;  pidftable[pidf_aspecintake][dd]=0.00008; // 0.00008
            pidftable[pidf_specouttake][pp]=0.00095;  pidftable[pidf_specouttake][ii]=0.00002;  pidftable[pidf_specouttake][dd]=0.000;
