@@ -104,6 +104,7 @@ case SAMPLEINTAKE:
                        rbg.pidf_index=rbg.pidf_idle_specin;
                        speed_factor=1;
                        state = State.SPECINTAKE;
+
                        break;
                    }
 
