@@ -129,7 +129,7 @@ public  class MecanumDrive {
    // public DigitalChannel Arm_touch;
     //public CRServo Intake;
     public  VoltageSensor voltageSensor;
-    public ColorSensor Claw_color;
+//    public ColorSensor Claw_color;
 
     public DistanceSensor bar_dist;
     public DistanceSensor basket_dist;

@@ -83,6 +83,7 @@ case SAMPLEINTAKE:
                    if(!rbg.flag[rbg.sampleintakeready])
                    {
                        speed_factor=0.4;
+                       rbg.smoothshift = true;
                        rbg.pidf_index=rbg.pidf_sampleintake;
                        rbg.sampleintake_ready(gamepad2.right_bumper);
                        break;
@@ -110,7 +111,7 @@ case SAMPLEINTAKE:
 
                
 
-                  rbg.intake_smooth_shift(gamepad2.right_stick_y);
+                  rbg.intake_smooth_shift2(gamepad2.right_stick_y);
                   rbg.intake_claw_rotate(gamepad2.left_stick_x);
                   break;
 
@@ -299,10 +300,10 @@ case SAMPLEINTAKE:
                 if (gamepad2.share || rbg.flag[rbg.hang]) {
                     state= State.HANG;
                     speed_factor = 1.0;
-                    rbg.pre_hang();
+                    rbg.pre_hang2();
                 }
                 if (gamepad1.share) {
-                   rbg.hang();
+                   rbg.hang2();
                 }
 
              if(!rbg.flag[rbg.vb]&&!rbg.flag[rbg.hang]&&rbg.timer(100000,rbg.start)){
@@ -327,6 +328,8 @@ case SAMPLEINTAKE:
 
             telemetry.addData("State",state);
             telemetry.addData("Slide encoder",rbg.revEncoder.getCurrentPosition());
+
+            telemetry.addData("Slide pos",rbg.slidePos);
 //            telemetry.addData("Arm pos", rbg.arm_angle);
             telemetry.addData("Slide powers", rbg.lpower);
             telemetry.update();
