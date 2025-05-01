@@ -25,7 +25,6 @@ public class Autospecimen extends LinearOpMode {
         rbg.init(0);
         sleep(500);
         rbg.init(1);
-        rbg.deadzonecontrol=true;
         telemetry.addLine("Load the specimen in the claw and press Driver right bumper;");
         telemetry.update();
         while(!isStopRequested())

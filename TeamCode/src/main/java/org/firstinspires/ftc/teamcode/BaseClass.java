@@ -1423,7 +1423,7 @@ public class BaseClass extends MecanumDrive {
            lcontroller.setPID(lp, li, ld);
 
             if (deadzonecontrol){
-                deadband = 15;
+                deadband = 20;
             }
             else{
                 deadband = 40;
@@ -2190,9 +2190,7 @@ public class BaseClass extends MecanumDrive {
         linearslide(slide_sampleouttake, slidev2);
         Left_handle.setPosition(lefthandle_sampleouttake);
         Right_handle.setPosition(righthandle_sampleouttake);
-      //  while(Slide_top.getCurrentPosition()<slide_sampleouttake-50&& Op.opModeIsActive())
-         while(slidePos<slide_sampleouttake-50&& Op.opModeIsActive())
-
+        while(Slide_top.getCurrentPosition()<slide_sampleouttake-50&& Op.opModeIsActive())
         {
             delay(25);
         }
@@ -2346,7 +2344,7 @@ public class BaseClass extends MecanumDrive {
     public  void asample_intake() {
         if (flag[last]) {
             linearslide(900, slidev2);
-            while (slidePos < 880&& Op.opModeIsActive()) {
+            while (Slide_top.getCurrentPosition() < 880&& Op.opModeIsActive()) {
             delay(25);
             }
          }
