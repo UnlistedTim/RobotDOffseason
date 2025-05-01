@@ -1,17 +1,13 @@
 package org.firstinspires.ftc.teamcode;
+
+import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.acmerobotics.roadrunner.Pose2d;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.arcrobotics.ftclib.util.InterpLUT;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-@TeleOp(name = "TeleOpState", group = "AA")
-public class TelOp extends LinearOpMode {
+@TeleOp(name = "TeleOpStateNew", group = "AA")
+public class TelOpNew extends LinearOpMode {
     BaseClass rbg;// hardware init at Mecanumdrive.
     double speed_factor = 1.0;
 
@@ -40,6 +36,7 @@ public class TelOp extends LinearOpMode {
     public void runOpMode() {
         Pose2d p1 = new Pose2d(0, 0, 0);
         rbg = new BaseClass(this, p1);
+        rbg.newlinearslides=true;
         if (isStopRequested()) return;
         telemetry.addLine("Wait ! Initializing............. ");
         telemetry.addLine("Do not press start  ");
@@ -52,6 +49,7 @@ public class TelOp extends LinearOpMode {
         rbg.pidf_index=rbg.pidf_idle;
 
 
+
 //        rbg.Front_led.setPosition(0.5);
 //        rbg.Back_led.setPosition(0.5);
         waitForStart();
@@ -59,8 +57,6 @@ public class TelOp extends LinearOpMode {
         rbg.timer(0,rbg.start);
         rbg.pre_idle();
         while (opModeIsActive()) {
-
-
             switch (state) {
                case IDLE:
                    if(!rbg.flag[rbg.idleready])
@@ -87,6 +83,7 @@ case SAMPLEINTAKE:
                    if(!rbg.flag[rbg.sampleintakeready])
                    {
                        speed_factor=0.4;
+                       rbg.smoothshift = true;
                        rbg.pidf_index=rbg.pidf_sampleintake;
                        rbg.sampleintake_ready(gamepad2.right_bumper);
                        break;
@@ -108,12 +105,13 @@ case SAMPLEINTAKE:
                        rbg.pidf_index=rbg.pidf_idle_specin;
                        speed_factor=1;
                        state = State.SPECINTAKE;
+
                        break;
                    }
 
                
 
-                  rbg.intake_smooth_shift(gamepad2.right_stick_y);
+                  rbg.intake_smooth_shift2(gamepad2.right_stick_y);
                   rbg.intake_claw_rotate(gamepad2.left_stick_x);
                   break;
 
@@ -242,11 +240,10 @@ case SAMPLEINTAKE:
 
  case SAMPLEOUTTAKE:
 
-
-                    if(!rbg.flag[rbg.sampleouttakeready]) {
-                        rbg.sampleouttake_ready();
-                        break;
-                    }
+                if(!rbg.flag[rbg.sampleouttakeready]) {
+                    rbg.sampleouttake_ready();
+                    break;
+                }
                  if(gamepad1.right_bumper) {
                      rbg.sampleouttake();
                      rbg.pidf_index=rbg.pidf_sampleout_idle;
@@ -301,12 +298,12 @@ case SAMPLEINTAKE:
             if (rbg.timer(88000, rbg.start) || rbg.flag[rbg.force]) {
 
                 if (gamepad2.share || rbg.flag[rbg.hang]) {
-                    state=State.HANG;
+                    state= State.HANG;
                     speed_factor = 1.0;
-                    rbg.pre_hang();
+                    rbg.pre_hang2();
                 }
                 if (gamepad1.share) {
-                   rbg.hang();
+                   rbg.hang2();
                 }
 
              if(!rbg.flag[rbg.vb]&&!rbg.flag[rbg.hang]&&rbg.timer(100000,rbg.start)){
@@ -322,18 +319,38 @@ case SAMPLEINTAKE:
             if (gamepad2.ps) rbg.flag[rbg.force] = true;
             if(gamepad1.ps)   {
                 rbg.linersliderest();
-                state=State.IDLE;
+                state= State.IDLE;
 
 
             }
 
             rbg.robot_centric(gamepad1.right_stick_y, gamepad1.right_stick_x, gamepad1.left_stick_x, speed_factor);
 
-            if (rbg.Slide_top.getCurrent(CurrentUnit.AMPS) > 8 || rbg.Slide_bot.getCurrent(CurrentUnit.AMPS) > 8){
-                gamepad2.rumble(0.9,0.9,500);
-                gamepad1.rumble(0.9,0.9,500);
+            telemetry.addData("State",state);
+            telemetry.addData("Slide encoder",rbg.revEncoder.getCurrentPosition());
 
-            }
+            telemetry.addData("Slide pos",rbg.slidePos);
+//            telemetry.addData("Arm pos", rbg.arm_angle);
+            telemetry.addData("Slide powers", rbg.lpower);
+            telemetry.update();
+//
+//            if (rbg.Slide_top.getCurrent(CurrentUnit.AMPS) > 8 || rbg.Slide_bot.getCurrent(CurrentUnit.AMPS) > 8){
+//                gamepad2.rumble(0.9,0.9,500);
+//                gamepad1.rumble(0.9,0.9,500);
+//
+//            }
+
+
+
+//            telemetry.addData("Motor encoder", rbg.Slide_top.getCurrentPosition());
+//            telemetry.addData("External encoder", rbg.revEncoder.getCurrentPosition());
+//
+//            telemetry.addData("total power" , rbg.lpower);
+//            telemetry.addData("PID Power", rbg.lpid);
+//            telemetry.addData("Rev target", rbg.revtarget);
+//            telemetry.update();
+
+
 
 
 

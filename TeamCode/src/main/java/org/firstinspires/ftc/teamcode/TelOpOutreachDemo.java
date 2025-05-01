@@ -1,27 +1,15 @@
 package org.firstinspires.ftc.teamcode;
+
+import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.acmerobotics.roadrunner.Pose2d;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.arcrobotics.ftclib.util.InterpLUT;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-@TeleOp(name = "TeleOpState", group = "AA")
-public class TelOp extends LinearOpMode {
+@TeleOp(name = "TeleOpDemo", group = "AA")
+public class TelOpOutreachDemo extends LinearOpMode {
     BaseClass rbg;// hardware init at Mecanumdrive.
     double speed_factor = 1.0;
-
-//    double[] deltaSlidePowers= new double[1000];
-//
-//    double deltaPower = 0;
-
-//    int index = 0;
-
-
 
     public enum State {
         IDLE,
@@ -59,8 +47,6 @@ public class TelOp extends LinearOpMode {
         rbg.timer(0,rbg.start);
         rbg.pre_idle();
         while (opModeIsActive()) {
-
-
             switch (state) {
                case IDLE:
                    if(!rbg.flag[rbg.idleready])
@@ -75,12 +61,12 @@ public class TelOp extends LinearOpMode {
                        state = State.SAMPLEINTAKE;
                        break;
                    }
-                   if(gamepad2.left_bumper) {
-                       rbg.pidf_index=rbg.pidf_idle_specin;
-                       rbg.pre_specintake(false);
-                       state = State.SPECINTAKE;
-                       break;
-                   }
+//                   if(gamepad2.left_bumper) {
+//                       rbg.pidf_index=rbg.pidf_idle_specin;
+//                       rbg.pre_specintake(false);
+//                       state = State.SPECINTAKE;
+//                       break;
+//                   }
                    break;
 
 case SAMPLEINTAKE:
@@ -102,14 +88,14 @@ case SAMPLEINTAKE:
                        }
                    }
 
-                   if(gamepad2.left_bumper) {
-
-                       rbg.pre_specintake(false);
-                       rbg.pidf_index=rbg.pidf_idle_specin;
-                       speed_factor=1;
-                       state = State.SPECINTAKE;
-                       break;
-                   }
+//                   if(gamepad2.left_bumper) {
+//
+//                       rbg.pre_specintake(false);
+//                       rbg.pidf_index=rbg.pidf_idle_specin;
+//                       speed_factor=1;
+//                       state = State.SPECINTAKE;
+//                       break;
+//                   }
 
                
 
@@ -135,21 +121,21 @@ case SAMPLEINTAKE:
                         break;
                     }
 
-                    if(gamepad2.left_bumper) {
-                        rbg.pidf_index=rbg.pidf_idle_specin;
-                        rbg.pre_specintake(false);
-                      state = State.SPECINTAKE;
-                        break;
-                    }
+//                    if(gamepad2.left_bumper) {
+//                        rbg.pidf_index=rbg.pidf_idle_specin;
+//                        rbg.pre_specintake(false);
+//                      state = State.SPECINTAKE;
+//                        break;
+//                    }
 
 
-                    if(gamepad1.touchpad) {
-                        rbg.pidf_index=rbg.pidf_idle_specin;
-                        rbg.pre_specintake(true);
-                        speed_factor=0.4;
-                        state = State.SPECINTAKE;
-                        break;
-                    }
+//                    if(gamepad1.touchpad) {
+//                        rbg.pidf_index=rbg.pidf_idle_specin;
+//                        rbg.pre_specintake(true);
+//                        speed_factor=0.4;
+//                        state = State.SPECINTAKE;
+//                        break;
+//                    }
 
 
                     if(gamepad1.right_bumper) {
@@ -182,34 +168,33 @@ case SAMPLEINTAKE:
                        rbg.specplacment();
                        speed_factor=0.4;
                    }
-                   if(gamepad1.right_bumper) {
-                       rbg.autospec_intake();
+//                   if(gamepad1.right_bumper) {
+//                       rbg.autospec_intake();
+//
+//                       if(gamepad1.right_bumper) {
+//
+//                           rbg.specmove();
+//                           rbg.pre_specouttake();
+//                           state = State.SPECOUTTAKE;
+//                           speed_factor=1;
+//                           break;
+//                       }
+//
+//                       rbg.pre_specouttake();
+//                       speed_factor=1;
+//                       state = State.SPECOUTTAKE;
+//                       break;
+//                   }
 
-                       if(gamepad1.right_bumper) {
-
-                           rbg.specmove();
-                           rbg.pre_specouttake();
-                           state = State.SPECOUTTAKE;
-                           speed_factor=1;
-                           break;
-                       }
-
-                       rbg.pre_specouttake();
-                       speed_factor=1;
-                       state = State.SPECOUTTAKE;
-                       break;
-                   }
-
-                if(gamepad1.right_trigger>0.6)
-                    {
+                if(gamepad1.right_bumper) {
                         rbg.specintake();
-                        if(gamepad1.right_trigger>0.6)
-                        {
-                        rbg.specmove();
-                        state = State.SPECOUTTAKE;
-                        speed_factor=1;
-                         break;
-                        }
+//                        if(gamepad1.right_trigger>0.6)
+//                        {
+//                        rbg.specmove();
+//                        state = State.SPECOUTTAKE;
+//                        speed_factor=1;
+//                         break;
+//                        }
 
                     rbg.pre_specouttake();
                     speed_factor=1;
@@ -231,12 +216,12 @@ case SAMPLEINTAKE:
                    state = State.SAMPLEOUTTAKE;
                    break;
                 }
-                if(gamepad2.left_bumper) {
-                    rbg.pidf_index=rbg.pidf_sampleout_specin;
-                    rbg.pre_specintake(false);
-                    state = State.SPECINTAKE;
-                    break;
-                    }
+//                if(gamepad2.left_bumper) {
+//                    rbg.pidf_index=rbg.pidf_sampleout_specin;
+//                    rbg.pre_specintake(false);
+//                    state = State.SPECINTAKE;
+//                    break;
+//                    }
                break;
 
 
@@ -301,7 +286,7 @@ case SAMPLEINTAKE:
             if (rbg.timer(88000, rbg.start) || rbg.flag[rbg.force]) {
 
                 if (gamepad2.share || rbg.flag[rbg.hang]) {
-                    state=State.HANG;
+                    state= State.HANG;
                     speed_factor = 1.0;
                     rbg.pre_hang();
                 }
@@ -322,12 +307,11 @@ case SAMPLEINTAKE:
             if (gamepad2.ps) rbg.flag[rbg.force] = true;
             if(gamepad1.ps)   {
                 rbg.linersliderest();
-                state=State.IDLE;
+                state= State.IDLE;
 
 
             }
 
-            rbg.robot_centric(gamepad1.right_stick_y, gamepad1.right_stick_x, gamepad1.left_stick_x, speed_factor);
 
             if (rbg.Slide_top.getCurrent(CurrentUnit.AMPS) > 8 || rbg.Slide_bot.getCurrent(CurrentUnit.AMPS) > 8){
                 gamepad2.rumble(0.9,0.9,500);
@@ -335,9 +319,8 @@ case SAMPLEINTAKE:
 
             }
 
-
-
-
+            speed_factor = 0.5;
+            rbg.robot_centric(gamepad1.right_stick_y, gamepad1.right_stick_x, gamepad1.left_stick_x, speed_factor);
          //    telemetry.addData("armlinerslide top", rbg.Slide_top.getCurrentPosition());
         //    telemetry.addData("armlinerslide bot", rbg.Slide_bot.getCurrentPosition());
 ////
@@ -380,15 +363,6 @@ case SAMPLEINTAKE:
 //
 //            telemetry.addData("Arm angle",rbg.arm_angle);
 //            telemetry.update();
-
-
-//            deltaPower = Math.abs(rbg.Slide_top.getPower() - rbg.Slide_bot.getPower());
-//
-//            telemetry.addData("Motor delta power", deltaPower);
-//            telemetry.addData("Top Power",rbg.Slide_top.getPower());
-//            telemetry.addData("Bot power", rbg.Slide_bot.getPower());
-//            telemetry.update();
-
             }
         }
     }

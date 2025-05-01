@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.LED;
@@ -29,8 +30,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 @TeleOp(name = "DebugV2", group = "B")
 public class DebugV2 extends LinearOpMode {
 
-    double lefthandlepos =  0.61; // 0.59
-    double righthandlepos = 0.77; //0.41
+    double slidepower = 0.0;
+
+    double lefthandlepos =  0.5; // 0.59
+    double righthandlepos = 0.5; //0.41
 
     double clawpos = 0;
 
@@ -71,7 +74,7 @@ public class DebugV2 extends LinearOpMode {
     public DistanceSensor basket_dist;
     public AnalogInput Arm_encoder;
 
-    public ColorSensor Claw_color;
+//    public ColorSensor Claw_color;
 
 
 
@@ -85,7 +88,7 @@ public class DebugV2 extends LinearOpMode {
         leftBack = hardwareMap.get(DcMotorEx.class, "leftBack");
         rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
-        Claw_color=hardwareMap.get(ColorSensor.class, "Claw_color");
+//        Claw_color=hardwareMap.get(ColorSensor.class, "Claw_color");
 
 
 
@@ -151,20 +154,27 @@ public class DebugV2 extends LinearOpMode {
 
         Slide_top.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        Slide_bot.setDirection(DcMotorSimple.Direction.REVERSE);
+        Slide_top.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        Slide_bot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        Slide_top.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
 
         if (isStopRequested()) return;
 
         telemetry.addLine("Press Start Now!:");
         telemetry.update();
 
-        Gearbox.setPosition(0); // 0.05
+        Gearbox.setPosition(0.95); // 0.05
 //        init(2);
 
         //    rotatetargetPIDF(rotateStart);
         waitForStart();
 
-//        Left_handle.setPosition(lefthandlepos);
-//        Right_handle.setPosition(righthandlepos);
+        Left_handle.setPosition(lefthandlepos);
+        Right_handle.setPosition(righthandlepos);
         Claw.setPosition(clawpos);
         Arm_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         Arm_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -244,66 +254,83 @@ public class DebugV2 extends LinearOpMode {
                 clawpos = clawopen;
             }
 
+            if (gamepad1.dpad_up){
+                slidepower +=0.02;
+                Slide_top.setPower(slidepower);
+                Slide_bot.setPower(slidepower);
+                sleep(200);
+
+            }
+
+            if (gamepad1.dpad_down){
+                slidepower -=0.02;
+                Slide_top.setPower(slidepower);
+                Slide_bot.setPower(slidepower);
+                sleep(200);
+
+            }
+
 
 
             if (gamepad2.circle) {
             }
             if (gamepad2.square) {
             }
-            if(gamepad1.dpad_up) {
-                if (clawpos <= 0.98){
-                    clawpos+=0.02;
-                    Claw.setPosition(clawpos);
-                    sleep(300);
-                }
-//                tar=tar+100;
-//                linearslide(tar,2700);
+//            if(gamepad1.dpad_up) {
+//                if (clawpos <= 0.98){
+//                    clawpos+=0.02;
+//                    Claw.setPosition(clawpos);
+//                    sleep(300);
+//                }
+////                tar=tar+100;
+////                linearslide(tar,2700);
+//
+//            }
+//            if(gamepad1.dpad_down)
+//            {
+//                if (clawpos >= 0.02){
+//                    clawpos-=0.02;
+//                    Claw.setPosition(clawpos);
+//                    sleep(300);
+//                }
+//
+////                tar=tar-100;
+////                rbg.linearslide(tar,2700);
+//
+//            }
 
-            }
-            if(gamepad1.dpad_down)
-            {
-                if (clawpos >= 0.02){
-                    clawpos-=0.02;
-                    Claw.setPosition(clawpos);
-                    sleep(300);
-                }
 
-//                tar=tar-100;
-//                rbg.linearslide(tar,2700);
-
-            }
-
-
-            if (gamepad1.dpad_up){
-
-            }
-
-            if (gamepad1.dpad_down){
-
-            }
+//            if (gamepad1.dpad_up){
+//
+//            }
+//
+//            if (gamepad1.dpad_down){
+//
+//            }
 
 //
 
             telemetry.addData("armlinerslide", Slide_top.getCurrentPosition());
+            telemetry.addData("Slide power", slidepower);
             telemetry.addData("armrotate position", angle);
-
+//
             telemetry.addData("left handle pos", lefthandlepos);
             telemetry.addData("right handle pos", righthandlepos);
-
-            telemetry.addData("CLaw pos", clawpos);
-
-
-
 //
-           telemetry.addData("gerbox", Gearbox.getPosition());
-
-           telemetry.addData("Color sensor red", Claw_color.red());
-            telemetry.addData("Color sensor green", Claw_color.red());
-            telemetry.addData("Color sensor blue", Claw_color.blue());
-            telemetry.addLine("gamepad2  dapad down/up handle        dpad left/right hadle ort");
-            telemetry.addLine("gamepad2  triangle clawcolse        cross claw open");
-            telemetry.addLine("gamepad1  dapd up  +        dpad downn-");
-            telemetry.addData("Bar distance", bar_dist.getDistance(DistanceUnit.MM));
+//            telemetry.addData("CLaw pos", clawpos);
+//
+//
+//
+////
+//           telemetry.addData("gerbox", Gearbox.getPosition());
+//
+//           telemetry.addData("Color sensor red", Claw_color.red());
+//            telemetry.addData("Color sensor green", Claw_color.red());
+//            telemetry.addData("Color sensor blue", Claw_color.blue());
+//            telemetry.addLine("gamepad2  dapad down/up handle        dpad left/right hadle ort");
+//            telemetry.addLine("gamepad2  triangle clawcolse        cross claw open");
+//            telemetry.addLine("gamepad1  dapd up  +        dpad downn-");
+//            telemetry.addData("Bar distance", bar_dist.getDistance(DistanceUnit.MM));
 //            telemetry.addData("Basket distance", rbg.basket_dist.getDistance(DistanceUnit.MM));
       //      telemetry.addLine("gamepad2 right/lefit bumper   handle rot");
 

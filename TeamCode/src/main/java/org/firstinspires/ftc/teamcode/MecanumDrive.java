@@ -120,6 +120,7 @@ public  class MecanumDrive {
             new ProfileAccelConstraint(PARAMS.minProfileAccel, PARAMS.maxProfileAccel);
 
     public  DcMotorEx leftFront, leftBack, rightBack, rightFront;
+    public  DcMotorEx revEncoder;
 
 
     public  DcMotorEx Arm_right, Arm_left, Slide_top,Slide_bot;
@@ -128,7 +129,7 @@ public  class MecanumDrive {
    // public DigitalChannel Arm_touch;
     //public CRServo Intake;
     public  VoltageSensor voltageSensor;
-    public ColorSensor Claw_color;
+//    public ColorSensor Claw_color;
 
     public DistanceSensor bar_dist;
     public DistanceSensor basket_dist;
@@ -543,6 +544,9 @@ public  class MecanumDrive {
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
 
 
+        revEncoder = hardwareMap.get(DcMotorEx.class, "Arm_right");
+
+
 
 
 //        RevHubOrientationOnRobot.LogoFacingDirection logoFacingDirection =
@@ -592,6 +596,9 @@ public  class MecanumDrive {
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         Slide_bot.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         Slide_top.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        Arm_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        Arm_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 //        Back_led.setPwmRange(500,250);
 

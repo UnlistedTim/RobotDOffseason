@@ -36,38 +36,48 @@ public class BaseClass extends MecanumDrive {
     double speed_index=1;
     double drivinginput;
     public int courntnumber=0;
+    public  double revmotencrate=28.407;
+    public  int revpos=0,revtarget=0;
+    public int deadband = 40;//20
     double arm_angle=0;
     double claw_close=0.42,claw_open=0.0;
     double arm_angle_target,arm_pose,arm_pose_target;
-    double arm_angle_idle=-8,arm_angle_preintake=9,arm_arngle_intake=5,arm_angle_sampleouttake=105,arm_angle_specintake=208,arm_angle_specouttake=32; // 31
+    double arm_angle_idle=-8,arm_angle_preintake=11,arm_arngle_intake=5,arm_angle_sampleouttake=105,arm_angle_specintake=208,arm_angle_specouttake=32; // 31
     double aarm_angle_specouttake =32;
     double arot_angle = 0;
     int aslide = 0;
-    double lefthandle_idle=0.46,lefthandle_intake=0.18,lefthandle_left45=0.14,lefthandle_left90=0.08,lefthandle_right45=0.22,lefthandle_right90=0.28;
-    double lefthandle_sampleouttake=0.64,lefthandle_specintake=0.63,lefthandle_specouttake=0.64,lefthandle_start=0.12, lefthandle_fold = 0.04;
+    double lefthandle_idle=0.47,lefthandle_intake=0.20,lefthandle_left45=0.14,lefthandle_left90=0.08,lefthandle_right45=0.24,lefthandle_right90=0.28;
+    double lefthandle_sampleouttake=0.62,lefthandle_specintake=0.61,lefthandle_specouttake=0.67,lefthandle_start=0.12, lefthandle_fold = 0.04;
     int intake_rotate_index=0;  // old left spec intake 0.61, 0.77
 
-    double righthandle_idle=0.54,righthandle_intake=0.82,righthandle_left45=0.78,righthandle_left90=0.72,righthandle_right45=0.86,righthandle_right90=0.92;
-    double righthandle_sampleouttake=0.36,righthandle_specintake=0.78,righthandle_specouttake=0.36,righthandle_start=0.88, righthandle_fold = 0.98;
+    double righthandle_idle=0.53,righthandle_intake=0.84,righthandle_left45=0.78,righthandle_left90=0.72,righthandle_right45=0.88,righthandle_right90=0.92;
+    double righthandle_sampleouttake=0.39,righthandle_specintake=0.79,righthandle_specouttake=0.35,righthandle_start=0.88, righthandle_fold = 0.98;
 
-    int slide_idle=200,slide_preintake=400,slide_sampleouttake=1800,slide_specintake=0,slide_specouttake=700,slide_intakemax=1050;
+    int slide_idle=200,slide_preintake=400,slide_sampleouttake=1780,slide_specintake=0,slide_specouttake=700,slide_intakemax=1050;
 
     double curleft_handle = 0; double curright_handle = 0;
 
     // SPEC Intake Iterpolated Look up table for angle correction using handle servos to correct for arm angle error
 
     int  slide_rotate=450,lslo=0,lshi=1900;
+
+    boolean deadzonecontrol = false, smoothshift = false;
     Pose2d pp0=new Pose2d(0, 0, 0);
 
 
 
 
     PIDController controller;
+    PIDController lcontroller;
+
 
     boolean hangflag = false;
+    boolean newlinearslides=false;
 
     int slidePos;
-    double pid ,power, ff;
+    double pid ,power, ff,lpid,lpower,lff, lkk;
+    public double lp = 0.01, li = 0, ld = 0.0002,lf=0.05,lk=0.00018;//todo
+
     double p = 0.00004, i = 0, d = 0.0001 ,f = 0.12,k= 0.0001; //0.000035
     double handlePos = 0.05, handleStep = 0.05;
 
@@ -464,6 +474,86 @@ public class BaseClass extends MecanumDrive {
 
     }
 
+    public void hang2() {
+        if(!flag[hang0] || slidePos < 800 ) return;
+
+        move(0.35);
+//        linearslideTq(3300,1.0);
+
+        pidfsetting(57); // Hit arm with low rung //1500
+
+        while (arm_angle_update()<46 && Op.opModeIsActive())
+        {delay(25);}
+
+        delay(150);
+
+        Slide_top.setPower(-0.8);
+        Slide_bot.setPower(-0.8);
+
+
+//        linearslideTq(2900,1.0);
+
+        pidfsetting(90); //1600
+        //  rbg.delay(1000);
+//        linearslideTq(-500,1.0);
+        stop_drive();
+        delay(300);
+        Slide_top.setPower(-1.0);
+        Slide_bot.setPower(-1.0);
+        while(Op.opModeIsActive()&& slidePos > -70) {delay(25);}
+
+        delay(100);
+
+        Slide_top.setPower(0);
+        Slide_bot.setPower(0);
+
+
+
+
+        pidfsetting(85);
+        delay(100);
+
+        Slide_top.setPower(0.9);
+        Slide_bot.setPower(0.9);
+        delay(150);
+
+        while(Op.opModeIsActive() && slidePos < 1170){delay(25);}
+        pidf_index=pidf_hang1;
+        pidfsetting(140); // 2700
+        Slide_top.setPower(0);
+        Slide_bot.setPower(0);
+
+        delay(800);
+
+        Slide_top.setPower(-1.0);
+        Slide_bot.setPower(-1.0);
+
+//        linearslideTq(-650,1.0);
+        while (Op.opModeIsActive() && slidePos > 1170){delay(25);}
+        delay(50);
+        pidfsetting(60);
+//        linearslideTq(-650,1);
+
+
+
+        while(Op.opModeIsActive() && slidePos > -70){
+
+            if (slidePos < 175 && !hangflag){
+                pidfsetting(90);
+                hangflag = true;
+            }
+            delay(25);
+        }
+        delay(300);
+        Slide_top.setPower(0);
+        Slide_bot.setPower(0);
+//        linearslideTq(-650,0);
+        Arm_left.setPower(0);
+        Arm_right.setPower(0);
+        pause(100000);
+
+    }
+
 
 
 
@@ -505,7 +595,6 @@ public class BaseClass extends MecanumDrive {
         if (!flag[hang]){
 
             if(step[hang]==4) return;
-
             linearslide(0,slidev2);
             flag[hang] = true;
             step[hang]=1;
@@ -548,6 +637,65 @@ public class BaseClass extends MecanumDrive {
         }
     }
 
+    public void pre_hang2(){
+
+
+        if (!flag[hang]){
+
+            if(step[hang]==5) return;
+
+            pidfsetting(22);
+            linearslide(800,slidev2);
+            flag[hang] = true;
+            step[hang]=1;
+
+           // delay(50);
+            return;
+        }
+
+        if ( (step[hang]==1&& (slidePos > 730) ) ){
+
+                timer(0,hang_timer);
+                step[hang]=2;
+                Slide_top.setPower(0);
+                Slide_bot.setPower(0);
+                smoothshift = true;
+                return;
+            }
+
+
+        if(step[hang]==2&&timer(300,hang)) {
+
+            Gearbox.setPosition(0.95);
+            pidf_index = pidf_hang0;
+
+            timer(0, hang);
+            Left_handle.setPosition(lefthandle_fold);
+            Right_handle.setPosition(righthandle_fold);
+            step[hang] = 3;
+            return;
+        }
+
+
+         if(step[hang]==3&&timer(700,hang)) {
+
+             Slide_top.setPower(0.35);
+             Slide_bot.setPower(0.35);
+            timer(0,hang);
+            step[hang]=4;
+        }
+
+
+
+        if (step[hang]==4 && slidePos> 840 ){
+            Slide_top.setPower(0);
+            Slide_bot.setPower(0);
+            flag[hang]=false;
+            flag[hang0]=true;
+            step[hang]=5;
+        }
+    }
+
 
 
 
@@ -586,11 +734,47 @@ public class BaseClass extends MecanumDrive {
             return;
         }
         if(flag[smooth_adj]) {
-            linearslide( slidePos-10,slidev0-200);
+            linearslide( slidePos,slidev0-200);
             if(slidePos>1100) pidfsetting(arm_angle_preintake-2);
             else if(slidePos>700) pidfsetting(arm_angle_preintake-1);
-                    else  pidfsetting(arm_angle_preintake);
+            else  pidfsetting(arm_angle_preintake);
             flag[smooth_adj]=false;}
+    }
+
+    public void  intake_smooth_shift2(double sticky) {
+
+        if (sticky < -0.5 && !(slidePos > slide_intakemax)){
+            Slide_top.setPower(0.8);
+            Slide_bot.setPower(0.8);
+            return;
+        }
+        if (sticky > 0.5 && !(slidePos < slide_preintake)){
+            Slide_top.setPower(-0.8);
+            Slide_bot.setPower(-0.8);
+        }
+
+        if (Math.abs(sticky) < 0.5 || slidePos > slide_intakemax ||  slidePos < slide_preintake){
+            Slide_top.setPower(0);
+            Slide_bot.setPower(0);
+        }
+
+//        if(sticky<-0.5)
+//        {linearslide(slide_intakemax,slidev0-100) ;
+//            flag[smooth_adj]=true;
+//            return ;
+//        }
+//
+//        if(sticky>0.5)  {
+//            linearslide(slide_preintake,slidev0-100);
+//            flag[smooth_adj]=true;
+//            return;
+//        }
+//        if(flag[smooth_adj]) {
+//            linearslide( slidePos,slidev0-200);
+//            if(slidePos>1100) pidfsetting(arm_angle_preintake-2);
+//            else if(slidePos>700) pidfsetting(arm_angle_preintake-1);
+//            else  pidfsetting(arm_angle_preintake);
+//            flag[smooth_adj]=false;}
     }
   public void intake_claw_rotate(double stickx)
 
@@ -643,7 +827,11 @@ public class BaseClass extends MecanumDrive {
     public void pre_idle()
 
     {
-        if (Slide_top.getCurrentPosition() > 700)
+
+        Left_handle.setPosition(lefthandle_idle);
+        Right_handle.setPosition(righthandle_idle);
+        if (slidePos > 700)
+            //if (Slide_top.getCurrentPosition() > 700)
         {
 //            Claw.setPosition(claw_open);
 //            delay(100);
@@ -652,12 +840,11 @@ public class BaseClass extends MecanumDrive {
 
         }
         Claw.setPosition(claw_open);
-        Left_handle.setPosition(lefthandle_idle);
-        Right_handle.setPosition(righthandle_idle);
         k=0.0001;
         linearslide(slide_idle, slidev2);
         flag[preidle]=true;
         flag[idleready]=false;
+      //  delay(50);
     }
 
     public void idle_ready()
@@ -1010,7 +1197,7 @@ public class BaseClass extends MecanumDrive {
     public boolean sampleintake() {
        stop_drive();
 
-       linearslide(slidePos + 20, slidev2);
+     //  linearslide(slidePos + 20, slidev2);
        pidf_index=pidf_sampleintake;
        pidfsetting(arm_arngle_intake);
        delay(180); // 500;
@@ -1221,10 +1408,34 @@ public class BaseClass extends MecanumDrive {
     public void linearslide( int target, int speed) {
 
         if (target > lshi || target < lslo) return;
-        Slide_top.setTargetPosition(target); // ne
-        Slide_bot.setTargetPosition(target);
-        Slide_top.setVelocity(speed);
-        Slide_bot.setVelocity(speed);
+
+        if(newlinearslides){
+            smoothshift = false;
+            revtarget=(int)(target*revmotencrate);
+           if (target - slidePos  > 1000 ){
+               lp = 0.013;
+               ld= 0.0002;
+           }
+            else{
+                lp = 0.008;
+               ld= 0.00035;
+           }
+           lcontroller.setPID(lp, li, ld);
+
+            if (deadzonecontrol){
+                deadband = 20;
+            }
+            else{
+                deadband = 40;
+            }
+
+        }
+        else {
+            Slide_top.setTargetPosition(target); // ne
+            Slide_bot.setTargetPosition(target);
+            Slide_top.setVelocity(speed);
+            Slide_bot.setVelocity(speed);
+        }
 
     }
 
@@ -1289,23 +1500,41 @@ public class BaseClass extends MecanumDrive {
            imu.resetYaw();
            Gearbox.setPosition(0);
            controller = new PIDController(p, i, d);
-           pause(500);
+           lcontroller = new PIDController(lp, li, ld);
+           pause(100);
 //           Intake_rot.setPosition(handlerot_intake);
-           Arm_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+          // Arm_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
            Arm_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
            Arm_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-           Arm_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+         //  Arm_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
            Arm_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
            Arm_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+          // Slide_top.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+         //  Slide_bot.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
            Slide_bot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-           Slide_bot.setTargetPosition(0);
-           Slide_bot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-           Slide_bot.setVelocity(0);
            Slide_top.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-           Slide_top.setTargetPosition(0);
-           Slide_top.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-           Slide_top.setVelocity(0);
+
+
+
+
+
+           if(newlinearslides){
+               Slide_bot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+               Slide_top.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//               revEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//               revEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+           }
+           else
+           {
+               Slide_bot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+               Slide_bot.setVelocity(0);
+               Slide_top.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+               Slide_top.setTargetPosition(0);
+               Slide_top.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+               Slide_top.setVelocity(0);
+
+           }
 
         // left 0.61, 0.77
          //  LHandle_correction.add(0,0.655);
@@ -1404,7 +1633,7 @@ public class BaseClass extends MecanumDrive {
 
             pidftable[ pidf_specout_specin][pp] = 0.00025; pidftable[pidf_specout_specin][ii]=0.00001;  pidftable[pidf_specout_specin][dd]=0;
 
-           pidftable[pidf_sampleintake][pp]=0.002;  pidftable[pidf_sampleintake][ii]=0;  pidftable[pidf_sampleintake][dd]=0.000013;//todo
+           pidftable[pidf_sampleintake][pp]=0.0015;  pidftable[pidf_sampleintake][ii]=0;  pidftable[pidf_sampleintake][dd]=0.000015;//todo
            pidftable[pidf_specintake][pp]=0.002;  pidftable[pidf_specintake][ii]=0.00015;  pidftable[pidf_specintake][dd]=0.00008; // 0.00008
            pidftable[pidf_aspecintake][pp]=0.0017;  pidftable[pidf_aspecintake][ii]=0.00015;  pidftable[pidf_aspecintake][dd]=0.00008; // 0.00008
            pidftable[pidf_specouttake][pp]=0.00095;  pidftable[pidf_specouttake][ii]=0.00002;  pidftable[pidf_specouttake][dd]=0.000;
@@ -2203,13 +2432,52 @@ public class BaseClass extends MecanumDrive {
 
     public void armrotatePIDF() {
 
-        slidePos = Slide_top.getCurrentPosition();
+
+        if(newlinearslides){
+            revpos = revEncoder.getCurrentPosition();//todo
+            slidePos = (int)(revpos/revmotencrate);
+        }
+        else {
+            slidePos = Slide_top.getCurrentPosition();
+
+        }
+
         arm_pose= arm_angle_update()*22.75556;
         pid = controller.calculate( arm_pose,arm_pose_target);
         ff = Math.cos(Math.toRadians(arm_angle)) * (f + k *slidePos) ;
         power = pid + ff;
         Arm_left.setPower(-power);
         Arm_right.setPower(power);
+        if(newlinearslides && !smoothshift) {
+            slidePIDF();
+        }
+
+    }
+
+    public void slidePIDF() {
+
+        if (Math.abs(revpos - revtarget) > (deadband*revmotencrate)) {
+            lpid = lcontroller.calculate(revpos/revmotencrate, revtarget/revmotencrate);
+            if(lpid>0) lpid=Math.sqrt(lpid);
+            else lpid= -Math.sqrt(-lpid);
+        } else {
+            lpid = 0.0;
+        }
+
+         lff = Math.sin(Math.toRadians(arm_angle)) * lf;
+         lpower = lpid + lff + (slidePos * lk * Math.sin(Math.toRadians(arm_angle)));
+
+      //  double ff2 = Math.cos(Math.toRadians(angle)) * (-0.04 + k * Slide_pos);  // target
+
+        Slide_top.setPower(lpower);
+        Slide_bot.setPower(lpower);
+
+//
+//        Arm_left.setPower(-ff2);
+//
+//
+//        Arm_right.setPower(ff2);
+
     }
 
 
