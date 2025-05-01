@@ -66,12 +66,15 @@ public class TelOpNew extends LinearOpMode {
                        break;
                    }
                    if(gamepad2.right_bumper) {
+                       rbg.deadzonecontrol = false;
                        rbg.pidf_index=rbg.pidf_sampleintake;
                        rbg.pre_sampleintake();
                        state = State.SAMPLEINTAKE;
                        break;
                    }
                    if(gamepad2.left_bumper) {
+
+                       rbg.deadzonecontrol = true;
                        rbg.pidf_index=rbg.pidf_idle_specin;
                        rbg.pre_specintake(false);
                        state = State.SPECINTAKE;
@@ -90,6 +93,7 @@ case SAMPLEINTAKE:
                    }
 
                    if(gamepad2.right_bumper&&(rbg.drivinginput<0.1)) {
+                       rbg.deadzonecontrol = false;
                        rbg.pidf_index=rbg.pidf_sampleintake;
                        if(rbg.sampleintake())// if wrong color or nothing,
                        {
@@ -100,6 +104,8 @@ case SAMPLEINTAKE:
                    }
 
                    if(gamepad2.left_bumper) {
+
+                       rbg.deadzonecontrol = true;
 
                        rbg.pre_specintake(false);
                        rbg.pidf_index=rbg.pidf_idle_specin;
@@ -134,6 +140,7 @@ case SAMPLEINTAKE:
                     }
 
                     if(gamepad2.left_bumper) {
+                        rbg.deadzonecontrol = true;
                         rbg.pidf_index=rbg.pidf_idle_specin;
                         rbg.pre_specintake(false);
                       state = State.SPECINTAKE;
@@ -142,6 +149,8 @@ case SAMPLEINTAKE:
 
 
                     if(gamepad1.touchpad) {
+
+                        rbg.deadzonecontrol = true;
                         rbg.pidf_index=rbg.pidf_idle_specin;
                         rbg.pre_specintake(true);
                         speed_factor=0.4;
@@ -151,6 +160,7 @@ case SAMPLEINTAKE:
 
 
                     if(gamepad1.right_bumper) {
+                        rbg.deadzonecontrol = false;
                         if(rbg.pre_samplelift(true))  state = State.SAMPLELIFT;
                         break;
                     }
@@ -164,6 +174,7 @@ case SAMPLEINTAKE:
                        break;
                    }
                    if(gamepad2.right_bumper&&rbg.flag[rbg.claw_lock]) {
+                       rbg.deadzonecontrol = false;
                        rbg.linearslide(rbg.slide_idle,rbg.slidev2 );
                        rbg.pidf_index=rbg.pidf_specin_sampleout;
                        rbg.pre_samplelift(false);
@@ -181,6 +192,7 @@ case SAMPLEINTAKE:
                        speed_factor=0.4;
                    }
                    if(gamepad1.right_bumper) {
+                       rbg.deadzonecontrol = true;
                        rbg.autospec_intake();
 
                        if(gamepad1.right_bumper) {
@@ -224,12 +236,15 @@ case SAMPLEINTAKE:
                        break;
                    }
                 if(gamepad1.right_bumper||rbg.flag[rbg.lift]) {
+                    rbg.deadzonecontrol = false;
                    rbg.pre_sampleouttake();
                    speed_factor=0.3;
                    state = State.SAMPLEOUTTAKE;
                    break;
                 }
                 if(gamepad2.left_bumper) {
+
+                    rbg.deadzonecontrol = true;
                     rbg.pidf_index=rbg.pidf_sampleout_specin;
                     rbg.pre_specintake(false);
                     state = State.SPECINTAKE;
@@ -245,6 +260,7 @@ case SAMPLEINTAKE:
                     break;
                 }
                  if(gamepad1.right_bumper) {
+                     rbg.deadzonecontrol = false;
                      rbg.sampleouttake();
                      rbg.pidf_index=rbg.pidf_sampleout_idle;
                      rbg.pre_idle();
@@ -258,6 +274,7 @@ case SAMPLEINTAKE:
   case SPECOUTTAKE:
                    if(!rbg.flag[rbg.specouttakeready])
                    {
+                       rbg.deadzonecontrol = true;
                        rbg.specouttake_ready();
                        break;
                    }
@@ -267,6 +284,7 @@ case SAMPLEINTAKE:
                    if(gamepad1.right_bumper) {
                        rbg.specouttake();
                        rbg.pre_idle();
+                       rbg.deadzonecontrol = false;
                        state = State.IDLE;
                        break;
 
