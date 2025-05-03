@@ -42,7 +42,7 @@ public class BaseClass extends MecanumDrive {
     double arm_angle=0;
     double claw_close=0.42,claw_open=0.0;
     double arm_angle_target,arm_pose,arm_pose_target;
-    double arm_angle_idle=-8,arm_angle_preintake=11,arm_arngle_intake=5,arm_angle_sampleouttake=105,arm_angle_specintake=208,arm_angle_specouttake=32; // 31
+    double arm_angle_idle=-8,arm_angle_preintake=11,arm_arngle_intake=5,arm_angle_sampleouttake=105,arm_angle_specintake=208,arm_angle_specouttake=33; // 31
     double aarm_angle_specouttake =32;
     double arot_angle = 0;
     int aslide = 0;
@@ -53,7 +53,7 @@ public class BaseClass extends MecanumDrive {
     double righthandle_idle=0.53,righthandle_intake=0.84,righthandle_left45=0.78,righthandle_left90=0.72,righthandle_right45=0.88,righthandle_right90=0.92;
     double righthandle_sampleouttake=0.39,righthandle_specintake=0.79,righthandle_specouttake=0.35,righthandle_start=0.88, righthandle_fold = 0.98;
 
-    int slide_idle=200,slide_preintake=400,slide_sampleouttake=1780,slide_specintake=0,slide_specouttake=700,slide_intakemax=1050;
+    int slide_idle=200,slide_preintake=400,slide_sampleouttake=1780,slide_specintake=0,slide_specouttake=710,slide_intakemax=1050;
 
     double curleft_handle = 0; double curright_handle = 0;
 
@@ -474,11 +474,13 @@ public class BaseClass extends MecanumDrive {
 
     }
 
-    public void hang2() {
+    public void hang2(boolean brea) {
         if(!flag[hang0] || slidePos < 800 ) return;
 
         move(0.35);
 //        linearslideTq(3300,1.0);
+
+        pidf_index=pidf_hang0;
 
         pidfsetting(57); // Hit arm with low rung //1500
 
@@ -536,7 +538,8 @@ public class BaseClass extends MecanumDrive {
 
 
 
-        while(Op.opModeIsActive() && slidePos > -70){
+        while(Op.opModeIsActive() && slidePos > -100 && !brea){
+
 
             if (slidePos < 175 && !hangflag){
                 pidfsetting(90);
@@ -1624,9 +1627,9 @@ public class BaseClass extends MecanumDrive {
 
            pidftable[pidf_idle_sampleout][pp]=0.0003;  pidftable[pidf_idle_sampleout][ii]=0;  pidftable[pidf_idle_sampleout][dd]=0;//
            pidftable[pidf_sampleout_idle][pp]=0.00027;  pidftable[pidf_sampleout_idle][ii]=0.00001;  pidftable[pidf_sampleout_idle][dd]=0;//0.00024
-           pidftable[pidf_idle_specin][pp]=0.0002;  pidftable[pidf_idle_specin][ii]=0;  pidftable[pidf_idle_specin][dd]=0;//
+           pidftable[pidf_idle_specin][pp]=0.00015;  pidftable[pidf_idle_specin][ii]=0;  pidftable[pidf_idle_specin][dd]=0;//
            pidftable[pidf_specin_idle][pp]=0.00016;  pidftable[pidf_specin_idle][ii]=0;  pidftable[pidf_specin_idle][dd]=0;//
-           pidftable[pidf_specin_specout][pp]=0.0001;  pidftable[pidf_specin_specout][ii]=0;  pidftable[pidf_specin_specout][dd]=0;//
+           pidftable[pidf_specin_specout][pp]=0.000125;  pidftable[pidf_specin_specout][ii]=0;  pidftable[pidf_specin_specout][dd]=0;//
            pidftable[pidf_sampleout_specin][pp]=0.00022;  pidftable[pidf_sampleout_specin][ii]=0;  pidftable[pidf_sampleout_specin][dd]=0;//
            pidftable[pidf_specin_sampleout][pp]=0.00025;  pidftable[pidf_specin_sampleout][ii]=0;  pidftable[pidf_specin_sampleout][dd]=0;//
            pidftable[ pidf_specout_idle][pp]=0.00016;  pidftable[pidf_specout_idle][ii]=0;  pidftable[pidf_specout_idle][dd]=0.0000;//
@@ -1634,13 +1637,13 @@ public class BaseClass extends MecanumDrive {
             pidftable[ pidf_specout_specin][pp] = 0.00025; pidftable[pidf_specout_specin][ii]=0.00001;  pidftable[pidf_specout_specin][dd]=0;
 
            pidftable[pidf_sampleintake][pp]=0.0015;  pidftable[pidf_sampleintake][ii]=0;  pidftable[pidf_sampleintake][dd]=0.000015;//todo
-           pidftable[pidf_specintake][pp]=0.002;  pidftable[pidf_specintake][ii]=0.00015;  pidftable[pidf_specintake][dd]=0.00008; // 0.00008
-           pidftable[pidf_aspecintake][pp]=0.0017;  pidftable[pidf_aspecintake][ii]=0.00015;  pidftable[pidf_aspecintake][dd]=0.00008; // 0.00008
-           pidftable[pidf_specouttake][pp]=0.00095;  pidftable[pidf_specouttake][ii]=0.00002;  pidftable[pidf_specouttake][dd]=0.000;
+           pidftable[pidf_specintake][pp]=0.0014;  pidftable[pidf_specintake][ii]=0.00015;  pidftable[pidf_specintake][dd]=0.00008; // 0.00008
+           pidftable[pidf_aspecintake][pp]=0.0014;  pidftable[pidf_aspecintake][ii]=0.00015;  pidftable[pidf_aspecintake][dd]=0.0001; // 0.00008
+           pidftable[pidf_specouttake][pp]=0.0011;  pidftable[pidf_specouttake][ii]=0.00002;  pidftable[pidf_specouttake][dd]=0.000;
            pidftable[pidf_sampleouttake][pp]=0.0008;  pidftable[pidf_sampleouttake][ii]=0;  pidftable[pidf_sampleouttake][dd]=0.00002;
 
 
-           pidftable[pidf_hang0][pp]=0.0015;  pidftable[pidf_hang0][ii]=0;  pidftable[pidf_hang0][dd]=0.000;
+           pidftable[pidf_hang0][pp]=0.0025;  pidftable[pidf_hang0][ii]=0;  pidftable[pidf_hang0][dd]=0.000;
            pidftable[pidf_hang1][pp]=0.003;  pidftable[pidf_hang1][ii]=0;  pidftable[pidf_hang1][dd]=0.00002;
            pidftable[pidf_afspecouttake][pp]=0.0012;  pidftable[pidf_afspecouttake][ii]=0.00002;  pidftable[pidf_afspecouttake][dd]=0.0001;
 

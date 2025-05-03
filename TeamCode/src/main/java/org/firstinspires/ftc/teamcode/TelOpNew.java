@@ -303,7 +303,7 @@ case SAMPLEINTAKE:
                     rbg.pre_hang2();
                 }
                 if (gamepad1.share) {
-                   rbg.hang2();
+                   rbg.hang2(gamepad1.right_bumper);
                 }
 
              if(!rbg.flag[rbg.vb]&&!rbg.flag[rbg.hang]&&rbg.timer(100000,rbg.start)){
