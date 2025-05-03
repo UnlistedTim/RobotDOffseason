@@ -120,24 +120,17 @@ public  class MecanumDrive {
             new ProfileAccelConstraint(PARAMS.minProfileAccel, PARAMS.maxProfileAccel);
 
     public  DcMotorEx leftFront, leftBack, rightBack, rightFront;
-    public  DcMotorEx revEncoder;
 
 
-    public  DcMotorEx Arm_right, Arm_left, Slide_top,Slide_bot;
-    public  Servo Left_handle,Right_handle, Claw, Gearbox;
-    public AnalogInput Arm_encoder;
-   // public DigitalChannel Arm_touch;
-    //public CRServo Intake;
-    public  VoltageSensor voltageSensor;
+    public  DcMotorEx backBotSlide, backTopSlide, frontBotSlide,frontTopSlide;
+    public  Servo leftLink,leftPivot, leftGearbox, rightLink, rightPivot, rightGearbox;
+    public Servo extendoArm, Cam, extendoHandle, Claw, rightDiffy, leftDiffy;
+
 //    public ColorSensor Claw_color;
 
-    public DistanceSensor bar_dist;
-    public DistanceSensor basket_dist;
 
 
 
-    public ServoImplEx Front_led;
-    public ServoImplEx Back_led;
 
     public IMU imu;
 
@@ -544,7 +537,7 @@ public  class MecanumDrive {
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
 
 
-        revEncoder = hardwareMap.get(DcMotorEx.class, "Arm_right");
+//        revEncoder = hardwareMap.get(DcMotorEx.class, "Arm_right");
 
 
 
@@ -555,34 +548,43 @@ public  class MecanumDrive {
 //                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
 
 
-        Arm_right = hardwareMap.get(DcMotorEx.class, "Arm_right");
-        Arm_left = hardwareMap.get(DcMotorEx.class, "Arm_left");
-        Slide_bot = hardwareMap.get(DcMotorEx.class, "Slide_bot");
-        Slide_top = hardwareMap.get(DcMotorEx.class, "Slide_top");
+        backBotSlide = hardwareMap.get(DcMotorEx.class, "backBotSlide");
+        backTopSlide = hardwareMap.get(DcMotorEx.class, "backTopSlide");
+        frontBotSlide = hardwareMap.get(DcMotorEx.class, "frontBotSlide");
+        frontTopSlide = hardwareMap.get(DcMotorEx.class, "frontTopSlide");
 
         //Make the encoder value be postive
 
-        Back_led = hardwareMap.get(ServoImplEx.class,"Back_led");
-        Front_led = hardwareMap.get(ServoImplEx.class,"Front_led");
 
 
 
 
 
-        Right_handle = hardwareMap.get(Servo.class, "Right_handle");
-        Claw = hardwareMap.get(Servo.class, "Claw");
-        Left_handle = hardwareMap.get(Servo.class, "Left_handle");
+        rightLink = hardwareMap.get(Servo.class, "rightLink");
+        rightPivot = hardwareMap.get(Servo.class, "rightPivot");
+        rightGearbox = hardwareMap.get(Servo.class, "rightGearbox");
+
+        leftLink = hardwareMap.get(Servo.class, "leftLink");
+        leftPivot = hardwareMap.get(Servo.class, "leftPivot");
+        leftGearbox = hardwareMap.get(Servo.class, "leftGearbox");
+
+
+        extendoArm = hardwareMap.get(Servo.class, "extendoArm");
+        Cam = hardwareMap.get(Servo.class, "Cam");
+        extendoHandle = hardwareMap.get(Servo.class, "extendoHandle");
 
 //
-        Gearbox = hardwareMap.get(Servo.class, "Gearbox");
+        Claw = hardwareMap.get(Servo.class, "Claw");
+        rightDiffy = hardwareMap.get(Servo.class, "rightDiffy");
+        leftDiffy = hardwareMap.get(Servo.class, "leftDiffy");
 
        // Claw_color=hardwareMap.get(ColorSensor.class, "Claw_color");
 
 //        Intake_color = hardwareMap.get(ColorSensor.class, "Intake_color");
-        Arm_encoder= hardwareMap.get(AnalogInput.class, "Arm_encoder");
-        //Arm_touch = hardwareMap.get(DigitalChannel.class,"Arm_touch");
-        basket_dist = hardwareMap.get(DistanceSensor.class,"basket_dist");
-        bar_dist = hardwareMap.get(DistanceSensor.class,"bar_dist");
+//        Arm_encoder= hardwareMap.get(AnalogInput.class, "Arm_encoder");
+//        //Arm_touch = hardwareMap.get(DigitalChannel.class,"Arm_touch");
+//        basket_dist = hardwareMap.get(DistanceSensor.class,"basket_dist");
+//        bar_dist = hardwareMap.get(DistanceSensor.class,"bar_dist");
 
 //        Webcam1=hardwareMap.get(WebcamName.class, "Webcam 1");
 
@@ -594,16 +596,17 @@ public  class MecanumDrive {
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        Slide_bot.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        Slide_top.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        Arm_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        Arm_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        backBotSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontBotSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        backTopSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontTopSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
 //        Back_led.setPwmRange(500,250);
 
-        Slide_bot.setDirection(DcMotorSimple.Direction.REVERSE);
-        Slide_top.setDirection(DcMotorSimple.Direction.REVERSE);
         lazyImu = new LazyImu(hardwareMap, "imu", new RevHubOrientationOnRobot(
                 logoFacingDirection, usbFacingDirection));
         imu = hardwareMap.get(IMU.class, "imu");
@@ -612,20 +615,15 @@ public  class MecanumDrive {
                 RevHubOrientationOnRobot.UsbFacingDirection.UP));
         imu.initialize(imuparameters);
 
-        voltageSensor = hardwareMap.voltageSensor.iterator().next();
-
-
-        Arm_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        Arm_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        Arm_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        Arm_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
 
-        Slide_bot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        Slide_bot.setTargetPosition(0);
-        Slide_bot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        Slide_bot.setVelocity(0);
+
+
+        backBotSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backBotSlide.setTargetPosition(0);
+        backBotSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backBotSlide.setVelocity(0);
 
         Slide_top.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         Slide_top.setTargetPosition(0);
