@@ -120,11 +120,16 @@ public  class MecanumDrive {
             new ProfileAccelConstraint(PARAMS.minProfileAccel, PARAMS.maxProfileAccel);
 
     public  DcMotorEx leftFront, leftBack, rightBack, rightFront;
-    public  DcMotorEx revEncoder;
+//    public  DcMotorEx revEncoder;
+
+    public DcMotorEx backBotSlide, backTopSlide, frontBotSlide, frontTopSlide;
 
 
-    public  DcMotorEx Arm_right, Arm_left, Slide_top,Slide_bot;
-    public  Servo Left_handle,Right_handle, Claw, Gearbox;
+    public  Servo rightLink,rightPivot, Claw, rightGearbox;
+
+    public Servo leftLink, leftPivot, leftGearbox;
+
+    public Servo extendoArm, Cam, extendoHandle, rightDiffy, leftDiffy;
     public AnalogInput Arm_encoder;
    // public DigitalChannel Arm_touch;
     //public CRServo Intake;
@@ -136,8 +141,8 @@ public  class MecanumDrive {
 
 
 
-    public ServoImplEx Front_led;
-    public ServoImplEx Back_led;
+//    public ServoImplEx Front_led;
+//    public ServoImplEx Back_led;
 
     public IMU imu;
 
@@ -555,23 +560,32 @@ public  class MecanumDrive {
 //                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
 
 
-        Arm_right = hardwareMap.get(DcMotorEx.class, "Arm_right");
-        Arm_left = hardwareMap.get(DcMotorEx.class, "Arm_left");
-        Slide_bot = hardwareMap.get(DcMotorEx.class, "Slide_bot");
-        Slide_top = hardwareMap.get(DcMotorEx.class, "Slide_top");
+        backBotSlide = hardwareMap.get(DcMotorEx.class, "backBotSlide");
+        backTopSlide = hardwareMap.get(DcMotorEx.class, "backTopSlide");
+        frontBotSlide = hardwareMap.get(DcMotorEx.class, "frontBotSlide");
+        frontTopSlide = hardwareMap.get(DcMotorEx.class, "frontTopSlide");
 
         //Make the encoder value be postive
 
-        Back_led = hardwareMap.get(ServoImplEx.class,"Back_led");
-        Front_led = hardwareMap.get(ServoImplEx.class,"Front_led");
+//        Back_led = hardwareMap.get(ServoImplEx.class,"Back_led");
+//        Front_led = hardwareMap.get(ServoImplEx.class,"Front_led");
 
 
 
 
 
-        Right_handle = hardwareMap.get(Servo.class, "Right_handle");
+        rightLink = hardwareMap.get(Servo.class, "rightLink");
         Claw = hardwareMap.get(Servo.class, "Claw");
-        Left_handle = hardwareMap.get(Servo.class, "Left_handle");
+        rightPivot = hardwareMap.get(Servo.class, "rightPivot");
+        rightGearbox = hardwareMap.get(Servo.class, "rightGearbox");
+
+        leftLink = hardwareMap.get(Servo.class, "leftLink");
+        leftPivot = hardwareMap.get(Servo.class, "leftPivot");
+        leftGearbox = hardwareMap.get(Servo.class, "leftGearbox");
+
+
+
+
 
 //
         Gearbox = hardwareMap.get(Servo.class, "Gearbox");
@@ -583,6 +597,15 @@ public  class MecanumDrive {
         //Arm_touch = hardwareMap.get(DigitalChannel.class,"Arm_touch");
         basket_dist = hardwareMap.get(DistanceSensor.class,"basket_dist");
         bar_dist = hardwareMap.get(DistanceSensor.class,"bar_dist");
+
+        extendoArm = hardwareMap.get(Servo.class, "extendoArm");
+        Cam = hardwareMap.get(Servo.class, "Cam");
+        extendoHandle = hardwareMap.get(Servo.class, "extendoHandle");
+
+        rightDiffy = hardwareMap.get(Servo.class, "rightDiffy");
+        leftDiffy = hardwareMap.get(Servo.class, "leftDiffy");
+
+
 
 //        Webcam1=hardwareMap.get(WebcamName.class, "Webcam 1");
 
