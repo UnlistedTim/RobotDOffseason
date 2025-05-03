@@ -480,6 +480,8 @@ public class BaseClass extends MecanumDrive {
         move(0.35);
 //        linearslideTq(3300,1.0);
 
+        pidf_index=pidf_hang0;
+
         pidfsetting(57); // Hit arm with low rung //1500
 
         while (arm_angle_update()<46 && Op.opModeIsActive())
@@ -1641,7 +1643,7 @@ public class BaseClass extends MecanumDrive {
            pidftable[pidf_sampleouttake][pp]=0.0008;  pidftable[pidf_sampleouttake][ii]=0;  pidftable[pidf_sampleouttake][dd]=0.00002;
 
 
-           pidftable[pidf_hang0][pp]=0.0015;  pidftable[pidf_hang0][ii]=0;  pidftable[pidf_hang0][dd]=0.000;
+           pidftable[pidf_hang0][pp]=0.0025;  pidftable[pidf_hang0][ii]=0;  pidftable[pidf_hang0][dd]=0.000;
            pidftable[pidf_hang1][pp]=0.003;  pidftable[pidf_hang1][ii]=0;  pidftable[pidf_hang1][dd]=0.00002;
            pidftable[pidf_afspecouttake][pp]=0.0012;  pidftable[pidf_afspecouttake][ii]=0.00002;  pidftable[pidf_afspecouttake][dd]=0.0001;
 
