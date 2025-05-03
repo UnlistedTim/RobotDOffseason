@@ -2,13 +2,10 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.acmerobotics.roadrunner.Pose2d;
 import com.arcrobotics.ftclib.controller.PIDController;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
-import com.qualcomm.robotcore.hardware.CRServo;
 
 
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -17,18 +14,14 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
-import com.qualcomm.robotcore.hardware.LED;
-import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
-
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
 //CLAW POS Fully open 0.72, Fully closed 0.93;
 
-@TeleOp(name = "DebugV2", group = "B")
-public class DebugV2 extends LinearOpMode {
+@TeleOp(name = "DebugVD", group = "A")
+public class DebugVD extends LinearOpMode {
 
     double slidepower = 0.0;
 
@@ -43,9 +36,7 @@ public class DebugV2 extends LinearOpMode {
     double offset = 38;
 
 
-    public DcMotorEx leftFront, leftBack, rightBack, rightFront;
 
-    public ColorSensor Intake_color;
 
     double angle;
 
@@ -63,16 +54,21 @@ public class DebugV2 extends LinearOpMode {
 
 
 
-    public  DcMotorEx Arm_right, Arm_left, Slide_top,Slide_bot;
-    public Servo Left_handle,Right_handle, Gearbox, Claw;
-    public DigitalChannel Arm_touch;
+    public  DcMotorEx leftFront, leftBack, rightBack, rightFront;
+//    public  DcMotorEx revEncoder;
+
+    public DcMotorEx backBotSlide, backTopSlide, frontBotSlide, frontTopSlide;
+
+
+    public  Servo rightLink,rightPivot, Claw, rightGearbox;
+
+    public Servo leftLink, leftPivot, leftGearbox;
+
+    public Servo extendoArm, Cam, extendoHandle, rightDiffy, leftDiffy;
     public VoltageSensor voltageSensor;
 
     public PIDController controller;
 
-    public DistanceSensor bar_dist;
-    public DistanceSensor basket_dist;
-    public AnalogInput Arm_encoder;
 
 //    public ColorSensor Claw_color;
 
@@ -88,13 +84,6 @@ public class DebugV2 extends LinearOpMode {
         leftBack = hardwareMap.get(DcMotorEx.class, "leftBack");
         rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
-//        Claw_color=hardwareMap.get(ColorSensor.class, "Claw_color");
-
-
-
-
-
-
 
 
 //        RevHubOrientationOnRobot.LogoFacingDirection logoFacingDirection =
@@ -103,24 +92,31 @@ public class DebugV2 extends LinearOpMode {
 //                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
 
 
-        Arm_right = hardwareMap.get(DcMotorEx.class, "Arm_right");
-        Arm_left = hardwareMap.get(DcMotorEx.class, "Arm_left");
-        Slide_bot = hardwareMap.get(DcMotorEx.class, "Slide_bot");
-        Slide_top = hardwareMap.get(DcMotorEx.class, "Slide_top");
+        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
+        leftBack = hardwareMap.get(DcMotorEx.class, "leftBack");
+        rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
+        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
 
-        Arm_encoder= hardwareMap.get(AnalogInput.class, "Arm_encoder");
+//        RevHubOrientationOnRobot.LogoFacingDirection logoFacingDirection =
+//                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT;
+//        RevHubOrientationOnRobot.UsbFacingDirection usbFacingDirection =
+//                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
 
-//        arm_grab = hardwareMap.get(Servo.class, "arm_grab");
-        Right_handle = hardwareMap.get(Servo.class, "Right_handle");
+
+        backBotSlide = hardwareMap.get(DcMotorEx.class, "backBotSlide");
+        backTopSlide = hardwareMap.get(DcMotorEx.class, "backTopSlide");
+        frontBotSlide = hardwareMap.get(DcMotorEx.class, "frontBotSlide");
+        frontTopSlide = hardwareMap.get(DcMotorEx.class, "frontTopSlide");
+
+
+        rightLink = hardwareMap.get(Servo.class, "rightLink");
         Claw = hardwareMap.get(Servo.class, "Claw");
-        Left_handle = hardwareMap.get(Servo.class, "Left_handle");
-        Gearbox = hardwareMap.get(Servo.class, "Gearbox");
+        rightPivot = hardwareMap.get(Servo.class, "rightPivot");
+        rightGearbox = hardwareMap.get(Servo.class, "rightGearbox");
 
-//        Intake_color = hardwareMap.get(ColorSensor.class, "Intake_color");
-        Arm_touch = hardwareMap.get(DigitalChannel.class,"Arm_touch");
-
-        basket_dist = hardwareMap.get(DistanceSensor.class,"basket_dist");
-        bar_dist = hardwareMap.get(DistanceSensor.class,"bar_dist");
+        leftLink = hardwareMap.get(Servo.class, "leftLink");
+        leftPivot = hardwareMap.get(Servo.class, "leftPivot");
+        leftGearbox = hardwareMap.get(Servo.class, "leftGearbox");
 
 
 
@@ -130,36 +126,26 @@ public class DebugV2 extends LinearOpMode {
         telemetry.addLine("Wait ! Initializing............. ");
         telemetry.update();
 
-        Arm_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
-        Arm_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        Arm_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
-        Arm_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
-        Arm_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        Arm_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-//        Slide_bot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        Slide_bot.setTargetPosition(0);
-//        Slide_bot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        Slide_bot.setVelocity(0);
-//
-//        Slide_top.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        Slide_top.setTargetPosition(0);
-//        Slide_top.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        Slide_top.setVelocity(0);
 
-        Slide_bot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backBotSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backBotSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        Slide_top.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backTopSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backTopSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        Slide_bot.setDirection(DcMotorSimple.Direction.REVERSE);
-        Slide_top.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontBotSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontBotSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        Slide_bot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontTopSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontTopSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        Slide_top.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+
 
 
         if (isStopRequested()) return;
@@ -173,15 +159,7 @@ public class DebugV2 extends LinearOpMode {
         //    rotatetargetPIDF(rotateStart);
         waitForStart();
 
-        Left_handle.setPosition(lefthandlepos);
-        Right_handle.setPosition(righthandlepos);
-        Claw.setPosition(clawpos);
-        Arm_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        Arm_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-
-        Arm_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        Arm_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         // Intake_rot.setPosition(0.3);
         //Intake_rot.setPosition(0.3);
         sleep(500);

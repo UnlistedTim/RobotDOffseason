@@ -345,7 +345,7 @@ case SAMPLEINTAKE:
             rbg.robot_centric(gamepad1.right_stick_y, gamepad1.right_stick_x, gamepad1.left_stick_x, speed_factor);
 
             telemetry.addData("State",state);
-            telemetry.addData("Slide encoder",rbg.revEncoder.getCurrentPosition());
+//            telemetry.addData("Slide encoder",rbg.revEncoder.getCurrentPosition());
 
             telemetry.addData("Slide pos",rbg.slidePos);
 //            telemetry.addData("Arm pos", rbg.arm_angle);
