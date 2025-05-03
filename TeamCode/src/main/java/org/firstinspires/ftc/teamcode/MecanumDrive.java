@@ -602,8 +602,6 @@ public  class MecanumDrive {
 
 //        Back_led.setPwmRange(500,250);
 
-        setDrivePowers();
-
         Slide_bot.setDirection(DcMotorSimple.Direction.REVERSE);
         Slide_top.setDirection(DcMotorSimple.Direction.REVERSE);
         lazyImu = new LazyImu(hardwareMap, "imu", new RevHubOrientationOnRobot(

@@ -22,7 +22,6 @@ public class Autospecimen extends LinearOpMode {
         rbg = new BaseClass(this, new Pose2d(0,0,0));
         telemetry.addLine("Make sure linearslide was fully in before start and do not move the robot anymore;");
         telemetry.update();
-         rbg.newlinearslides=true;
         rbg.init(0);
         sleep(500);
         rbg.init(1);
