@@ -152,8 +152,6 @@ public class DebugVD extends LinearOpMode {
 
         telemetry.addLine("Press Start Now!:");
         telemetry.update();
-
-        Gearbox.setPosition(0.95); // 0.05
 //        init(2);
 
         //    rotatetargetPIDF(rotateStart);
@@ -166,165 +164,31 @@ public class DebugVD extends LinearOpMode {
 
 
         while (opModeIsActive()) {
-            angle = 360 - ((Arm_encoder.getVoltage() / 3.2 * 360 + offset) % 360);
-            if (angle < 360 && angle > 330) angle-=360;
-           // Intake_rot.setPosition(0);
 
-
-//            if (gamepad2.triangle) {armslidePos+= armslideStep; rbg.timer(0,0);}
-//            if (gamepad2.cross) {rbg.armslidePos -= rbg.armslideStep;; rbg.timer(0,0);}
-//            if (gamepad2.square) {rbg.armrotatePos -=rbg.armrotateStep; rbg.timer(0,0);}
-//            if (gamepad2.square) {rbg.armrotatePos-= ; rbg.timer(0,0);}
-//            if (gamepad2.circle) {rbg.armrotatePos += rbg.armrotateStep;; rbg.timer(0,0);}
-            if (gamepad2.dpad_up) {
-                if (lefthandlepos <= 0.996 && righthandlepos >=0.004){
-                    lefthandlepos+=0.005;
-                    righthandlepos-=0.005;
-                    Left_handle.setPosition(lefthandlepos);
-                    Right_handle.setPosition(righthandlepos);
-                    sleep(300);
-                }
-
-
-
-            }
-            if (gamepad2.dpad_down) {
-                if (lefthandlepos >= 0.004 && righthandlepos <=0.996) {
-                    lefthandlepos-=0.005;
-                    righthandlepos+=0.005;
-                    Left_handle.setPosition(lefthandlepos);
-                    Right_handle.setPosition(righthandlepos);
-                    sleep(300);
-                }
-
-
-            }
-            if (gamepad2.dpad_left) {
-                if (righthandlepos >= 0.004 && lefthandlepos >=0.004){
-                    lefthandlepos-=0.005;
-                    righthandlepos-=0.005;
-                    Left_handle.setPosition(lefthandlepos);
-                    Right_handle.setPosition(righthandlepos);
-
-                    sleep(300);
-                }
-
-            }
-            if (gamepad2.dpad_right) {
-                if (righthandlepos <= 0.996 && lefthandlepos <=0.996){
-                    lefthandlepos+=0.005;
-                    righthandlepos+=0.005;
-                    Left_handle.setPosition(lefthandlepos);
-                    Right_handle.setPosition(righthandlepos);
-                    sleep(300);
-                }
-
-            }
-            if (gamepad2.triangle) {
-
-                Claw.setPosition(clawclose);
-                clawpos = clawclose;
-
-
-            }
-            if (gamepad2.cross) {
-                Claw.setPosition(clawopen);
-                clawpos = clawopen;
-            }
-
-            if (gamepad1.dpad_up){
-                slidepower +=0.02;
-                Slide_top.setPower(slidepower);
-                Slide_bot.setPower(slidepower);
-                sleep(200);
-
-            }
-
-            if (gamepad1.dpad_down){
-                slidepower -=0.02;
-                Slide_top.setPower(slidepower);
-                Slide_bot.setPower(slidepower);
-                sleep(200);
+            robot_centric(gamepad1.right_stick_y, gamepad1.right_stick_x, gamepad1.left_stick_x,1.0);
 
             }
 
 
-
-            if (gamepad2.circle) {
-            }
-            if (gamepad2.square) {
-            }
-//            if(gamepad1.dpad_up) {
-//                if (clawpos <= 0.98){
-//                    clawpos+=0.02;
-//                    Claw.setPosition(clawpos);
-//                    sleep(300);
-//                }
-////                tar=tar+100;
-////                linearslide(tar,2700);
-//
-//            }
-//            if(gamepad1.dpad_down)
-//            {
-//                if (clawpos >= 0.02){
-//                    clawpos-=0.02;
-//                    Claw.setPosition(clawpos);
-//                    sleep(300);
-//                }
-//
-////                tar=tar-100;
-////                rbg.linearslide(tar,2700);
-//
-//            }
-
-
-//            if (gamepad1.dpad_up){
-//
-//            }
-//
-//            if (gamepad1.dpad_down){
-//
-//            }
-
-//
-
-            telemetry.addData("armlinerslide", Slide_top.getCurrentPosition());
-            telemetry.addData("Slide power", slidepower);
-            telemetry.addData("armrotate position", angle);
-//
-            telemetry.addData("left handle pos", lefthandlepos);
-            telemetry.addData("right handle pos", righthandlepos);
-//
-//            telemetry.addData("CLaw pos", clawpos);
-//
-//
-//
-////
-//           telemetry.addData("gerbox", Gearbox.getPosition());
-//
-//           telemetry.addData("Color sensor red", Claw_color.red());
-//            telemetry.addData("Color sensor green", Claw_color.red());
-//            telemetry.addData("Color sensor blue", Claw_color.blue());
-//            telemetry.addLine("gamepad2  dapad down/up handle        dpad left/right hadle ort");
-//            telemetry.addLine("gamepad2  triangle clawcolse        cross claw open");
-//            telemetry.addLine("gamepad1  dapd up  +        dpad downn-");
-//            telemetry.addData("Bar distance", bar_dist.getDistance(DistanceUnit.MM));
-//            telemetry.addData("Basket distance", rbg.basket_dist.getDistance(DistanceUnit.MM));
-      //      telemetry.addLine("gamepad2 right/lefit bumper   handle rot");
-
-//            telemetry.addData("Intake rot",intakerotpose);
-            telemetry.update();
-          //  update_flag=false;
-
-
-
-
-
-
-
-
-            }
         }
+
+    protected void robot_centric(double iy, double ix, double irx, double ratio) {
+        double y = -iy;
+        double x = ix * 1.1; // Counteract imperfect strafing
+        double rx = irx * 0.75; // 0.75
+        double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+        double frontLeftPower = (y + x + rx) / denominator;
+        double backLeftPower = (y - x + rx) / denominator;
+        double frontRightPower = (y - x - rx) / denominator;
+        double backRightPower = (y + x - rx) / denominator;
+
+        leftFront.setPower(frontLeftPower * ratio);
+        rightFront.setPower(frontRightPower * ratio);
+        leftBack.setPower(backLeftPower * ratio);
+        rightBack.setPower(backRightPower * ratio);
+
+
+    }
 
 }
 
