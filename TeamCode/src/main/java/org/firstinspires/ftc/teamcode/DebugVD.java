@@ -35,6 +35,9 @@ public class DebugVD extends LinearOpMode {
 
     double offset = 38;
 
+    double frontslidepowers = 0.0;
+    double backslidepowers = 0.0;
+
 
 
 
@@ -149,6 +152,11 @@ public class DebugVD extends LinearOpMode {
         rightBack.setDirection(DcMotorSimple.Direction.FORWARD);
         rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
 
+        backBotSlide.setDirection(DcMotorSimple.Direction.FORWARD);
+        backTopSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontBotSlide.setDirection(DcMotorSimple.Direction.FORWARD);
+        frontTopSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+
 
 
 
@@ -170,9 +178,34 @@ public class DebugVD extends LinearOpMode {
 
         while (opModeIsActive()) {
 
+            backBotSlide.setPower(backslidepowers);
+            backTopSlide.setPower(backslidepowers);
+
+            frontBotSlide.setPower(frontslidepowers);
+            frontTopSlide.setPower(frontslidepowers);
+
+            if (gamepad1.dpad_up && frontslidepowers <=0.96){
+                frontslidepowers+=0.05;
+            }
+
+            if (gamepad1.dpad_down && frontslidepowers >=-0.96){
+                frontslidepowers-=0.05;
+            }
+
+            if (gamepad1.right_bumper && backslidepowers <=0.96){
+                backslidepowers+=0.05;
+            }
+
+            if (gamepad1.dpad_left && backslidepowers >=-0.96){
+                backslidepowers-=0.05;
+            }
+
             robot_centric(gamepad1.right_stick_y, gamepad1.right_stick_x, gamepad1.left_stick_x,1.0);
 
             }
+
+        telemetry.addData("Front slide powers",frontslidepowers);
+        telemetry.addData("back slide powers", backslidepowers);
 
 
         }
