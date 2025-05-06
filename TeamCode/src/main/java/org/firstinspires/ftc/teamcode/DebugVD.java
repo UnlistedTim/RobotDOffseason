@@ -144,6 +144,11 @@ public class DebugVD extends LinearOpMode {
         frontTopSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontTopSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightBack.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
+
 
 
 
