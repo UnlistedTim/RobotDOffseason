@@ -6,40 +6,35 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 
 //183
 
 
 @TeleOp
 @Config
-public class PIDF_SlideC extends OpMode {
+public class PIDF_SlideD extends OpMode {
 
     private PIDController controller;
 
     double Slide_pos = 0;
 
 
-    double handleleft = 0.46;
-    double handleright = 0.54;
-
 
     double offset = 38;// -200+360
 
-    double angle;
+    double angle = 90;
     double raw_angle;
 
-    public static double p = 0.007, i = 0, d = 0.0002;
+    public static double p = 0.004, i = 0, d = 0;
 
 
     //  public static double p = 0.0025, i = 0, d = 0.00008;
     //  public static double p = 0.01, i = 0, d = 0.0008;
 
-    public static double f = 0.03;
+    public static double f = 0.05;
 
     // public static double f = -0.05;  //0.12 also good
 
@@ -51,21 +46,13 @@ public class PIDF_SlideC extends OpMode {
     public static int targetslide = 1000;
 
     //private final double ticks_in_degree = 5281.1/360;
-    private final double ticks_in_degree = 8192.0 / 360;
 
-    private DcMotorEx Arm_right;
-    private DcMotorEx Arm_left;
+    public DcMotorEx backBotSlide, backTopSlide, frontBotSlide, frontTopSlide;
 
     private DcMotorEx Slide_enencoder;
 
 
-    private DcMotorEx Slide_bot;
-    private DcMotorEx Slide_top;
 
-    private Servo Left_handle;
-    private Servo Right_handle;
-
-    public AnalogInput Arm_encoder;
 
     double pid;
     double ff;
@@ -88,56 +75,51 @@ public class PIDF_SlideC extends OpMode {
 //
 //        armRotate = hardwareMap.get(DcMotorEx.class, "armRotate");
 //        armRotateLeft = hardwareMap.get(DcMotorEx.class, "armRotateLeft");
-        Arm_right = hardwareMap.get(DcMotorEx.class, "Arm_right");
-        Arm_left = hardwareMap.get(DcMotorEx.class, "Arm_left");
-
-        Slide_bot = hardwareMap.get(DcMotorEx.class, "Slide_bot");
-        Slide_top = hardwareMap.get(DcMotorEx.class, "Slide_top");
-
-        Arm_encoder = hardwareMap.get(AnalogInput.class, "Arm_encoder");
-
-        Slide_enencoder = hardwareMap.get(DcMotorEx.class, "leftFront");
-
-        Left_handle = hardwareMap.get(Servo.class, "Left_handle");
-        Right_handle = hardwareMap.get(Servo.class, "Right_handle");
 
 
-        Arm_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        Arm_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        Arm_encoder = hardwareMap.get(AnalogInput.class, "Arm_encoder");
+
+//        Slide_enencoder = hardwareMap.get(DcMotorEx.class, "leftFront");
+
+//        Left_handle = hardwareMap.get(Servo.class, "Left_handle");
+//        Right_handle = hardwareMap.get(Servo.class, "Right_handle");
+
+        backBotSlide = hardwareMap.get(DcMotorEx.class, "backBotSlide");
+        backTopSlide = hardwareMap.get(DcMotorEx.class, "backTopSlide");
+        frontBotSlide = hardwareMap.get(DcMotorEx.class, "frontBotSlide");
+        frontTopSlide = hardwareMap.get(DcMotorEx.class, "frontTopSlide");
 
 
-        Arm_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        Arm_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        Arm_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        Arm_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        backBotSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backBotSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        Slide_enencoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backTopSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backTopSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        frontBotSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontBotSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        Slide_bot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        Slide_bot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        Slide_top.setDirection(DcMotorSimple.Direction.REVERSE);
-        Slide_bot.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontTopSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontTopSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
-        Slide_top.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        Slide_bot.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        backBotSlide.setDirection(DcMotorSimple.Direction.FORWARD);
+        backTopSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontBotSlide.setDirection(DcMotorSimple.Direction.FORWARD);
+        frontTopSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        backBotSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        backTopSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        frontBotSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        frontTopSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
 
-        Slide_top.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        Slide_top.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+
 
         // 0.615
         //0.775
-
-        Left_handle.setPosition(handleleft);
-        Right_handle.setPosition(handleright);
-
-
-        Arm_right.setPower(0);
-        Arm_left.setPower(0);
 
 
     }
@@ -145,16 +127,11 @@ public class PIDF_SlideC extends OpMode {
     @Override
     public void loop() {
 
-        Slide_pos = Math.floor(Slide_enencoder.getCurrentPosition()/30);//
+        Slide_pos = backBotSlide.getCurrentPosition();
 
 
 //
         controller.setPID(p, i, d);
-//
-        raw_angle = Arm_encoder.getVoltage() / 3.2 * 360;
-//
-        angle = 360 - ((Arm_encoder.getVoltage() / 3.2 * 360 + offset) % 360);
-        if (angle < 360 && angle > 330) angle -= 360;
 //
 //        int armPos = (int) (angle * 8192.0/360);// negative to change the vaule for easy understanding;
 ////        int slidePos = -Slide_bot.getCurrentPosition();
@@ -171,16 +148,14 @@ public class PIDF_SlideC extends OpMode {
         double ff = Math.sin(Math.toRadians(angle)) * f;
         double power = pid + ff;
 
-        double ff2 = Math.cos(Math.toRadians(angle)) * (-0.04 + k * Slide_pos);  // target
+//        double ff2 = Math.cos(Math.toRadians(angle)) * (-0.04 + k * Slide_pos);  // target
 
-        Slide_top.setPower(power);
-        Slide_bot.setPower(power);
+        backBotSlide.setPower(power);
+        backTopSlide.setPower(power);
+        frontBotSlide.setPower(power);
+        frontTopSlide.setPower(power);
 
 
-        Arm_left.setPower(-ff2);
-
-
-        Arm_right.setPower(ff2);
 
 //        telemetry.addData("pos", armPos);
 //        telemetry.addData("target", target);
@@ -197,7 +172,6 @@ public class PIDF_SlideC extends OpMode {
         telemetry.addData("Power", power);
         telemetry.addData("FF power", ff);
         telemetry.addData("PID", pid);
-        telemetry.addData("Arm FF", ff2);
         telemetry.update();
 
     }

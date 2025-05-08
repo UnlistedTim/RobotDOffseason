@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -21,6 +22,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 //CLAW POS Fully open 0.72, Fully closed 0.93;
 
 @TeleOp(name = "DebugVD", group = "A")
+@Config
 public class DebugVD extends LinearOpMode {
 
     double slidepower = 0.0;
@@ -35,8 +37,12 @@ public class DebugVD extends LinearOpMode {
 
     double offset = 38;
 
-    double frontslidepowers = 0.0;
-    double backslidepowers = 0.0;
+    public static double fronttop = 0.0;
+    public static double backtop = 0.0;
+
+    public static double frontbot = 0.0;
+
+    public static double backbot = 0.0;
 
 
 
@@ -95,10 +101,10 @@ public class DebugVD extends LinearOpMode {
 //                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
 
 
-        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
-        leftBack = hardwareMap.get(DcMotorEx.class, "leftBack");
-        rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
-        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+//        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
+//        leftBack = hardwareMap.get(DcMotorEx.class, "leftBack");
+//        rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
+//        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
 
 //        RevHubOrientationOnRobot.LogoFacingDirection logoFacingDirection =
 //                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT;
@@ -178,34 +184,41 @@ public class DebugVD extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            backBotSlide.setPower(backslidepowers);
-            backTopSlide.setPower(backslidepowers);
+            backBotSlide.setPower(backbot);
+            backTopSlide.setPower(backtop);
 
-            frontBotSlide.setPower(frontslidepowers);
-            frontTopSlide.setPower(frontslidepowers);
+            frontBotSlide.setPower(frontbot);
+            frontTopSlide.setPower(fronttop);
 
-            if (gamepad1.dpad_up && frontslidepowers <=0.96){
-                frontslidepowers+=0.05;
-            }
-
-            if (gamepad1.dpad_down && frontslidepowers >=-0.96){
-                frontslidepowers-=0.05;
-            }
-
-            if (gamepad1.right_bumper && backslidepowers <=0.96){
-                backslidepowers+=0.05;
-            }
-
-            if (gamepad1.dpad_left && backslidepowers >=-0.96){
-                backslidepowers-=0.05;
-            }
+//            if (gamepad1.dpad_up && frontslidepowers <=0.96){
+//                frontslidepowers+=0.05;
+//                sleep(300);
+//            }
+//
+//            if (gamepad1.dpad_down && frontslidepowers >=-0.96){
+//                frontslidepowers-=0.05;
+//                sleep(300);
+//            }
+//
+//            if (gamepad1.dpad_right && backslidepowers <=0.96){
+//                backslidepowers+=0.05;
+//                sleep(300);
+//            }
+//
+//            if (gamepad1.dpad_left && backslidepowers >=-0.96){
+//                backslidepowers-=0.05;
+//                sleep(300);
+//            }
 
             robot_centric(gamepad1.right_stick_y, gamepad1.right_stick_x, gamepad1.left_stick_x,1.0);
-
+            telemetry.addData("Front top powers",fronttop);
+            telemetry.addData("front back powers", frontbot);
+            telemetry.addData("Front top powers",backbot);
+            telemetry.addData("front back powers", backtop);
+            telemetry.update();
             }
 
-        telemetry.addData("Front slide powers",frontslidepowers);
-        telemetry.addData("back slide powers", backslidepowers);
+
 
 
         }
