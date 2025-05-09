@@ -206,7 +206,7 @@ public class DebugVD extends LinearOpMode {
             frontTopSlide.setPower(fronttop);
 
 //            extendoArm.setPosition(extendoArmpos);
-            extendoHandle.setPosition(extendoHandlepos);
+//            extendoHandle.setPosition(extendoHandlepos);
             Cam.setPosition(camPos);
 
 
