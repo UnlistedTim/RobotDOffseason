@@ -44,6 +44,14 @@ public class DebugVD extends LinearOpMode {
 
     public static double backbot = 0.0;
 
+    public static double extendoHandlepos = 0.0;
+    public static double extendoArmpos = 0.0;
+
+    public static double camPos = 0.59;
+
+    //fully open cam, 0.59
+    //fully closed cam 0.39
+
 
 
 
@@ -127,6 +135,13 @@ public class DebugVD extends LinearOpMode {
         leftPivot = hardwareMap.get(Servo.class, "leftPivot");
         leftGearbox = hardwareMap.get(Servo.class, "leftGearbox");
 
+        extendoArm = hardwareMap.get(Servo.class, "extendoArm");
+        Cam = hardwareMap.get(Servo.class, "Cam");
+        extendoHandle = hardwareMap.get(Servo.class, "extendoHandle");
+
+        rightDiffy = hardwareMap.get(Servo.class, "rightDiffy");
+        leftDiffy = hardwareMap.get(Servo.class, "leftDiffy");
+
 
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
@@ -189,6 +204,12 @@ public class DebugVD extends LinearOpMode {
 
             frontBotSlide.setPower(frontbot);
             frontTopSlide.setPower(fronttop);
+
+//            extendoArm.setPosition(extendoArmpos);
+            extendoHandle.setPosition(extendoHandlepos);
+            Cam.setPosition(camPos);
+
+
 
 //            if (gamepad1.dpad_up && frontslidepowers <=0.96){
 //                frontslidepowers+=0.05;
