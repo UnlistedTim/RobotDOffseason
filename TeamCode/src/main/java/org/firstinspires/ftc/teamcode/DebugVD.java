@@ -44,15 +44,20 @@ public class DebugVD extends LinearOpMode {
 
     public static double backbot = 0.0;
 
-    public static double extendoHandlepos = 1.0;
-    public static double extendoArmpos = 0.0;
+    public static double extendoHandlepos = 0.22;
+    public static double extendoArmpos = 0.62;
+
+    public static double leftLinkpos = 0.5;
+
+    public static double rightLinkpos = 0.5;
+
 
     public static double camPos = 0.59;
 
     //fully open cam, 0.59
     //fully closed cam 0.39
 
-    //intake handle intake ready 1.0
+    //intake handle intake ready 0.22
 
     //0.58 preintake
 
@@ -190,6 +195,8 @@ public class DebugVD extends LinearOpMode {
         frontBotSlide.setDirection(DcMotorSimple.Direction.FORWARD);
         frontTopSlide.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        extendoHandle.setDirection(Servo.Direction.REVERSE);
+
 
 
 
@@ -216,6 +223,9 @@ public class DebugVD extends LinearOpMode {
 
             frontBotSlide.setPower(frontbot);
             frontTopSlide.setPower(fronttop);
+
+            rightLink.setPosition(rightLinkpos);
+//            leftLink.setPosition(leftLinkpos);
 
             extendoArm.setPosition(extendoArmpos);
             extendoHandle.setPosition(extendoHandlepos);
