@@ -9,62 +9,222 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
-//183
+// Claw 0.25 open
+// Claw 0.65 closed
+//Specimen intake
+//
+//Intake handle (left right) 0.47, 0.55
+// Arm rot degree 215
+
+//Specimen outtake
+//p = 0.012
+//Intake handle (left right) 0.93 0.50
+// Arm rot degree 25
 
 
 @TeleOp
 @Config
 public class PIDF_ArmOffA extends OpMode{
+
+    private DcMotorEx leftFront, rightFront, leftBack, rightBack;
+    private DcMotorEx  Leftarm;
+    private DcMotorEx  Rightarm;
+
+
+
+    private Servo Lefthandle;
+    private Servo Righthandle;
+
+    private Servo Claw;
+
+    public AnalogInput Armencoder;
+
+
     private PIDController controller;
+
+    public double arm_pos = 90;
+
+    double power;
 
     double handleleft = 0.61;
     double handleright = 0.77;
 
 
-    double offset = 38;// -200+360
+    public enum State {
+        IDLE,
+        SAMPLEINTAKE,
+        SPECINTAKE,
+        SPECOUTTAKE,
 
-    double angle;
-    double raw_angle;
-
-    // Arm Up constants
-
-    // p = 0.0015, i = 0, d = 0.00007;
-    // f = 0.23;
-    // k = 0.00001;
-
-    // Arm Down Constants
-    // p = 0.005, i = 0, d = 0.002
-    // f = 0.12
-    // k = 0.00001
-
-    public static double p = 0, i = 0, d = 0;
+    }
 
 
-  //  public static double p = 0.0025, i = 0, d = 0.00008;
-  //  public static double p = 0.01, i = 0, d = 0.0008;
 
-    public static double f = -0.04;
+    // debug stuff
+    double offset = -86 + 360;// -200+360
 
-   // public static double f = -0.05;  //0.12 also good
+    double angle = 0;
+
+    public static double p = 0.0075, i = 0, d = 0.0002;
+
+    public static double leftdiffy = 0.5, rightdiffy = 0.5, clawpos = 0.5;
+
+    double pid;
+    double ff;
+
+    public static double f = 0.04;
+
 
     public static double k = 0.0003;// the peak power is about 0.7 without p .
-    public static int target = 0;
+    public static int target = 180;
+    public static int deadband = 1;
 
-    //private final double ticks_in_degree = 5281.1/360;
-    private final double ticks_in_degree = 8192.0/360;
 
-    private DcMotorEx  Leftarm;
-    private DcMotorEx  Rightarm;
+    //booleans
 
-    private Servo Lefthandle;
-    private Servo Righthandle;
+    boolean idleflag = true;
 
-    public AnalogInput Armencoder;
 
+
+
+
+
+
+
+    State state = State.IDLE;
+    @Override
+    public void init(){
+        initsetup();
+
+    }
+    @Override
+    public void loop(){
+
+
+        Claw.setPosition(clawpos);
+
+//        switch (state){
+//            case IDLE:
+//
+//                if (idleflag){
+//                    p = 0.0075;
+//                    target = 215;
+//                    Claw.setPosition(0.25);
+//                    Lefthandle.setPosition(0.1);
+//                    Righthandle.setPosition(0.92);
+//                    // linear slide idle pos
+//                    // slide handle idle pos
+//                    idleflag = false;
+//
+//                }
+//
+//                if (gamepad2.left_bumper){
+//                    Lefthandle.setPosition(0.46);
+//                    Righthandle.setPosition(0.56);
+//                    p = 0.0075;
+//                    target = 213;
+//                    Claw.setPosition(0.25);
+//
+//                    state = State.SPECINTAKE;
+//                    break;
+//                }
+//
+//                if (gamepad2.right_bumper){
+//                    // extend arm into submersible to get ready for intake
+//                    // ready for sample intake
+//                    state = State.SAMPLEINTAKE;
+//                    break;
+//                }
+//                break;
+//            case SAMPLEINTAKE:
+//                break;
+//                // linear slide extend and intake
+//                //make sure to add breakout condition
+//            case SPECINTAKE:
+//                if (gamepad1.right_bumper){
+//                    Claw.setPosition(0.65);
+//                    delay(250);
+//                    moveStraight(0.65);
+//                    p = 0.012;
+//                    target = 23;
+//                    delay(200);
+//                    Lefthandle.setPosition(0.93);
+//                    Righthandle.setPosition(0.5);
+//                    moveStraight(0);
+//                    state = State.SPECOUTTAKE;
+//                    break;
+//
+//                }
+//                break;
+//            case SPECOUTTAKE:
+//
+//
+//                if (gamepad1.right_bumper){
+//                    idleflag = true;
+//                    Claw.setPosition(0.25);
+//                    moveStraight(-0.7);
+//                    delay(300);
+//                    state = State.IDLE;
+//                    break;
+//                }
+//
+//                if (gamepad1.left_bumper){
+//                    Lefthandle.setPosition(0.46);
+//                    Righthandle.setPosition(0.56);
+//                    p = 0.0075;
+//                    target = 213;
+//                    Claw.setPosition(0.25);
+//
+//                    state = State.SPECINTAKE;
+//                    break;
+//
+//                }
+//                break;
+//        }
+//
+//        robot_centric(gamepad1.right_stick_y, gamepad1.right_stick_x, gamepad1.left_stick_x, 1.0);
+//
+//        armrotatePIDF();
+//        telemetry.addData("target", target);
+//        telemetry.addData("Current Angle", angle);
+//        telemetry.addData("Total Power", power);
+//
+//        telemetry.update();
+
+    }
+
+    private double square_root(double input) {
+        if (input >= 0) {
+            return Math.sqrt(input);
+        } else {
+            return -1 * Math.sqrt(Math.abs(input));
+
+        }
+    }
+
+    protected void robot_centric(double iy, double ix, double irx, double ratio) {
+        double y = -iy;
+        double x = ix * 1.1; // Counteract imperfect strafing
+        double rx = irx; // 0.75
+        double drivinginput= Math.abs(y) + Math.abs(x) + Math.abs(rx);
+        double denominator = Math.max(drivinginput, 1);
+        double frontLeftPower = (y + x + rx) / denominator;
+        double backLeftPower = (y - x + rx) / denominator;
+        double frontRightPower = (y - x - rx) / denominator;
+        double backRightPower = (y + x - rx) / denominator;
+
+        leftFront.setPower(frontLeftPower * ratio);
+        rightFront.setPower(frontRightPower * ratio);
+        leftBack.setPower(backLeftPower * ratio);
+        rightBack.setPower(backRightPower * ratio);
+
+
+    }
 
     public final void pause(long milliseconds) {
         try {
@@ -73,8 +233,47 @@ public class PIDF_ArmOffA extends OpMode{
             Thread.currentThread().interrupt();
         }
     }
-    @Override
-    public void init(){
+
+    public void delay(double time)
+    {
+
+        int sleepcounter = (int) (time/25);
+        for (int i = 0; i < sleepcounter; i++) {
+            armrotatePIDF();
+            pause(20);
+        }
+    }
+
+    public double  arm_angle_update()
+    {
+
+
+        angle = (Armencoder.getVoltage() / 3.2 * 360 + offset) % 360;
+        if (angle <= 360 && angle >= 250) angle -=360;
+
+        return angle;
+
+    }
+
+    public void armrotatePIDF() {
+
+
+        arm_pos= arm_angle_update();
+        controller.setPID(p,i,d);
+        if (Math.abs(angle - target) > deadband) {
+            pid = square_root(controller.calculate(angle, target));
+        } else {
+            pid = 0.0;
+        }
+        ff = Math.cos(Math.toRadians(angle)) * (f) ;  // target
+        power = pid + ff;
+        Leftarm.setPower(-power);
+        Rightarm.setPower(power);
+
+
+    }
+
+    public void initsetup(){
         controller = new PIDController(p,i,d);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 //
@@ -83,11 +282,18 @@ public class PIDF_ArmOffA extends OpMode{
         Rightarm = hardwareMap.get(DcMotorEx.class, "Rightarm");
         Leftarm = hardwareMap.get(DcMotorEx.class, "Leftarm");
 
+        leftFront = hardwareMap.get(DcMotorEx.class,"leftFront");
+        rightFront = hardwareMap.get(DcMotorEx.class,"rightFront");
+        leftBack = hardwareMap.get(DcMotorEx.class,"leftBack");
+        rightBack = hardwareMap.get(DcMotorEx.class,"rightBack");
+
 
         Armencoder= hardwareMap.get(AnalogInput.class, "Armencoder");
 
         Lefthandle = hardwareMap.get(Servo.class,"Lefthandle");
-        Lefthandle = hardwareMap.get(Servo.class,"Lefthandle");
+        Righthandle = hardwareMap.get(Servo.class,"Righthandle");
+
+        Claw = hardwareMap.get(Servo.class,"Claw");
 
 
         Leftarm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -97,83 +303,26 @@ public class PIDF_ArmOffA extends OpMode{
         Rightarm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         Rightarm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        Leftarm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        Rightarm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        Leftarm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        Rightarm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        // 0.615
-        //0.775
+        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-//        Left_handle.setPosition(handleleft);
-//        Right_handle.setPosition(handleright);
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
 
-
-
-        Rightarm.setPower(0);
-        Leftarm.setPower(0);
-
-
-
+        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightBack.setDirection(DcMotorSimple.Direction.FORWARD);
     }
-    @Override
-    public void loop(){
 
-//        if (gamepad1.triangle ){
-//            Slide_bot.setTargetPosition(-targetslide);
-//            Slide_top.setTargetPosition(-targetslide);
-//
-//            Slide_bot.setVelocity(700);
-//            Slide_top.setVelocity(700);
-//
-//
-//        }
-//
-//        if (gamepad1.dpad_up){
-//            target = 750;
-//            p =0.0004;
-////            d = 0.00001;
-//        }
-//
-//        if (gamepad1.dpad_down){
-//            target = 0;
-//            p =0.0003;
-////            d = 0.00001;
-//        }
-
-
-
-        controller.setPID(p,i,d);
-
-        raw_angle = Armencoder.getVoltage()/3.2 * 360;
-
-        angle = 360 - ((Armencoder.getVoltage() / 3.2 * 360 + offset) % 360);
-        if (angle < 360 && angle > 330) angle-=360;
-
-        int armPos = (int) (angle * 8192.0/360);// negative to change the vaule for easy
-        //        int slidePos = -Slide_bot.getCurrentPosition();
-      //  slidePos = 0;
-     //   if (Math.abs(armPos-target)<400) d=0.0008; else d=0.002;
-        double pid = controller.calculate(armPos,target);
-        double ff = Math.cos(Math.toRadians(angle)) * (f) ;  // target
-        double power = pid + ff;
-        Leftarm.setPower(-power);
-        Rightarm.setPower(power);
-
-        telemetry.addData("pos", armPos);
-        telemetry.addData("target", target);
-        telemetry.addData("Current Angle", angle);
-        telemetry.addData("Raw Angle", raw_angle);
-        telemetry.addData("FF power", ff);
-        telemetry.addData("PID power", pid);
-        telemetry.addData("Total Power", power);
-//        telemetry.addData("slide pos", slidePos);
-//        telemetry.addData("slide bot pos", Slide_bot.getCurrentPosition());
-
-//        telemetry.addData("Current right", Arm_right.getCurrent(CurrentUnit.AMPS));
-//        telemetry.addData("Current left", Arm_left.getCurrent(CurrentUnit.AMPS));
-//
-//        telemetry.addData("Current slide top", Slide_top.getCurrent(CurrentUnit.AMPS));
-//        telemetry.addData("current slide bottom", Slide_bot.getCurrent(CurrentUnit.AMPS));
-        telemetry.update();
-
+    public void moveStraight (double pow){
+        leftFront.setPower(pow);
+        leftBack.setPower(pow);
+        rightFront.setPower(pow);
+        rightBack.setPower(pow);
     }
+
 }

@@ -79,6 +79,7 @@ public class TelOpNew extends LinearOpMode {
                    }
                    break;
 
+
 case SAMPLEINTAKE:
                    if(!rbg.flag[rbg.sampleintakeready])
                    {
@@ -127,7 +128,7 @@ case SAMPLEINTAKE:
                         rbg.intakeidle_ready();
                         break;
                     }
-                    if(gamepad2.right_bumper&&rbg.timer(500, rbg.intake)) {
+                    if(gamepad2.right_bumper&&rbg.timer(1000, rbg.intake) && rbg.slidePos < rbg.slide_idle + 50 ) {
                         rbg.pre_samplelift(false);
                         state = State.SAMPLELIFT;
                         break;
@@ -328,6 +329,8 @@ case SAMPLEINTAKE:
 
             telemetry.addData("State",state);
             telemetry.addData("Slide encoder",rbg.revEncoder.getCurrentPosition());
+
+            telemetry.addData("Arm angle", rbg.arm_angle);
 
             telemetry.addData("Slide pos",rbg.slidePos);
 //            telemetry.addData("Arm pos", rbg.arm_angle);
